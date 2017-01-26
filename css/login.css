@@ -1,0 +1,39 @@
+body {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+}
+
+header {
+	padding: 20px 0;
+	z-index: 1;
+}
+
+header h1 {
+	font-weight: 700;
+	margin: 0;
+	z-index: 2;
+}
+
+.vertical_align {
+	position: absolute;
+	top: 50%;
+	left: 0%;
+	webkit-transform:translate(50%,0);
+	text-align: center;
+}
+
+.background {
+	position: relative;
+	height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    position: fixed;
+    background-image: url("./../Images/login_background.png");
+    z-index: 0;
+}
+
+.parent {
+	position: relative;
+}
