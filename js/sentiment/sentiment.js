@@ -3391,6 +3391,11 @@ var array=str.match(/\S+\s*/g);
 
 calculateSum(array);
 
+chrome.runtime.onMessage.addListener(function(req,sender){
+	if(req=="sentiment"){
+		console.log("Sentiment was fired");
+	}
+});
 
 
 

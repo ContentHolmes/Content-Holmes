@@ -281,6 +281,7 @@ function applyReplacements(node) {
 			});
 
 			v.isReplaced = true;
+
 		});
 	} catch( err ) {
 		// Basically this means that an iframe had a cross-domain source, and WR can't do much about it.
@@ -321,6 +322,8 @@ function main() {
 		var end = new Date().getMilliseconds();
 		console.log('Initial replacements took ' + end + 'ms.');
 
+		// calling the sentiment part
+		chrome.runtime.sendMessage("sentiment");
 		// And then apply them to any DOM element that changed or that was added
 		new MutationObserver(processMutations).observe(document.body, { subtree: true, childList: true, characterData: true });
 	});
