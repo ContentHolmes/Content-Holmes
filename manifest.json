@@ -31,7 +31,7 @@
 
   "content_scripts": [{
     "all_frames": true,
-    "js": ["js/jquery-2.1.4.min.js", "js/content_script.js"],
+    "js": ["js/jquery-2.1.4.min.js", "js/content_script.js","js/sentiment/sentiment.js"],
     "matches": ["<all_urls>"],
     "run_at": "document_end"
   }],
