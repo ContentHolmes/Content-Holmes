@@ -30,7 +30,6 @@ header h1 {
     top: 0;
     overflow: hidden;
     position: fixed;
-    background-image: url("./../Images/login_background.png");
     z-index: 0;
 }
 
