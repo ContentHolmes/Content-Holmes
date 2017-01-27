@@ -3387,39 +3387,58 @@ var words={
 var minSentimentScore=-10;
 
 var str = "Lorem Ipsum is simply        dummy text of the printing and typesetting industry. I will fucking kill you retard. You're a moron. and a chutiya. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-var array=str.match(/\S+\s*/g);
 
-calculateSum(array);
 
-chrome.runtime.onMessage.addListener(function(req,sender){
-	if(req=="sentiment"){
-		console.log("Sentiment was fired");
-	}
+
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if(request.message=="FireSentiment"){
+    startSentiment();
+    sendResponse({message:"we're cool"});
+  }
+    
 });
 
 
-
-
-
-function parseParagraphs(paraArray){
-
+function startSentiment(){
+  var iterator=document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
+  while ((node = iterator.nextNode())) {
+    parseParagraphs(node);
+  }
+}
+function parseParagraphs(node){
+  var ignoreThese = {
+    "STYLE": 0,
+    "NOSCRIPT": 0,
+    "SCRIPT":0
+  };
+  if (node.parentElement.tagName in ignoreThese) {
+    return;
+  }
+  var str=node.nodeValue.toString();
+  var array=str.match(/\S+\s*/g);
+  var sum=calculateSum(array);
+  console.log("the sum for the node:"+node.nodeValue.toString()+"\nis :"+sum);
+  return;
 }
 
 function formatWordsInArray(wordsArray){
 	for(var i in wordsArray){
-		wordsArray[i]=wordsArray[i].toLowerCase().replace(/[^a-z]/gi,'');
+		wordsArray[i] = wordsArray[i].toString().toLowerCase().replace(/[^a-z]/gi,'');
 	}
 }
+
 function calculateSum(wordsArray){
 	formatWordsInArray(wordsArray);
 	var sum=0;
 	for(var i in wordsArray){
-		var newWord=wordsArray[i].trim().toLowerCase();
+		var newWord=wordsArray[i];
 		if(words.hasOwnProperty(newWord)){
 			sum+=words[newWord];
 			console.log(words[newWord]);
 			console.log(newWord);
 		}
 	}
+	console.log(sum)
 	return sum;
 }

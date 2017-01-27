@@ -283,6 +283,7 @@ function applyReplacements(node) {
 			v.isReplaced = true;
 
 		});
+		sentiment();
 	} catch( err ) {
 		// Basically this means that an iframe had a cross-domain source, and WR can't do much about it.
 		if( err.name == 'SecurityError' ); 
@@ -306,11 +307,14 @@ function processMutations(mutations) {
 function main() {
 	chrome.storage.local.get(['settings', 'global'], function(items) {
 		// If the extension is disabled, do nothing.
-		if( !items.global.enabled ) return;
+		if( !items.global.enabled ){console.log("i returned");return;}
 
 		g_replacements = items.settings;
 		// Return if there are no replacements
-		if( !g_replacements || !g_replacements.length ) return;
+		if( !g_replacements || !g_replacements.length ) {
+			//chrome.runtime.sendMessage("sentiment");
+			return;
+		}
 
 		// Apply the replacements once upon injection to each descendant of body
 		var start = new Date().getMilliseconds();
@@ -323,7 +327,7 @@ function main() {
 		console.log('Initial replacements took ' + end + 'ms.');
 
 		// calling the sentiment part
-		chrome.runtime.sendMessage("sentiment");
+		
 		// And then apply them to any DOM element that changed or that was added
 		new MutationObserver(processMutations).observe(document.body, { subtree: true, childList: true, characterData: true });
 	});
@@ -334,6 +338,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 	// WR was enabled 
 	if( request == 'run_cs' ) {
 		main();
+		sentiment();
 	}
 	// WR was disabled
 	if( request == 'refresh' ) {
@@ -341,4 +346,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 	}
 });
 
+function sentiment(){
+	console.log("message was loaded");
+	chrome.runtime.sendMessage({message:"sentiment"},function(response){
+		console.log(response.message);
+	});
+	console.log("message was sent");
+}
+
 main();
+sentiment();
