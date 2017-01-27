@@ -1,0 +1,15 @@
+{
+  "name": "content_rectifier",
+  "version": "1.0.0",
+  "description": "Bot for the Code.fun.do project 2017",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rajat",
+  "license": "ISC",
+  "dependencies": {
+    "botbuilder": "^3.5.4",
+    "restify": "^4.3.0"
+  }
+}
