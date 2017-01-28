@@ -1,5 +1,6 @@
 var builder = require('botbuilder');
 var restify = require('restify');
+var request = require('request');
 
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
@@ -24,7 +25,7 @@ intents.onDefault(builder.DialogAction.send('I\'m not sure what you mean...'));
 intents.matches('hi', [
 	function (session, args, next) {
 		if (!session.userData.name) {
-			session.send('Hey, I am Content Holmes a.k.a CH. May I ask some questions?');
+			session.send('Hey, I am Content Holmes a.k.a CH. I\'ll be your assistant with the app.');
             session.beginDialog('/profile');
         } else {
             next();
@@ -35,9 +36,34 @@ intents.matches('hi', [
     }
     ]);
 
+intents.matches('profile', [
+    function (session) {
+        session.beginDialog('/profile');
+    },
+    function (session, results) {
+        session.send('Okay! I made the changes %s :-)', session.userData.name);
+    }
+]);
+
+intents.matches('history', [
+	function (session) {
+		//Get request here
+		request('http://mrigeshmadaan.com/app/rajat', function (error, response, body) {
+		    if (!error) {
+		        session.send("Connected!");
+		    }
+		});
+}]);
+intents.matches('depressionscores', [
+	function (session) {
+		//Get request here
+	}
+	]);
+
+
 bot.dialog('/profile', [
     function (session) {
-        builder.Prompts.text(session, 'What is your name?');
+        builder.Prompts.text(session, 'What can I call you?');
     },
     function (session, results) {
         session.userData.name = results.response;
