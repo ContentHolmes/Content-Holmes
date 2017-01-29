@@ -1939,7 +1939,6 @@ var words={
   "lifesaver": 4,
   "lighthearted": 1,
   "likable": 2,
-  "like": 2,
   "likeable": 2,
   "liked": 2,
   "likers": 2,
@@ -3386,7 +3385,7 @@ var words={
 
 var minSentimentScore=-10;
 
-var str = "Lorem Ipsum is simply        dummy text of the printing and typesetting industry. I will fucking kill you retard. You're a moron. and a chutiya. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+var str = "Lorem Ipsum is simply!dummy text of the printing and typesetting industry. I will fucking kill you retard? You're a moron. and a chutiya.       Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.       It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
 
 
@@ -3403,7 +3402,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function startSentiment(){
   var iterator=document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
   while ((node = iterator.nextNode())) {
-    parseParagraphs(node);
+    var depressionCalc=parseParagraphs(node);
   }
 }
 function parseParagraphs(node){
@@ -3415,11 +3414,26 @@ function parseParagraphs(node){
   if (node.parentElement.tagName in ignoreThese) {
     return;
   }
+  console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
   var str=node.nodeValue.toString();
-  var array=str.match(/\S+\s*/g);
-  var sum=calculateSum(array);
-  console.log("the sum for the node:"+node.nodeValue.toString()+"\nis :"+sum);
-  return;
+  var sentenceArray=getSentences(str);
+  var totalWords=0;
+  var sum=0;
+  for(var i in sentenceArray){
+
+    var newSentence=sentenceArray[i].toString().match(/\S+\s*/g);
+    formatWordsInArray(newSentence);
+    totalWords=totalWords+newSentence.length;
+    var newSum=calculateSum(newSentence);
+    console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum); 
+    sum=sum+newSum*newSentence.length;   
+  
+  }
+  var depressionCalc=sum/totalWords;
+  if(depressionCalc  || depressionCalc==0){
+    console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);  
+  }
+  return depressionCalc;
 }
 
 function formatWordsInArray(wordsArray){
@@ -3429,16 +3443,26 @@ function formatWordsInArray(wordsArray){
 }
 
 function calculateSum(wordsArray){
-	formatWordsInArray(wordsArray);
 	var sum=0;
 	for(var i in wordsArray){
 		var newWord=wordsArray[i];
 		if(words.hasOwnProperty(newWord)){
 			sum+=words[newWord];
-			console.log(words[newWord]);
-			console.log(newWord);
 		}
 	}
-	console.log(sum)
 	return sum;
+}
+function getSentences(str) {
+  const regex = /(\.\s)?([A-Z][^\.!\?]+[\.!\?])/g;
+  var sentences = [];
+  str = str+".";
+
+  while ((m = regex.exec(str)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (m.index === regex.lastIndex) {
+          regex.lastIndex++;
+      }
+      sentences.push(m[0]);
+  }
+  return sentences;
 }
