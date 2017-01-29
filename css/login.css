@@ -14,25 +14,78 @@ header h1 {
 	z-index: 2;
 }
 
-.vertical_align {
-	position: absolute;
-	top: 50%;
-	left: 0%;
-	webkit-transform:translate(50%,0);
-	text-align: center;
-}
-
 .background {
 	position: relative;
 	height: 100%;
-    width: 100%;
-    left: 0;
-    top: 0;
-    overflow: hidden;
-    position: fixed;
-    z-index: 0;
+	width: 100%;
+	left: 0;
+	top: 0;
+	overflow: hidden;
+	position: fixed;
+	z-index: 0;
 }
 
 .parent {
 	position: relative;
+}
+
+.topspace{
+	margin-top: 30vh;
+}
+
+.topspace2{
+	margin-top: 10vh;
+}
+
+.blocked{
+	width: 100%;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+}
+
+#sites1{
+	width: 100%;
+	height: 200px;
+	resize: none;
+}
+
+#words1{
+	width: 100%;
+	height: 200px;
+	resize: none;
+}
+
+.save{
+	background-color: white;
+	border-color: transparent;
+	color: black;
+	border-width: thin;
+	border-radius: 2px;
+}
+
+.save:hover{
+	color: cyan;
+}
+
+.button{
+	margin-top: 10px;
+	margin-right: 15px;
+}
+
+.inline{
+	display: inline;
+}
+
+.dropdown{
+	background-color: white;
+	border-color: transparent;
+	color: black;
+	border-width: thin;
+	border-radius: 2px;
+}
+
+.dropcontent{
+	transition: all 0.3s ease;
+	-webkit-transition: all 0.3s ease;
+	display: none;
 }
