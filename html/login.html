@@ -7,7 +7,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="./../css/login.css">
-	<!-- <script type="text/javascript" src = "./../js/jsonparser.js"></script> -->
+	<!-- <script type="text/javascript" src="./../js/imageproc.js"></script> -->
 </head>
 <body>
 <div id="fb-root"></div>
@@ -18,22 +18,16 @@
   js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.8&appId=239918676465120";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-	<header class = "container">
+	<div class="container" id="main">
 		<div class="topspace"></div>
 		<div class = "row">
-			<h1 class = "col-sm-12 text-center">Children Safety Program</h1>
+			<h1 class = "col-sm-12 text-center">AppName</h1>
 		</div>
-	</header>
-	<section class = "container">
-		<div class = "row parent">
-			<div class = "background">
-				<div class = "col-sm-4 col-sm-offset-4 vertical_align">
-					<div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>
-				</div>
+		<div class = "row text-center">
+			<div class = "col-sm-4 col-sm-offset-4 vertical_align">
+				<div class="fb-login-button login" data-max-rows="1" data-size="xlarge" data-show-faces="false" data-auto-logout-link="false"></div>
 			</div>
 		</div>
-	</section>
-	<script type="text/javascript" src = "./../js/nude.min.js"></script>
-	<script type="text/javascript" src = "./../js/img_check.js"></script>
+	</div>
 </body>
 </html>
