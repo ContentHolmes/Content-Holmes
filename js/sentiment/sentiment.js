@@ -1193,8 +1193,6 @@ var words={
   "exonerated": 2,
   "exonerates": 2,
   "exonerating": 2,
-  "physically physically physically physically physically physically expand": 1,
-  "physically physically physically physically physically physically expands": 1,
   "expel": -2,
   "expelled": -2,
   "expelling": -2,
@@ -3385,25 +3383,20 @@ var words={
 
 var minSentimentScore=-10;
 
-var str = "Lorem Ipsum is simply!dummy text of the printing and typesetting industry. I will fucking kill you retard? You're a moron. and a chutiya.       Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.       It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-
-
-
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.message=="FireSentiment"){
     startSentiment();
     sendResponse({message:"we're cool"});
   }
-    
 });
 
-
-function startSentiment(){
+function startSentiment(mutations){
   var iterator=document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
   while ((node = iterator.nextNode())) {
     var depressionCalc=parseParagraphs(node);
   }
+  return;
 }
 function parseParagraphs(node){
   var ignoreThese = {
@@ -3414,7 +3407,7 @@ function parseParagraphs(node){
   if (node.parentElement.tagName in ignoreThese) {
     return;
   }
-  console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
+  //console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
   var str=node.nodeValue.toString();
   var sentenceArray=getSentences(str);
   var totalWords=0;
@@ -3425,13 +3418,13 @@ function parseParagraphs(node){
     formatWordsInArray(newSentence);
     totalWords=totalWords+newSentence.length;
     var newSum=calculateSum(newSentence);
-    console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum); 
+    //console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum); 
     sum=sum+newSum*newSentence.length;   
   
   }
   var depressionCalc=sum/totalWords;
   if(depressionCalc  || depressionCalc==0){
-    console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);  
+    //console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);  
   }
   return depressionCalc;
 }
@@ -3466,3 +3459,4 @@ function getSentences(str) {
   }
   return sentences;
 }
+new MutationObserver(startSentiment).observe(document.body, { subtree: true, childList: true, characterData: true });

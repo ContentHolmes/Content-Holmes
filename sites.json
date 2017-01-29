@@ -1,4 +1,4 @@
-{
+var newArr={
 "toppornsites" : "http://toppornsites.com",
 "xVideos" : "http://www.xvideos.com",
 "PornHub" : "http://www.pornhub.com",
@@ -263,5 +263,8 @@
 "MediaDetective" : "http://www.mediadetective.com/",
 "TimelineRemove" : "http://en.softonic.com/s/timeline-remove-free-download",
 "HidePornSoftware" : "http://hide-porn.winsite.com/",
-"KeeperSecurity" : "https://keepersecurity.com",
+"KeeperSecurity" : "https://keepersecurity.com"
+}
+for(var entry in newArr){
+	console.log("")
 }

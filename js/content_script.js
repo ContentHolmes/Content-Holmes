@@ -13,12 +13,12 @@ String.prototype.regexIndexOf = function(regex, startpos) {
     var indexOf = this.substring(startpos || 0).search(regex);
     return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
 }
-/*
+
 Array.prototype.extend = function (other_array) {
     // you should include a test to check whether other_array really is an array
     other_array.forEach(function(v) {this.push(v)}, this);    
 }
-*/
+
 function escapeRegExp(string) {
     return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
@@ -327,8 +327,7 @@ function main() {
 		console.log('Initial replacements took ' + end + 'ms.');
 
 		// calling the sentiment part
-		
-		// And then apply them to any DOM element that changed or that was added
+		// And then apply them Mutations
 		new MutationObserver(processMutations).observe(document.body, { subtree: true, childList: true, characterData: true });
 	});
 }

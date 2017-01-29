@@ -35,4 +35,13 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 	console.log("this function ran");
     sendResponse({message:"good luck bro"});
   }
+  
 });
+
+chrome.tabs.query({"active":true},function(tab){
+	console.log(tab[0].url.toString());
+});
+chrome.tabs.getCurrent(function(tab){
+        console.log(tab.url);
+    }
+);
