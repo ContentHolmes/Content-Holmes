@@ -66,6 +66,31 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         session.send("That's all for now %s, the game is on", session.userData.name);
     }
     ])
+.matches('Name', [
+	function (session) {
+		session.send("I am Holmes. And I detect \'stuff\'. :-)");
+	}
+	])
+.matches('Age', [
+	function (session) {
+		session.send("Well, I first appeared in 1887 in Sir Doyle's works, but I was here long before that. I still have a knack for detective work depite my age :-P.");
+	}
+	])
+.matches('Location', [
+	function (session) {
+		session.send("The classic 221-B, Baker Street, London.");
+	}
+	])
+.matches('Language', [
+	function (session) {
+		session.send("I am proficient in many Languages known to man. Mastered to full capacity.");
+	}
+	])
+.matches('reality', [
+	function (session) {
+		session.send("Your questions amuse me %s. I once had a Doctor friend who asked such questions.", session.userData.name);
+	}
+	])
 .matches('depressionscores', [
     function (session) {
         //Get request here
