@@ -600,13 +600,13 @@ function BlockURL(){
     if(bannedElementsArray[i]==urlString){
       var arr=document.getElementsByTagName('body');
       for(var i in arr){
-      	$.post(/*URL Here*/,{
-      			"Type": "URL",
-      			"Data": document.location.href,
-      			"User-ID": /*userIDs here*/
-      		},function(data, status) {
-      		console.log("Data sent");
-      	});
+      	// $.post(/*URL Here*/,{
+      	// 		"Type": "URL",
+      	// 		"Data": document.location.href,
+      	// 		"User-ID": /*userIDs here*/
+      	// 	},function(data, status) {
+      	// 	console.log("Data sent");
+      	// });
         arr[i].innerHTML="Not permitted to view this";  
       }
       
@@ -668,5 +668,6 @@ function getUrlVars(href)
 if(urlcheck(document.location.href)<=0.1) {
 	BlockURL();
 } else {
-
+	console.log("Blocking the page!");
+	// chrome.runtime.sendMessage({redirect: chrome.extension.getURL(html/safetypage)});
 }
