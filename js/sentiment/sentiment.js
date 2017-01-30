@@ -3391,11 +3391,24 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
-function startSentiment(mutations){
+function startSentiment(){
   var iterator=document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
+  var depressionmin = 0;
+  var depressionCalc;
   while ((node = iterator.nextNode())) {
-    var depressionCalc=parseParagraphs(node);
+    depressionCalc=parseParagraphs(node);
+    if(depressionCalc<depressionmin) {
+      depressionmin = depressionCalc;
+    }
   }
+  console.log(depressionmin);
+  // $.post(/*URL Here*/, {
+  //   "Type" : "depression",
+  //   "Data" : depressionmin,
+  //   "User-ID" : user-id here
+  // }, function(data, status) {
+  //   console.log("Data sent");
+  // });
   return;
 }
 function parseParagraphs(node){
@@ -3419,10 +3432,10 @@ function parseParagraphs(node){
     totalWords=totalWords+newSentence.length;
     var newSum=calculateSum(newSentence);
     //console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum); 
-    sum=sum+newSum*newSentence.length;   
+    sum=sum+newSum/**newSentence.length*/;   
   
   }
-  var depressionCalc=sum/totalWords;
+  var depressionCalc=sum/*/totalWords*/;
   if(depressionCalc  || depressionCalc==0){
     //console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);  
   }
