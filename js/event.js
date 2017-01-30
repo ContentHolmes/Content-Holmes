@@ -16,10 +16,14 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
 		global.version = currentVersion;
 		// Update some variables to their default value
 		global.enabled = true;
-
+		// set it as object {"date":"","URL":""}
 		global.showChangelog = true;
 	}
 
+	global.newVar="fdafda";
+	global.historyOfBlockedURLS=[];
+	global.bannedURLs=[];
+	global.trustedURLs=[];
 	chrome.storage.local.set({ global: global });
 });
 
@@ -37,11 +41,3 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
   }
   
 });
-
-chrome.tabs.query({"active":true},function(tab){
-	console.log(tab[0].url.toString());
-});
-chrome.tabs.getCurrent(function(tab){
-        console.log(tab.url);
-    }
-);

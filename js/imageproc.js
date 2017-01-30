@@ -1,25 +1,6 @@
-function parseText(jsonfile){
-  JSON.parse(jsonfile, (key, value) => {
-    if(key == "text"){
-      console.log(value);
-      // if(condition to check){
-      //   document.getElementById(image).style.visibility = "hidden";
-      // }
-      //check condition with words and sentiment analyser
-    }
-  });
-}
 
-function parseAdult(jsonfile){
-  JSON.parse(jsonfile, (key, value) => {
-    if(key == "isAdultContent"){
-      console.log(value);
-      // if(condition to check){
-      //   document.getElementById(image).style.visibility = "hidden";
-      // }
-    }
-  });
-}
+
+
 
 function imagecheck(imageurl){
   var params  =  {

@@ -1,4 +1,4 @@
-function imagecheck(imageurl, image){
+function imagecheck(imageurl,image){
   var params  =  {
     "language" : "unk",
     "detectOrientation" : "true",
