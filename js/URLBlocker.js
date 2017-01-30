@@ -607,7 +607,7 @@ function BlockURL(){
       	// 	},function(data, status) {
       	// 	console.log("Data sent");
       	// });
-        arr[i].innerHTML="Not permitted to view this";  
+		chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
       }
       
 
@@ -668,6 +668,6 @@ function getUrlVars(href)
 if(urlcheck(document.location.href)<=0.1) {
 	BlockURL();
 } else {
-	console.log("Blocking the page!");
-	// chrome.runtime.sendMessage({redirect: chrome.extension.getURL(html/safetypage)});
+	console.log(chrome.extension.getURL("/html/safetypage"));
+	chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
 }

@@ -4,12 +4,12 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
 	var global = items.global || { };
 
 	// Update icon
-	if( global.enabled ) {
-		chrome.browserAction.setIcon( { path: 'images/icon_19.png' } );
-	}
-	else {
-		chrome.browserAction.setIcon( { path: 'images/icon_19_disabled.png' } );
-	}
+	// if( global.enabled ) {
+	// 	chrome.browserAction.setIcon( { path: 'images/icon_19.png' } );
+	// }
+	// else {
+	// 	chrome.browserAction.setIcon( { path: 'images/icon_19_disabled.png' } );
+	// }
 
 	if( global.version != currentVersion ) {
 		// Update version
@@ -34,18 +34,18 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 	});
 	console.log("this function ran");
     sendResponse({message:"good luck bro"});
+  } else /*if(request.message == "redirect")*/ {
+  		console.log("I am here");
+    	chrome.tabs.update(sender.tab.id, {url: request.redirect});
+    	sendResponse({message:"good luck bro2"});
   }
   
 });
 
-chrome.tabs.query({"active":true},function(tab){
-	console.log(tab[0].url.toString());
-});
-chrome.tabs.getCurrent(function(tab){
-        console.log(tab.url);
-    }
-);
-
-// chrome.runtime.onMessage.addListener(function(request, sender) {
-//     chrome.tabs.update(sender.tab.id, {url: request.redirect});
+// chrome.tabs.query({"active":true},function(tab){
+// 	console.log(tab[0].url.toString());
 // });
+// chrome.tabs.getCurrent(function(tab){
+//         console.log(tab.url);
+//     }
+// );
