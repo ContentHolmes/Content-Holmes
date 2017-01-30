@@ -18,17 +18,17 @@
 
   "browser_action": {
     // "default_icon": "images/icon_19.png",
-    "default_title": "Content Rectifier 2",
-    "default_popup": "popup.html"
+    "default_title": "Content Rectifier 2"
+    // "default_popup": "html/login.html"
   },
 
   "web_accessible_resources": [
    "html/safetypage.html"
   ],
 
-  // "options_page": "options.html",
+  "options_page": "html/popup.html",
   // "options_ui": {
-  //   "page": "options.html"
+  //   "page": "html/login.html"
   // },
 
   "content_scripts": [{
