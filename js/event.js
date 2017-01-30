@@ -19,8 +19,6 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
 		// set it as object {"date":"","URL":""}
 		global.showChangelog = true;
 	}
-
-	global.newVar="fdafda";
 	global.historyOfBlockedURLS=[];
 	global.bannedURLs=[];
 	global.trustedURLs=[];
@@ -38,21 +36,10 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
 	});
 	console.log("this function ran");
     sendResponse({message:"good luck bro"});
-  } else /*if(request.message == "redirect")*/ {
-  		console.log("I am here");
-    	chrome.tabs.update(sender.tab.id, {url: request.redirect});
-    	sendResponse({message:"good luck bro2"});
+  } else /*if(request.message == "redirect")*/{
+	console.log("I am here");
+	chrome.tabs.update(sender.tab.id, {url: request.redirect});
+	sendResponse({message:"good luck bro2"});
   }
   
 });
-<<<<<<< HEAD
-=======
-
-// chrome.tabs.query({"active":true},function(tab){
-// 	console.log(tab[0].url.toString());
-// });
-// chrome.tabs.getCurrent(function(tab){
-//         console.log(tab.url);
-//     }
-// );
->>>>>>> b907f1a250396086088b6a618b7de1c095f334e2

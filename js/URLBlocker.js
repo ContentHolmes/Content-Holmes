@@ -599,7 +599,7 @@ words = [
 "whorebag",
 "whoreface",
 "wop",
-]
+];
 
 
 
@@ -609,7 +609,6 @@ console.log("value of blocked it at initialization is: "+blockedit);
 
 function BlockURL(){
   var urlString=getName(document.location.href);
-<<<<<<< HEAD
   console.log("message #:"+ urlString);
   
   chrome.storage.local.get(['settings', 'global'], function(items){
@@ -619,7 +618,7 @@ function BlockURL(){
         console.log("value of blocked it is: "+blockedit);
         var arr=document.getElementsByTagName('body');
         for(var i in arr){
-          arr[i].innerHTML="Not permitted to view this";  
+          arr[i].innerHTML="Not permitted to view this";
         }
         if(items.global.historyOfBlockedURLS.length<5){
           var obj={"time":new Date(),"URL":document.location.href};
@@ -627,6 +626,14 @@ function BlockURL(){
           chrome.storage.local.set({ global: items.global });
           //console.log(items.global);
           console.log("From BLOCK URL 1:"+items.global.historyOfBlockedURLS);
+          // $.post(/*URL Here*/,{
+          //   "Type": "URL",
+          //   "Data": items.global.historyOfBlockedURLS,
+          //   "User-ID": /*userIDs here*/
+          // },function(data, status) {
+          //   console.log("Data sent");
+          // });
+          chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
         }
         else{
           items.global.historyOfBlockedURLS.shift();
@@ -636,23 +643,23 @@ function BlockURL(){
           //console.log(items.global);
           console.log("From BLOCK URL 2"+items.global.historyOfBlockedURLS);
           // so how do we send data to server
+          // $.post(/*URL Here*/,{
+          //   "Type": "URL",
+          //   "Data": items.global.historyOfBlockedURLS,
+          //   "User-ID": /*userIDs here*/
+          // },function(data, status) {
+          //   console.log("Data sent");
+          // });
+          chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
         } 
         break;
-=======
-  console.log(urlString);
-  for(var i in bannedElementsArray){
-    if(bannedElementsArray[i]==urlString){
-      var arr=document.getElementsByTagName('body');
-      for(var i in arr){
-      	// $.post(/*URL Here*/,{
-      	// 		"Type": "URL",
-      	// 		"Data": document.location.href,
-      	// 		"User-ID": /*userIDs here*/
-      	// 	},function(data, status) {
-      	// 	console.log("Data sent");
-      	// });
-		chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
->>>>>>> b907f1a250396086088b6a618b7de1c095f334e2
+
+  // for(var i in bannedElementsArray){
+  //   if(bannedElementsArray[i]==urlString){
+  //     var arr=document.getElementsByTagName('body');
+  //     for(var i in arr){
+ 
+
       }
     }
   });
@@ -671,6 +678,7 @@ function BlockURL(){
             chrome.storage.local.set({ global: items.global });
             //console.log(items.global);
             console.log("From BLOCK URL 1:"+items.global.historyOfBlockedURLS);
+            chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
           }
         else{
             items.global.historyOfBlockedURLS.shift();
@@ -680,6 +688,7 @@ function BlockURL(){
             //console.log(items.global);
             console.log("From BLOCK URL 2"+items.global.historyOfBlockedURLS);
             // so how do we send data to server
+            chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
           } 
         break;
       }
@@ -707,14 +716,9 @@ function getImageName(str) {
   return name[1];
 }
 
-<<<<<<< HEAD
-BlockURL();
 
 //###################################################################################################################
-
-
-
-// first check the URL of the image. 
+ 
 //  first check if the safe search if true of not
 
 
@@ -796,7 +800,8 @@ function validateNudeResults(data,image){
   if(globalBadCount==3){
     var bodyArr=document.getElementsByTagName("body");
     for(var x in bodyArr){
-      bodyArr[x].innerHTML="Not permitted to view this";
+      //bodyArr[x].innerHTML="Not permitted to view this";
+      chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
     }     
     chrome.storage.local.get(['settings', 'global'], function(items){
       items.global.bannedURLs.push(getImageName(image.src));
@@ -862,7 +867,7 @@ function checkPresenceInTrusted(url){
   console.log("present in good: "+good);
   return good; 
 }
-=======
+
 function urlcheck(url) {
 	var params = getUrlVars(url);
 	if(params.q != null) {
@@ -903,11 +908,10 @@ function getUrlVars(href)
     }
     return vars;
 }
-
+console.log("Chal gya");  
 if(urlcheck(document.location.href)<=0.1) {
 	BlockURL();
 } else {
 	console.log(chrome.extension.getURL("/html/safetypage"));
 	chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
 }
->>>>>>> b907f1a250396086088b6a618b7de1c095f334e2
