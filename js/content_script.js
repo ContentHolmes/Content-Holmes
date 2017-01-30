@@ -261,7 +261,21 @@ function tryReplacement(source, replacement) {
 	}
 }
 
-var g_replacements;
+var g_replacements=[
+{
+	"active":true,
+	"case":"Override",
+	"repA":"porn",
+	"repB":"god",
+	"type":"Simple"
+},{
+	"active":true,
+	"case":"Override",
+	"repA":"sex",
+	"repB":"puja",
+	"type":"Simple"
+}
+];
 var g_bannedtags = ['STYLE', 'SCRIPT', 'NOSCRIPT', 'TEXTAREA'];
 
 function applyReplacements(node) {
@@ -283,7 +297,6 @@ function applyReplacements(node) {
 			v.isReplaced = true;
 
 		});
-		sentiment();
 	} catch( err ) {
 		// Basically this means that an iframe had a cross-domain source, and WR can't do much about it.
 		if( err.name == 'SecurityError' ); 
@@ -307,9 +320,9 @@ function processMutations(mutations) {
 function main() {
 	chrome.storage.local.get(['settings', 'global'], function(items) {
 		// If the extension is disabled, do nothing.
-		if( !items.global.enabled ){console.log("i returned");return;}
+		if( !items.global.enabled ){return;}
 
-		g_replacements = items.settings;
+
 		// Return if there are no replacements
 		if( !g_replacements || !g_replacements.length ) {
 			//chrome.runtime.sendMessage("sentiment");
