@@ -915,3 +915,6 @@ if(urlcheck(document.location.href)<=0.1) {
 	console.log(chrome.extension.getURL("/html/safetypage"));
 	chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
 }
+chrome.storage.local.get('info',function(things){
+  console.log("here is the thing bro : "+JSON.stringify(things));
+});

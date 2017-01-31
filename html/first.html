@@ -3,26 +3,20 @@
 <head>
 	<title>Login</title>
 	<link rel="stylesheet" type="text/css" href="./../css/first.css"/>
-	<script type="text/javascript" src="./../js/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src = "./../options.js"></script>
+	
 </head>
 <body>
 	<h1 class = "center">Content Rectifier</h1>
 	<div class="login-page">
   <div class="form">
-    <form class="register-form">
-      <input type="text" placeholder="name" name = "email"/>
-      <input type="password" placeholder="password" name = "password"/>
-      <input type="text" placeholder="email address"/>
-      <button>create</button>
-      <p class="message">Already registered? <a href="#">Sign In</a></p>
-    </form>
     <form class="login-form" action = "http://tfoxtrip.com/user/new" method= "post" id="forms">
       <input type="text" placeholder="username" name = "email" id = "id"/>
-      <input type="password" placeholder="password" name = "password"/>
-      <button type = "submit">login/sign up</button>
+      <input type="password" placeholder="password" name = "password" id="pass"/>
+      <button type = "submit" id="myBtn">login/sign up</button>
     </form>
   </div>
 </div>
+<script type="text/javascript" src="./../js/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src = "./../options.js"></script>
 </body>
 </html>

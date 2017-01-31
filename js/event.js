@@ -22,7 +22,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
 	global.historyOfBlockedURLS=[];
 	global.bannedURLs=[];
 	global.trustedURLs=[];
-	global.email="fdskla";
+	global.email="";
 	global.password="";
 	chrome.storage.local.set({ global: global });
 });

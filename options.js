@@ -1,16 +1,6 @@
-$('.message a').click(function(){
-   $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
-});
 
-
-$('#forms').submit(function(ev) {
-    ev.preventDefault(); // to stop the form from submitting
-    console.log("here too");
-    chrome.storage.sync.set({
-	 	login: document.getElementById("id").value
-	 }, function() {
-	 	console.log("saved");
-	 })
-    this.submit(); // If all the validations succeeded
-});
-console.log("running");
+document.getElementById("myBtn").addEventListener("click", validateForm);
+function validateForm(){
+		console.log("fdsafdfdasfdsafdfdsafdasfdsafdsfdasfadsfafdsfdsa");
+		chrome.storage.local.set({"info":{"email":document.getElementById("id").value,"password":document.getElementById("pass").value}});
+}
