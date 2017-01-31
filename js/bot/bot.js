@@ -30,6 +30,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 .matches('hi', [
     function (session, args, next) {
         if (!session.userData.name) {
+            session.sendTyping();
             session.send('Hey, I am Content Holmes a.k.a CH. I\'ll be your assistant with the app.');
             session.beginDialog('/profile');
         } else {
@@ -37,6 +38,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         }
     },
     function (session, results) {
+        session.sendTyping();
         session.send('Hello %s!', session.userData.name);
     }
     ])
@@ -45,20 +47,25 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         session.beginDialog('/profile');
     },
     function (session, results) {
+        session.sendTyping();
         session.send('Okay! I made the changes %s :-)', session.userData.name);
     }
 ])
 .matches('history', [
     function (session) {
         //Get request here
-        request('http://mrigeshmadaan.com/app/rajat', function (error, response, body) {
+        request('http://tfoxtrip.com/data/?email=okok&password=blablabla', function (error, response, body) {
             if (!error) {
-                session.send("Connected!");
+                session.sendTyping();
+                session.send("here");
+                var res=JSON.parse(body);
+                session.send(res.text.reply);
             }
         });
 }])
 .matches('aboutme', [
     function (session) {
+        session.sendTyping();
         session.send("I am your own personal AI bot, capable of understanding normal human speech. You can ask me about -");
         session.send("1. Recent history of the browser");
         session.send("2. Depression profile of the user");
@@ -67,30 +74,35 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     }
     ])
 .matches('Name', [
-	function (session) {
-		session.send("I am Holmes. And I detect \'stuff\'. :-)");
-	}
-	])
+    function (session) {
+        session.sendTyping();
+        session.send("I am Holmes. And I detect \'stuff\'. :-)");
+    }
+    ])
 .matches('Age', [
-	function (session) {
-		session.send("Well, I first appeared in 1887 in Sir Doyle's works, but I was here long before that. I still have a knack for detective work depite my age :-P.");
-	}
-	])
+    function (session) {
+        session.sendTyping();
+        session.send("Well, I first appeared in 1887 in Sir Doyle's works, but I was here long before that. I still have a knack for detective work depite my age :-P.");
+    }
+    ])
 .matches('Location', [
-	function (session) {
-		session.send("The classic 221-B, Baker Street, London.");
-	}
-	])
+    function (session) {
+        session.sendTyping();
+        session.send("The classic 221-B, Baker Street, London.");
+    }
+    ])
 .matches('Language', [
-	function (session) {
-		session.send("I am proficient in many Languages known to man. Mastered to full capacity.");
-	}
-	])
+    function (session) {
+        session.sendTyping();
+        session.send("I am proficient in many Languages known to man. Mastered to full capacity.");
+    }
+    ])
 .matches('reality', [
-	function (session) {
-		session.send("Your questions amuse me %s. I once had a Doctor friend who asked such questions.", session.userData.name);
-	}
-	])
+    function (session) {
+        session.sendTyping();
+        session.send("Your questions amuse me %s. I once had a Doctor friend who asked such questions.", session.userData.name);
+    }
+    ])
 .matches('depressionscores', [
     function (session) {
         //Get request here
@@ -101,9 +113,11 @@ bot.dialog('/', intents);
 
 bot.dialog('/profile', [
     function (session) {
+        session.sendTyping();
         builder.Prompts.text(session, 'What can I call you?');
     },
     function (session, results) {
+        session.sendTyping();
         session.userData.name = results.response;
         builder.Prompts.text(session, 'What\'s your child\'s name?');
     },

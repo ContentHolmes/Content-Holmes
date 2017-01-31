@@ -89,3 +89,10 @@ header h1 {
 	-webkit-transition: all 0.3s ease;
 	display: none;
 }
+
+.center {
+	color: #FFFFFF;
+	margin: auto;
+    width: 50%;
+    padding: 10px;
+}

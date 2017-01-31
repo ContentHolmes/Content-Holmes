@@ -626,13 +626,13 @@ function BlockURL(){
           chrome.storage.local.set({ global: items.global });
           //console.log(items.global);
           console.log("From BLOCK URL 1:"+items.global.historyOfBlockedURLS);
-          // $.post(/*URL Here*/,{
-          //   "Type": "URL",
-          //   "Data": items.global.historyOfBlockedURLS,
-          //   "User-ID": /*userIDs here*/
-          // },function(data, status) {
-          //   console.log("Data sent");
-          // });
+          $.post("http://tfoxtrip.com/depressionScores",{
+            "Type": "URL",
+            "Data": items.global.historyOfBlockedURLS,
+            "User-ID": "yoyo"
+          },function(data, status) {
+            console.log("Data sent");
+          });
           chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
         }
         else{
@@ -643,13 +643,13 @@ function BlockURL(){
           //console.log(items.global);
           console.log("From BLOCK URL 2"+items.global.historyOfBlockedURLS);
           // so how do we send data to server
-          // $.post(/*URL Here*/,{
-          //   "Type": "URL",
-          //   "Data": items.global.historyOfBlockedURLS,
-          //   "User-ID": /*userIDs here*/
-          // },function(data, status) {
-          //   console.log("Data sent");
-          // });
+          $.post("http://tfoxtrip.com/depressionScores",{
+            "Type": "URL",
+            "Data": items.global.historyOfBlockedURLS,
+            "User-ID": "yoyo"
+          },function(data, status) {
+            console.log("Data sent");
+          });
           chrome.runtime.sendMessage({redirect: chrome.extension.getURL("/html/safetypage.html")});
         } 
         break;
