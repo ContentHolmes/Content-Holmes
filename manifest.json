@@ -26,7 +26,7 @@
    "html/safetypage.html"
   ],
 
-  "options_page": "html/login.html",
+  "options_page": "html/first.html",
   // "options_ui": {
   //   "page": "html/login.html"
   // },

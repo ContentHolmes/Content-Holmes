@@ -22,6 +22,8 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
 	global.historyOfBlockedURLS=[];
 	global.bannedURLs=[];
 	global.trustedURLs=[];
+	global.email="fdskla";
+	global.password="";
 	chrome.storage.local.set({ global: global });
 });
 
@@ -31,7 +33,7 @@ chrome.runtime.onMessage.addListener(function(request,sender,sendResponse){
     console.log("sentiment will be fired");
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 	  chrome.tabs.sendMessage(tabs[0].id, {message: "FireSentiment"}, function(response) {
-	    console.log(response.message);
+	    // console.log(response.message);
 	  });
 	});
 	console.log("this function ran");
