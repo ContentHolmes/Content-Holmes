@@ -1,6 +1,14 @@
 body {
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
+	background: #76b852; /* fallback for old browsers */
+	background: -webkit-linear-gradient(right, #76b852, #8DC26F);
+	background: -moz-linear-gradient(right, #76b852, #8DC26F);
+	background: -o-linear-gradient(right, #76b852, #8DC26F);
+	background: linear-gradient(to left, #76b852, #8DC26F);
+	font-family: "Roboto", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 header {
@@ -84,10 +92,20 @@ header h1 {
 	border-radius: 2px;
 }
 
+.white{
+	color: white;
+}
+
 .dropcontent{
 	transition: all 0.3s ease;
 	-webkit-transition: all 0.3s ease;
 	display: none;
+}
+
+.box{
+	border-radius: 3px;
+	background-color: white;
+	box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
 .center {
