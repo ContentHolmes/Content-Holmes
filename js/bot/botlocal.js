@@ -1,28 +1,29 @@
 "use strict";
 var builder = require('botbuilder');
 var request = require('request');
+var restify = require('restify');
 var botbuilder_azure = require("botbuilder-azure");
 
-// var server = restify.createServer();
-// server.listen(process.env.port || process.env.PORT || 3978, function () {
-//    console.log('%s listening to %s', server.name, server.url); 
-// });
-
-var useEmulator = (process.env.NODE_ENV == 'development');
-
-var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
-    appId: process.env['MicrosoftAppId'],
-    appPassword: process.env['MicrosoftAppPassword'],
-    stateEndpoint: process.env['BotStateEndpoint'],
-    openIdMetadata: process.env['BotOpenIdMetadata']
+var server = restify.createServer();
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+   console.log('%s listening to %s', server.name, server.url); 
 });
 
-// var connector = new builder.ChatConnector({
-//     appId: process.env.MICROSOFT_APP_ID,
-//     appPassword: process.env.MICROSOFT_APP_PASSWORD
+// var useEmulator = (process.env.NODE_ENV == 'development');
+
+// var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
+//     appId: process.env['MicrosoftAppId'],
+//     appPassword: process.env['MicrosoftAppPassword'],
+//     stateEndpoint: process.env['BotStateEndpoint'],
+//     openIdMetadata: process.env['BotOpenIdMetadata']
 // });
+
+var connector = new builder.ChatConnector({
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+});
 var bot = new builder.UniversalBot(connector);
-// server.post('/api/messages', connector.listen());
+server.post('/api/messages', connector.listen());
 var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/1a3b2f38-149f-4fb6-a60e-b106101431a6?subscription-key=0fefdf81ed3d4b87b94232d361daf8f0';
 var recognizer = new builder.LuisRecognizer(model);
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
@@ -75,11 +76,11 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
                 if(res.text.success==true) {
                     session.send("Report for %s - ", session.userData.child);
                     session.send("URLs -");
-                    res.text.answers.URLs.forEach(function(item,index) {
+                    res.text.answers.history.URls.forEach(function(item,index) {
                         session.send(item.time+item.Url);
                     });
                     session.send("Depression Scores - ");
-                    res.text.answers.depressionscores.forEach(function(item,index) {
+                    res.text.answers.history.depressionScores.forEach(function(item,index) {
                         session.send(item.time+item.score);
                     })
                 } else {
@@ -165,13 +166,13 @@ bot.dialog('/profile', [
     }
 ]);
 
-if (useEmulator) {
-    var restify = require('restify');
-    var server = restify.createServer();
-    server.listen(3978, function() {
-        console.log('test bot endpont at http://localhost:3978/api/messages');
-    });
-    server.post('/api/messages', connector.listen());    
-} else {
-    module.exports = { default: connector.listen() }
-}
+// if (useEmulator) {
+//     var restify = require('restify');
+//     var server = restify.createServer();
+//     server.listen(3978, function() {
+//         console.log('test bot endpont at http://localhost:3978/api/messages');
+//     });
+//     server.post('/api/messages', connector.listen());    
+// } else {
+//     module.exports = { default: connector.listen() }
+// }

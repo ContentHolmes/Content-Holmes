@@ -73,17 +73,9 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
                 session.sendTyping();
                 var res=JSON.parse(body);
                 if(res.text.success==true) {
-                    session.send("Report for %s - ", session.userData.child);
-                    session.send("URLs -");
-                    res.text.answers.URLs.forEach(function(item,index) {
-                        session.send(item.time+item.Url);
-                    });
-                    session.send("Depression Scores - ");
-                    res.text.answers.depressionscores.forEach(function(item,index) {
-                        session.send(item.time+item.score);
-                    })
+                    session.send("Okay");
                 } else {
-                    session.send("Please be specific, your data is wrong. This doesn't help. Please \"Change your personal info\".");
+                    session.send("Not Okay");
                 }
             }
         });

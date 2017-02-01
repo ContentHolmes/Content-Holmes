@@ -54,41 +54,15 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 .matches('history', [
     function (session) {
         //Get request here
-        session.sendTyping();
-        session.send("I'll be able to access it once facebook approves me!");
-}])
-.matches('Report', [
-    function(session,args,next) {
-        if(!session.userData.email) {
-            session.sendTyping();
-            session.send("Your data is not available with me, let us go to the start :-)");
-            session.beginDialog('/profile');
-        } else {
-            next();
-        }
-    },
-    function(session, response) {
-        request('http://tfoxtrip.com/data/?email='+session.userData.email+'&password='+session.userData.password, function (error, response, body) {
+        request('http://tfoxtrip.com/data/?email=okok&password=blablabla', function (error, response, body) {
             if (!error) {
                 session.sendTyping();
+                session.send("here");
                 var res=JSON.parse(body);
-                if(res.text.success==true) {
-                    session.send("Report for %s - ", session.userData.child);
-                    session.send("URLs -");
-                    res.text.answers.URLs.forEach(function(item,index) {
-                        session.send(item.time+item.Url);
-                    });
-                    session.send("Depression Scores - ");
-                    res.text.answers.depressionscores.forEach(function(item,index) {
-                        session.send(item.time+item.score);
-                    })
-                } else {
-                    session.send("Please be specific, your data is wrong. This doesn't help. Please \"Change your personal info\".");
-                }
+                session.send(res.text.reply);
             }
         });
-    }
-    ])
+}])
 .matches('aboutme', [
     function (session) {
         session.sendTyping();
@@ -132,8 +106,6 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 .matches('depressionscores', [
     function (session) {
         //Get request here
-        session.sendTyping();
-        session.send("I'll be able to access it once facebook approves me!");
     }
     ]);
 
@@ -151,16 +123,6 @@ bot.dialog('/profile', [
     },
     function (session, results) {
         session.userData.child = results.response;
-        session.sendTyping();
-        builder.Prompts.text(session, 'Please give me your registered email id');
-    },
-    function (session,results) {
-        session.userData.email = results.response;
-        session.sendTyping();
-        builder.Prompts.text(session, 'Please give me your password');
-    },
-    function (session, results) {
-        session.userData.password = results.response;
         session.endDialog();
     }
 ]);
