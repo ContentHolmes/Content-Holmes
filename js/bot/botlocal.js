@@ -53,11 +53,25 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     }
 ])
 .matches('history', [
-    function (session) {
+    function (session, args, next) {
         //Get request here
-        session.sendTyping();
-        session.send("I'll be able to access it once facebook approves me!");
-}])
+        session.dialogData.childname = builder.EntityRecognizer.findEntity(args.entities, 'childname');
+        if(!session.dialogData.childname) {
+        	session.sendTyping();
+			builder.Prompts.text(session, "Sorry, I couldn't understand the name. Could you repeat?");
+    	} else {
+    		session.dialogData.childname = session.dialogData.childname.entity;
+    		next();
+    	}
+    },
+    function (session, results, next) {
+    	if(results.response) {
+    		session.dialogData.childname = results.response;
+    	}
+
+    	//Communication goes here.
+    }
+    ])
 .matches('Report', [
     function(session,args,next) {
         if(!session.userData.email) {
@@ -130,11 +144,134 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         session.send("Your questions amuse me %s. I once had a Doctor friend who asked such questions.", session.userData.name);
     }
     ])
+.matches('Blocker', [
+	function(session, args,next) {
+		session.dialogData.name = builder.EntityRecognizer.findEntity(args.entities, 'blocking::name');
+		session.dialogData.website = builder.EntityRecognizer.findEntity(args.entities, 'blocking::website');
+		session.dialogData.time = builder.EntityRecognizer.findEntity(args.entities, 'blocking::time');
+		session.dialogData.time = session.dialogData.time ? session.dialogData.time.entity : "Inf";
+		//session.send(args);
+		if(!session.dialogData.name) {
+			session.sendTyping();
+			builder.Prompts.text(session, "Sorry, I couldn't understand the name. Could you repeat?");
+		} else {
+			session.dialogData.name = session.dialogData.name.entity;
+			next();
+		}
+	},
+	function (session, results, next) {
+		if(results.response) {
+			session.dialogData.name=results.response;
+		}
+		if(!session.dialogData.website) {
+			session.sendTyping();
+			builder.Prompts.text(session, "I couldn't recognize the website. Please re-enter.");
+		} else {
+			session.dialogData.website = session.dialogData.website.entity;
+			next();
+		}
+	},
+	function (session, results, next) {
+		if(results.response) {
+			session.dialogData.website = results.response;
+		}
+		
+		//Communication goes here!
+		session.send(session.dialogData.name);
+		session.send(session.dialogData.website);
+		session.send(session.dialogData.time);
+	}
+	])
+.matches('Session', [
+	function(session, args,next) {
+		session.dialogData.name = builder.EntityRecognizer.findEntity(args.entities, 'blocking::name');
+		session.dialogData.website = builder.EntityRecognizer.findEntity(args.entities, 'blocking::website');
+		session.dialogData.time = builder.EntityRecognizer.findEntity(args.entities, 'blocking::time');
+		session.dialogData.time = session.dialogData.time ? session.dialogData.time.entity : "Inf";
+		//session.send(args);
+		if(!session.dialogData.name) {
+			session.sendTyping();
+			builder.Prompts.text(session, "Sorry, I couldn't understand the name. Could you repeat?");
+		} else {
+			session.dialogData.name = session.dialogData.name.entity;
+			next();
+		}
+	},
+	function (session, results, next) {
+		if(results.response) {
+			session.dialogData.name=results.response;
+		}
+		if(!session.dialogData.website) {
+			session.sendTyping();
+			builder.Prompts.text(session, "I couldn't recognize the website. Please re-enter.");
+		} else {
+			session.dialogData.website = session.dialogData.website.entity;
+			next();
+		}
+	},
+	function (session, results, next) {
+		if(results.response) {
+			session.dialogData.website = results.response;
+		}
+		
+		//Communication goes here!
+		session.send(session.dialogData.name);
+		session.send(session.dialogData.website);
+		session.send(session.dialogData.time);
+	}
+	])
+.matches('Unblock', [
+	function(session, args, next) {
+		session.dialogData.name = builder.EntityRecognizer.findEntity(args.entities, 'blocking::name');
+		session.dialogData.website = builder.EntityRecognizer.findEntity(args.entities, 'blocking::website');
+		if(!session.dialogData.name) {
+			session.sendTyping();
+			builder.Prompts.text(session, "Sorry, I couldn't understand the name. Could you repeat?");
+		} else {
+			session.dialogData.name = session.dialogData.name.entity;
+			next();
+		}
+	},
+	function (session, results, next) {
+		if(results.response) {
+			session.dialogData.name = results.response;
+		}
+		if(!session.dialogData.website) {
+			session.sendTyping();
+			builder.Prompts.text(session, "I couldn't recognize the website. Please re-enter.");
+		} else {
+			session.dialogData.website = session.dialogData.website.entity;
+			next();
+		}
+	},
+	function (session, results, next) {
+		if(results.response) {
+			session.dialogData.website = results.response;
+		}
+		
+		//Communication goes here!
+		session.send(session.dialogData.name);
+		session.send(session.dialogData.website);
+	}
+	])
 .matches('depressionscores', [
-    function (session) {
+    function (session, args, next) {
         //Get request here
-        session.sendTyping();
-        session.send("I'll be able to access it once facebook approves me!");
+        session.dialogData.childname = builder.EntityRecognizer.findEntity(args.entities, 'childname');
+        if(!session.dialogData.childname) {
+        	session.sendTyping();
+			builder.Prompts.text(session, "Sorry, I couldn't understand the name. Could you repeat?");
+    	} else {
+    		session.dialogData.childname = session.dialogData.childname.entity;
+    		next();
+    	}
+    },
+    function (session, results, next) {
+    	if(results.response) {
+    		session.dialogData.childname = results.response;
+    	}
+
+    	//Communication goes here.
     }
     ]);
 
@@ -145,23 +282,26 @@ bot.dialog('/profile', [
         session.sendTyping();
         builder.Prompts.text(session, 'What can I call you?');
     },
+    // function (session, results) {
+    //     session.sendTyping();
+        // session.userData.name = results.response;
+    //     builder.Prompts.text(session, 'What\'s your child\'s name?');
+    // },
     function (session, results) {
-        session.sendTyping();
+        // session.userData.child = results.response;
         session.userData.name = results.response;
-        builder.Prompts.text(session, 'What\'s your child\'s name?');
-    },
-    function (session, results) {
-        session.userData.child = results.response;
         session.sendTyping();
         builder.Prompts.text(session, 'Please give me your registered email id');
     },
     function (session,results) {
         session.userData.email = results.response;
         session.sendTyping();
-        builder.Prompts.text(session, 'Please give me your password');
+        builder.Prompts.text(session, 'Please give me your PIN');
     },
     function (session, results) {
         session.userData.password = results.response;
+
+        //Get Children Array Here!
         session.endDialog();
     }
 ]);
