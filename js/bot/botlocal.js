@@ -69,7 +69,8 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     	}
 
     	//Communication goes here.
-    	request('htttp://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
+;    	session.send('http://tfoxtrip.com/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname);
+    	request('http://tfoxtrip.com/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
     		if(!error) {
     			session.sendTyping();
     			var res = JSON.parse(body);
@@ -194,7 +195,8 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 		}
 		
 		//Communication goes here!
-		request('http://tfoxtrip.com/blockURL/?email='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website+'&duration='+session.dialogData.time, function (error, response, body) {
+        // session.send('http://tfoxtrip.com/blockURL/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.name+'&url='+session.dialogData.website+'&duration='+session.dialogData.time);
+		request('http://tfoxtrip.com/blockURL/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.name+'&url='+session.dialogData.website+'&duration='+session.dialogData.time, function (error, response, body) {
 			if(!error) {
 				session.sendTyping();
 				var res = JSON.parse(body);
@@ -245,9 +247,10 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 		}
 		
 		//Communication goes here!
-		session.send(session.dialogData.name);
-		session.send(session.dialogData.website);
-		session.send(session.dialogData.time);
+		request()
+		// session.send(session.dialogData.name);
+		// session.send(session.dialogData.website);
+		// session.send(session.dialogData.time);
 	}
 	])
 .matches('Unblock', [
@@ -281,12 +284,12 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 		
 		//Communication goes here!
 
-		request('http://tfoxtrip.com/unblockURL/email?='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website, function (error, response, body) {
+		request('http://tfoxtrip.com/unblockURL/email?='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.name+'&url='+session.dialogData.website, function (error, response, body) {
 			if(!error) {
 				session.sendTyping();
 				var res = JSON.parse(body);
 				if(res.text.success==true) {
-					session.send("Unblocked %s for %s", session.dialogData.website, session.dialogData.childname);
+					session.send("Unblocked %s for %s", session.dialogData.website, session.dialogData.name);
 				} else {
 					session.send(res.text.reason);
 				}
@@ -327,7 +330,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     	}
 
     	//Communication goes here.
-    	request('htttp://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
+    	request('http://tfoxtrip.com/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
     		if(!error) {
     			session.sendTyping();
     			var res = JSON.parse(body);
@@ -367,7 +370,7 @@ bot.dialog('/profile', [
     function (session,results) {
         session.userData.email = results.response;
         session.sendTyping();
-        builder.Prompts.number(session, 'Please give me your PIN');
+        builder.Prompts.text(session, 'Please give me your PIN');
     },
     function (session, results) {
         session.userData.password = results.response;
@@ -378,7 +381,7 @@ bot.dialog('/profile', [
         	if(!error) {
         		session.sendTyping();
         		var res = JSON.parse(body);
-        		if(res.text.success=="true") {
+        		if(res.text.success==true) {
         			session.userData.childArray = [].concat(res.text.childArray);
         		} else {
         			session.sendTyping();
