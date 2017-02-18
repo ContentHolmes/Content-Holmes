@@ -68,7 +68,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         }
 
         //Communication goes here.
-        request('htttp://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
+        request('http://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
             if(!error) {
                 session.sendTyping();
                 var res = JSON.parse(body);
@@ -193,7 +193,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         }
         
         //Communication goes here!
-        request('http://tfoxtrip.com/blockURL/?email='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website+'&duration='+session.dialogData.time, function (error, response, body) {
+        request('http://tfoxtrip.com/blockURL/?email='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.name+'&url='+session.dialogData.website+'&duration='+session.dialogData.time, function (error, response, body) {
             if(!error) {
                 session.sendTyping();
                 var res = JSON.parse(body);
@@ -280,12 +280,12 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         
         //Communication goes here!
 
-        request('http://tfoxtrip.com/unblockURL/email?='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website, function (error, response, body) {
+        request('http://tfoxtrip.com/unblockURL/email?='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.name+'&url='+session.dialogData.website, function (error, response, body) {
             if(!error) {
                 session.sendTyping();
                 var res = JSON.parse(body);
                 if(res.text.success==true) {
-                    session.send("Unblocked %s for %s", session.dialogData.website, session.dialogData.childname);
+                    session.send("Unblocked %s for %s", session.dialogData.website, session.dialogData.name);
                 } else {
                     session.send(res.text.reason);
                 }
@@ -326,7 +326,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         }
 
         //Communication goes here.
-        request('htttp://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
+        request('http://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
             if(!error) {
                 session.sendTyping();
                 var res = JSON.parse(body);
@@ -377,7 +377,7 @@ bot.dialog('/profile', [
             if(!error) {
                 session.sendTyping();
                 var res = JSON.parse(body);
-                if(res.text.success=="true") {
+                if(res.text.success==true) {
                     session.userData.childArray = [].concat(res.text.childArray);
                 } else {
                     session.sendTyping();
