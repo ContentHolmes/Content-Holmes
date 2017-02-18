@@ -16,7 +16,7 @@ String.prototype.regexIndexOf = function(regex, startpos) {
 /*
 Array.prototype.extend = function (other_array) {
     // you should include a test to check whether other_array really is an array
-    other_array.forEach(function(v) {this.push(v)}, this);    
+    other_array.forEach(function(v) {this.push(v)}, this);
 }
 */
 function escapeRegExp(string) {
@@ -32,10 +32,10 @@ function regexFromString(str) {
 
 	try {
 		return new RegExp(match[1], match[2]);
-	} 
+	}
 	catch (err) {
 		// Just drop it and return an empty replacement.
-		if(err.name == 'SyntaxError') return /b^/; 
+		if(err.name == 'SyntaxError') return /b^/;
 		else throw err;
 	}
 }
@@ -57,8 +57,8 @@ function mimicLetterCase(originalWord, replacement) {
 			if( !titleCase ) break;
 		}
 		// If what comes after a space is a lowercase letter, this isn't TitleCase
-		else if( originalWord[i].search(/\s/) === 0 ) 
-		{ 
+		else if( originalWord[i].search(/\s/) === 0 )
+		{
 			// Skip any extra space up to the second to last character
 			while( ++i < originalWord.length - 2 && originalWord[i].search(/\s/) === 0 );
 			// If the next letter isn't an uppercase letter, this ain't no titlecase
@@ -97,7 +97,7 @@ function replaceBackreferences(word, replacement) {
 		if( !match[j] ) continue;
 		var br_i;
 		while( (br_i = _rep.indexOf( "\\" + j )) !== -1) {
-			if( br_i > 0 && _rep[br_i - 1] == '\\' ) continue;	
+			if( br_i > 0 && _rep[br_i - 1] == '\\' ) continue;
 
 			_rep = _rep.remove( br_i, 2 ).insert(br_i, match[j]);
 		}
@@ -148,7 +148,7 @@ function parseTokens( word, repB, replacement ) {
 				if( v[1] == 'i' ) {
 					// Remove the 'if' block but not its contents unless the test failed.
 					// At this point we removed everything up to the colon, the easy part
-					repB = repB.substring(0, index) + repB.substring(index + _xpBackref.length + 1); 
+					repB = repB.substring(0, index) + repB.substring(index + _xpBackref.length + 1);
 
 					var _nesIndex = repB.regexIndexOf(/[^\\];/, index) + 1;
 					// If the test failed, remove everything up to the semicolon
@@ -169,9 +169,9 @@ function parseTokens( word, repB, replacement ) {
 				else if( v[1] == 'e' ) {
 					// Remove the 'else' block but not its contents.
 					// Again, remove up to the colon, which is easy (the colon IS expected to be exactly adjacent to the \E)
-					repB = repB.substring(0, index) + repB.substring(index + 1); 
+					repB = repB.substring(0, index) + repB.substring(index + 1);
 
-					var _nesIndex = repB.regexIndexOf(/[^\\];/, index) + 1; 
+					var _nesIndex = repB.regexIndexOf(/[^\\];/, index) + 1;
 					// If the earlier test succeeded, remove everything up to the semicolon
 					if( _lastTest ) {
 						repB = repB.remove(index, _nesIndex - index + 1);
@@ -186,7 +186,7 @@ function parseTokens( word, repB, replacement ) {
 							repB = repB.remove(index, wordToCapitalize.length ).insert(index, wordToCapitalize);
 						}
 					}
-				} 
+				}
 			break;
 		}
 
@@ -203,7 +203,7 @@ function _replace(str, word, replacement, _repB) {
 
 	try {
 		str = str.replace(new RegExp(escapeRegExp(word), 'g'), repB);
-	} 
+	}
 	catch (err) {
 		if(err.name == 'RangeError');
 		else throw err;
@@ -215,7 +215,8 @@ function tryReplacement(source, replacement) {
 	var replacedsource = source;
 	switch(replacement.type) {
 		case 'Simple':
-			var exp = new RegExp(escapeRegExp(replacement.repA), 'gim');
+			var rep = "\\b" + replacement.repA.toString() + "\\b";
+			var exp = new RegExp(rep, 'gi');
 
 			var match = exp.exec(replacedsource);
 			var repB = replacement.repB;
@@ -236,10 +237,10 @@ function tryReplacement(source, replacement) {
 
 			while( match != null ) {
 				repB = replaceBackreferences(match[0], replacement);
-				
+
 				var replacedPart = _replace( replacedsource.substring(match.index, match.index + match[0].length), match[0], replacement, repB );
 				replacedsource = replacedsource.substring(0, match.index) + replacedPart + replacedsource.substring( match.index + match[0].length );
-				
+
 				exp.lastIndex -= (match[0].length - replacedPart.length );
 				match = exp.exec( replacedsource );
 			}
@@ -2712,7 +2713,7 @@ function applyReplacements(node) {
 	// Ignore any node whose tag is banned
 	if( !node || $.inArray( node.tagName, g_bannedtags ) !== -1 ) return;
 
-	try 
+	try
 	{
 		$(node).contents().each(function(i, v) {
 			// Ignore any child node that has been replaced already or doesn't contain text
@@ -2729,7 +2730,7 @@ function applyReplacements(node) {
 		});
 	} catch( err ) {
 		// Basically this means that an iframe had a cross-domain source, and WR can't do much about it.
-		if( err.name == 'SecurityError' ); 
+		if( err.name == 'SecurityError' );
 		else throw err;
 	}
 }
@@ -2777,7 +2778,7 @@ function main() {
 
 // Bind events to communicate with the browser action
 chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-	// WR was enabled 
+	// WR was enabled
 	if( request == 'run_cs' ) {
 		main();
 		sentiment();

@@ -1,0 +1,228 @@
+:root {
+    --main: #3498DB;
+    --accent: #E74C3C;
+    --accent_2: #FFB03B;
+    --primary: #1E1E20;
+    --secondary: white;
+    --font_c: 'Roboto Condensed', sans-serif;
+    --font: 'Roboto', sans-serif;
+}
+
+@keyframes anim {
+    from {
+        width: 0;
+    }
+    to {
+        width: inherit;
+    }
+}
+
+.nopadding {
+    padding: 0 !important;
+}
+
+.nomargin {
+    margin: 0 !important;
+}
+
+.main_content {
+    /*height: 100vh;*/
+    background: var(--secondary);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 40px 20px 40px;
+    /*min-height: 100vh;*/
+}
+
+.padding_bot {
+    width: 100%;
+    padding: 50px;
+    padding-top: 120px;
+}
+
+.chat_bot {
+    right: 0;
+    position: fixed;
+    /*width: inherit;*/
+    /*min-width: 20%;*/
+    height: 100vh;
+    animation: anim 1s;
+    -webkit-animation: anim 1s;
+    -moz-animation: anim 1s;
+    width: inherit;
+    background: var(--main);
+}
+
+.nodecoration {
+    text-decoration: none;
+}
+
+.nodecoration:hover {
+    text-decoration: none;
+    cursor: pointer;
+    color: inherit;
+}
+
+.divider {
+    width: 100%;
+    height: 2px;
+    background: var(--secondary);
+}
+
+.button_child {
+    font-family: var(--font_c);
+    font-size: 24px;
+    padding: 4px 8px 4px 8px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 5px;
+    font-weight: 300;
+    /*width: 100%;*/
+    color: var(--secondary);
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.button_child:hover {
+    /*background-color: var(--secondary);*/
+    color: var(--accent_2);
+}
+
+.button_text {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+}
+
+.button_child_add {
+    font-family: var(--font_c);
+    font-size: 24px;
+    padding: 4px 8px 4px 8px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-weight: 300;
+    background-color: var(--accent_2);
+    border-radius: 4px;
+    border-style: solid;
+    border-width: thin;
+    border-color: var(--accent_2);
+    color: var(--secondary);
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.button_child_add:hover {
+    background-color: var(--main);
+    color: var(--accent_2);
+}
+
+.head_child {
+    font-family: var(--font_c);
+    font-weight: 700;
+    font-size: 50px;
+    color: var(--accent);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.toggle_button {
+    color: var(--secondary);
+    background-color: var(--main);
+    border-radius: 5px;
+    border-width: thin;
+    border-color: var(--secondary);
+    border-style: solid;
+    font-size: 30px;
+    position: fixed;
+    right: 2%;
+    top: 3%;
+    padding: 2px 10px 2px 10px;
+}
+
+.toggle_button:hover {
+    color: var(--accent_2);
+    background-color: var(--secondary);
+    cursor: pointer;
+    border-color: var(--accent_2)
+}
+
+.chart {
+    padding-left: 40px;
+    padding-right: 40px;
+    max-width: 100%;
+    height: auto;
+}
+
+.login_box{
+    position: fixed;
+    width: auto;
+    height: auto;
+    top: 45%;
+    left: 40%;
+}
+
+.fb_login_button{
+  color: var(--secondary);
+  padding: 5px 10px 5px 10px;
+  background-color: #3b5998;
+  font-family: var(--font_c);
+  font-weight: 300;
+  font-size: 30px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.fb_login_button:hover{
+  color: #3b5998;
+  background-color: var(--secondary);
+  border-color: #3b5998;
+  border-style: solid;
+  border-width: thin;
+}
+
+#container2{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  left: 0;
+  right: 0;
+}
+
+.image{
+  opacity: 0.7;
+  position: absolute;
+  z-index: 1;
+  background-image: url('http://zeeko.ie/wp-content/uploads/2015/07/Internet-Safety.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.pin_display{
+  font-family: var(--font);
+  font-size: 20px;
+  display: inline;
+  color: var(--primary);
+  font-weight: 400;
+  transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+}
+.pin_display:hover{
+  color: var(--accent_2);
+}
+
+.pin_hidden{
+  font-family: var(--font_c);
+  font-size: 20px;
+  display: inline;
+  color: var(--accent);
+  font-weight: 400;
+  visibility: hidden;
+}
