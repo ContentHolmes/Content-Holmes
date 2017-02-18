@@ -2846,8 +2846,6 @@ words = [
 ];
 
 
-
-
 var blockedit = false;
 console.log("value of blocked it at initialization is: " + blockedit);
 
@@ -2867,31 +2865,31 @@ function BlockURL() {
             if (bannedElementsArray[element] == urlString) {
                 // console.log("case1");
                 c = 2;
-                console.log("case " + c);
+                // console.log("case " + c);
                 blockedit = true;
-                console.log("element is " + element);
-                console.log("value of blocked it is: " + blockedit);
-                console.log("From BLOCK URL prepdata:" + JSON.stringify(items.global.historyOfBlockedURLS));
+                // console.log("element is " + element);
+                // console.log("value of blocked it is: " + blockedit);
+                // console.log("From BLOCK URL prepdata:" + JSON.stringify(items.global.historyOfBlockedURLS));
                 var arr = document.getElementsByTagName('body');
                 for (var i in arr) {
                     arr[i].innerHTML = "Not permitted to view this";
                 }
                 if (items.global.historyOfBlockedURLS.length < 5) {
-                    console.log('case something');
-                    console.log("From BLOCK URL prep:" + JSON.stringify(items.global.historyOfBlockedURLS));
+                    // console.log('case something');
+                    // console.log("From BLOCK URL prep:" + JSON.stringify(items.global.historyOfBlockedURLS));
                     var obj = {
                         "time": (new Date()).toString(),
                         "URL": document.location.href
                     };
-                    console.log(JSON.stringify(obj));
-                    console.log("From BLOCK URL prepush:" + JSON.stringify(items.global.historyOfBlockedURLS));
+                    // console.log(JSON.stringify(obj));
+                    // console.log("From BLOCK URL prepush:" + JSON.stringify(items.global.historyOfBlockedURLS));
                     items.global.historyOfBlockedURLS.push(obj);
-                    console.log("From BLOCK URL postpush:" + JSON.stringify(items.global.historyOfBlockedURLS));
+                    // console.log("From BLOCK URL postpush:" + JSON.stringify(items.global.historyOfBlockedURLS));
                     chrome.storage.local.set({
                         global: items.global
                     });
                     //console.log(items.global);
-                    console.log("From BLOCK URL 1:" + JSON.stringify(items.global.historyOfBlockedURLS));
+                    // console.log("From BLOCK URL 1:" + JSON.stringify(items.global.historyOfBlockedURLS));
                     $.ajax({
                             url: "http://tfoxtrip.com/childReport",
                             dataType: "URL",
@@ -2901,10 +2899,10 @@ function BlockURL() {
                             // Request body
                         })
                         .done(function(data) {
-                          console.log("data sent broooooo")
-                          chrome.runtime.sendMessage({
-                              redirect: chrome.extension.getURL("/html/safetypage.html")
-                          });
+                            console.log("data sent broooooo")
+                            chrome.runtime.sendMessage({
+                                redirect: chrome.extension.getURL("/html/safetypage.html")
+                            });
                         })
                         .fail(function() {
                             console.log("error pa apaa pa ap a");
@@ -2918,7 +2916,7 @@ function BlockURL() {
                     // });
 
                 } else {
-                    console.log('else');
+                    // console.log('else');
                     items.global.historyOfBlockedURLS.shift();
                     var obj = {
                         "time": new Date(),
@@ -2953,15 +2951,15 @@ function BlockURL() {
         }
     });
 
-    console.log("case " + c);
+    // console.log("case " + c);
     if (c != 2) {
         chrome.storage.local.get(['settings', 'global'], function(items) {
-            console.log('case2');
+            // console.log('case2');
             for (var u in items.global.bannedURLs) {
                 if (items.global.bannedURLs[u] == urlString) {
-                    console.log('case3');
+                    // console.log('case3');
                     blockedit = true;
-                    console.log("value of blocked it is: " + blockedit);
+                    // console.log("value of blocked it is: " + blockedit);
                     var arr = document.getElementsByTagName('body');
                     for (var i in arr) {
                         arr[i].innerHTML = "Not permitted to view this";
@@ -2976,7 +2974,7 @@ function BlockURL() {
                             global: items.global
                         });
                         //console.log(items.global);
-                        console.log("From BLOCK URL 1:" + items.global.historyOfBlockedURLS);
+                        // console.log("From BLOCK URL 1:" + items.global.historyOfBlockedURLS);
                         chrome.runtime.sendMessage({
                             redirect: chrome.extension.getURL("/html/safetypage.html")
                         });
@@ -2990,8 +2988,8 @@ function BlockURL() {
                         chrome.storage.local.set({
                             global: items.global
                         });
-                        //console.log(items.global);
-                        console.log("From BLOCK URL 2" + items.global.historyOfBlockedURLS);
+                        // console.log(items.global);
+                        // console.log("From BLOCK URL 2" + items.global.historyOfBlockedURLS);
                         // so how do we send data to server
                         chrome.runtime.sendMessage({
                             redirect: chrome.extension.getURL("/html/safetypage.html")
@@ -3003,11 +3001,49 @@ function BlockURL() {
         });
     }
 
+    chrome.storage.local.get(['settings', 'global'], function(items) {
+        // console.log('temp_block');
+        // console.log("items" + JSON.stringify(items.global.tempBlockedURLs));
+        // console.log('case2');
+        for (var u in items.global.tempBlockedURLs) {
+            // console.log(JSON.stringify(items.global.tempBlockedURLs[u]));
+            // console.log("u is " + u);
+            var parsed = JSON.parse(JSON.stringify(items.global.tempBlockedURLs[u]));
+            var tempURL = parsed.URL;
+            var time = new Date(parsed.time.toString());
+            var curr_time = new Date();
+            // console.log(curr_time + "curr_time" + time + "time" + tempURL + "URL" + "here");
+            // console.log(time.getTime() < curr_time.getTime());
+            if (time.getTime() < curr_time.getTime()) {
+                // console.log("splicer");
+                items.global.tempBlockedURLs.splice(u, 1);
+                chrome.storage.local.set({
+                    global: items.global 
+                });
+                // console.log(JSON.stringify(items.global.tempBlockedURLs));
+            } else if (tempURL == urlString) {
+                // console.log('time_blocked');
+                blockedit = true;
+                // console.log("value of blocked it is: " + blockedit);
+                var arr = document.getElementsByTagName('body');
+                for (var i in arr) {
+                    arr[i].innerHTML = "Not permitted to view this";
+                }
+                chrome.runtime.sendMessage({
+                    redirect: chrome.extension.getURL("/html/safetypage.html")
+                });
+                break;
+            }
+        }
+    });
+
     if (blockedit == false) {
-        console.log("This log you need to look for");
-        console.log("value of blocked it is: " + blockedit);
+        // console.log("This log you need to look for");
+        // console.log("value of blocked it is: " + blockedit);
+        console.log("nudecheckstart");
         checkNudeImages();
-        console.log("This is the second message you need to look for");
+        console.log("nudecheckend");
+        // console.log("This is the second message you need to look for");
     }
 }
 

@@ -5,7 +5,7 @@ var botbuilder_azure = require("botbuilder-azure");
 
 // var server = restify.createServer();
 // server.listen(process.env.port || process.env.PORT || 3978, function () {
-//    console.log('%s listening to %s', server.name, server.url); 
+//    console.log('%s listening to %s', server.name, server.url);
 // });
 
 var useEmulator = (process.env.NODE_ENV == 'development');
@@ -180,7 +180,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         if(results.response) {
             session.dialogData.website = results.response;
         }
-        
+
         //Communication goes here!
         request('http://tfoxtrip.com/blockURL/?email='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website+'&duration='+session.dialogData.time, function (error, response, body) {
             if(!error) {
@@ -231,7 +231,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         if(results.response) {
             session.dialogData.website = results.response;
         }
-        
+
         //Communication goes here!
         session.send(session.dialogData.name);
         session.send(session.dialogData.website);
@@ -266,7 +266,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         if(results.response) {
             session.dialogData.website = results.response;
         }
-        
+
         //Communication goes here!
 
         request('http://tfoxtrip.com/unblockURL/email?='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website, function (error, response, body) {
@@ -378,7 +378,7 @@ if (useEmulator) {
     server.listen(3978, function() {
         console.log('test bot endpont at http://localhost:3978/api/messages');
     });
-    server.post('/api/messages', connector.listen());    
+    server.post('/api/messages', connector.listen());
 } else {
     module.exports = { default: connector.listen() }
 }
