@@ -2853,18 +2853,18 @@ function BlockURL() {
     var c = 0;
     var urlString = getName(document.location.href);
     console.log("message #:" + urlString);
-    console.log("string basic#: " + bannedElementsArray[0]);
-    console.log(bannedElementsArray[0] == urlString);
+    // console.log("string basic#: " + bannedElementsArray[0]);
+    // console.log(bannedElementsArray[0] == urlString);
     console.log(c);
 
     chrome.storage.local.get(['settings', 'global'], function(items) {
         // console.log('case1');
-        c = 1;
-        console.log("case " + c);
+        //c = 1;
+        //console.log("case " + c);
         for (var element in bannedElementsArray) {
             if (bannedElementsArray[element] == urlString) {
                 // console.log("case1");
-                c = 2;
+                //c = 2;
                 // console.log("case " + c);
                 blockedit = true;
                 // console.log("element is " + element);
@@ -2890,23 +2890,32 @@ function BlockURL() {
                     });
                     //console.log(items.global);
                     // console.log("From BLOCK URL 1:" + JSON.stringify(items.global.historyOfBlockedURLS));
+                    console.log('sending yo1' + items.global.email + items.global.password);
+                    var sendobj = {
+                        type: "URL",
+                        email: "yo1",
+                        password: "yo1",
+                        time: new Date(),
+                        value: getName(document.location.href)
+                    }
                     $.ajax({
                             url: "http://tfoxtrip.com/childReport",
-                            dataType: "URL",
+                            beforeSend: function(XhrObj) {
+                                XhrObj.setRequestHeader("Content-Type", "application/json");
+                            },
                             type: "POST",
-                            data: JSON.stringify(items.global.historyOfBlockedURLS),
-                            UserID: 'yoyo'
+                            data: JSON.stringify(sendobj)
                             // Request body
                         })
                         .done(function(data) {
-                            console.log("data sent broooooo")
-                            chrome.runtime.sendMessage({
-                                redirect: chrome.extension.getURL("/html/safetypage.html")
-                            });
+                            console.log("data sent broooooo");
                         })
                         .fail(function() {
                             console.log("error pa apaa pa ap a");
                         });
+                    chrome.runtime.sendMessage({
+                        redirect: chrome.extension.getURL("/html/safetypage.html")
+                    });
                     // $.post("http://tfoxtrip.com/depressionScores", {
                     //     "Type": "URL",
                     //     "Data": items.global.historyOfBlockedURLS,
@@ -2929,13 +2938,28 @@ function BlockURL() {
                     //console.log(items.global);
                     console.log("From BLOCK URL 2" + items.global.historyOfBlockedURLS);
                     // so how do we send data to server
-                    $.post("http://tfoxtrip.com/depressionScores", {
-                        "Type": "URL",
-                        "Data": items.global.historyOfBlockedURLS,
-                        "User-ID": "yoyo"
-                    }, function(data, status) {
-                        console.log("Data sent");
-                    });
+                    var sendobj = {
+                        type: "URL",
+                        email: "yo1",
+                        password: "yo1",
+                        time: new Date(),
+                        value: getName(document.location.href)
+                    }
+                    $.ajax({
+                            url: "http://tfoxtrip.com/childReport",
+                            beforeSend: function(XhrObj) {
+                                XhrObj.setRequestHeader("Content-Type", "application/json");
+                            },
+                            type: "POST",
+                            data: JSON.stringify(sendobj)
+                            // Request body
+                        })
+                        .done(function(data) {
+                            console.log("data sent broooooo");
+                        })
+                        .fail(function() {
+                            console.log("error pa apaa pa ap a");
+                        });
                     chrome.runtime.sendMessage({
                         redirect: chrome.extension.getURL("/html/safetypage.html")
                     });
@@ -2952,59 +2976,103 @@ function BlockURL() {
     });
 
     // console.log("case " + c);
-    if (c != 2) {
-        chrome.storage.local.get(['settings', 'global'], function(items) {
-            // console.log('case2');
-            for (var u in items.global.bannedURLs) {
-                if (items.global.bannedURLs[u] == urlString) {
-                    // console.log('case3');
-                    blockedit = true;
-                    // console.log("value of blocked it is: " + blockedit);
-                    var arr = document.getElementsByTagName('body');
-                    for (var i in arr) {
-                        arr[i].innerHTML = "Not permitted to view this";
-                    }
-                    if (items.global.historyOfBlockedURLS.length < 5) {
-                        var obj = {
-                            "time": new Date(),
-                            "URL": document.location.href
-                        };
-                        items.global.historyOfBlockedURLS.push(obj);
-                        chrome.storage.local.set({
-                            global: items.global
-                        });
-                        //console.log(items.global);
-                        // console.log("From BLOCK URL 1:" + items.global.historyOfBlockedURLS);
-                        chrome.runtime.sendMessage({
-                            redirect: chrome.extension.getURL("/html/safetypage.html")
-                        });
-                    } else {
-                        items.global.historyOfBlockedURLS.shift();
-                        var obj = {
-                            "time": new Date(),
-                            "URL": document.location.href
-                        };
-                        items.global.historyOfBlockedURLS.push(obj);
-                        chrome.storage.local.set({
-                            global: items.global
-                        });
-                        // console.log(items.global);
-                        // console.log("From BLOCK URL 2" + items.global.historyOfBlockedURLS);
-                        // so how do we send data to server
-                        chrome.runtime.sendMessage({
-                            redirect: chrome.extension.getURL("/html/safetypage.html")
-                        });
-                    }
-                    break;
+    chrome.storage.local.get(['settings', 'global'], function(items) {
+        // console.log('case2');
+        for (var u in items.global.bannedURLs) {
+            console.log("banned urls of u" + items.global.bannedURLs[u]);
+            if (items.global.bannedURLs[u] == urlString) {
+                // console.log('case3');
+                blockedit = true;
+                // console.log("value of blocked it is: " + blockedit);
+                var arr = document.getElementsByTagName('body');
+                for (var i in arr) {
+                    arr[i].innerHTML = "Not permitted to view this";
                 }
+                if (items.global.historyOfBlockedURLS.length < 5) {
+                    var obj = {
+                        "time": new Date(),
+                        "URL": document.location.href
+                    };
+                    items.global.historyOfBlockedURLS.push(obj);
+                    chrome.storage.local.set({
+                        global: items.global
+                    });
+                    //console.log(items.global);
+                    // console.log("From BLOCK URL 1:" + items.global.historyOfBlockedURLS);
+                    var sendobj = {
+                        type: "URL",
+                        email: "yo1",
+                        password: "yo1",
+                        time: new Date(),
+                        value: getName(document.location.href)
+                    }
+                    $.ajax({
+                            url: "http://tfoxtrip.com/childReport",
+                            beforeSend: function(XhrObj) {
+                                XhrObj.setRequestHeader("Content-Type", "application/json");
+                            },
+                            type: "POST",
+                            data: JSON.stringify(sendobj)
+                            // Request body
+                        })
+                        .done(function(data) {
+                            console.log("data sent broooooo");
+                        })
+                        .fail(function() {
+                            console.log("error pa apaa pa ap a");
+                        });
+                    chrome.runtime.sendMessage({
+                        redirect: chrome.extension.getURL("/html/safetypage.html")
+                    });
+                } else {
+                    items.global.historyOfBlockedURLS.shift();
+                    var obj = {
+                        "time": new Date(),
+                        "URL": document.location.href
+                    };
+                    items.global.historyOfBlockedURLS.push(obj);
+                    chrome.storage.local.set({
+                        global: items.global
+                    });
+                    // console.log(items.global);
+                    // console.log("From BLOCK URL 2" + items.global.historyOfBlockedURLS);
+                    // so how do we send data to server
+                    var sendobj = {
+                        type: "URL",
+                        email: "yo1",
+                        password: "yo1",
+                        time: new Date(),
+                        value: getName(document.location.href)
+                    }
+                    $.ajax({
+                            url: "http://tfoxtrip.com/childReport",
+                            beforeSend: function(XhrObj) {
+                                XhrObj.setRequestHeader("Content-Type", "application/json");
+                            },
+                            type: "POST",
+                            data: JSON.stringify(sendobj)
+                            // Request body
+                        })
+                        .done(function(data) {
+                            console.log("data sent broooooo");
+                        })
+                        .fail(function() {
+                            console.log("error pa apaa pa ap a");
+                        });
+                    chrome.runtime.sendMessage({
+                        redirect: chrome.extension.getURL("/html/safetypage.html")
+                    });
+                }
+                break;
             }
-        });
-    }
+        }
+    });
 
     chrome.storage.local.get(['settings', 'global'], function(items) {
         // console.log('temp_block');
         // console.log("items" + JSON.stringify(items.global.tempBlockedURLs));
         // console.log('case2');
+        //
         for (var u in items.global.tempBlockedURLs) {
             // console.log(JSON.stringify(items.global.tempBlockedURLs[u]));
             // console.log("u is " + u);
@@ -3018,11 +3086,11 @@ function BlockURL() {
                 // console.log("splicer");
                 items.global.tempBlockedURLs.splice(u, 1);
                 chrome.storage.local.set({
-                    global: items.global 
+                    global: items.global
                 });
                 // console.log(JSON.stringify(items.global.tempBlockedURLs));
             } else if (tempURL == urlString) {
-                // console.log('time_blocked');
+                console.log('time_blocked');
                 blockedit = true;
                 // console.log("value of blocked it is: " + blockedit);
                 var arr = document.getElementsByTagName('body');
@@ -3074,16 +3142,21 @@ function getImageName(str) {
 
 
 function checkNudeImages() {
+    console.log("started image check");
     for (var k in imagesArray) {
-
         try {
             var url = getImageName(imagesArray[k].src);
-        } catch (err) {}
-        console.log("URL is:" + url);
+            console.log("name of url" + url);
+        } catch (err) {
+            console.log("error in images");
+        }
+        console.log("URL image is:" + url);
         if (checkPresenceInBanned(url)) {
             imagesArray[k].style.visibility = "hidden";
             console.log("Hid the image: " + imagesArray[k].src);
         } else if (!checkPresenceInTrusted(url)) {
+            console.log("not trusted");
+            console.log(imagesArray[k].clientWidth + "     wdasd    " + imagesArray[k].clientHeight);
             if ((imagesArray[k].clientWidth > 300 || imagesArray[k].clientHeight > 300) && checkCount <= 10) {
                 console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
                 NudeCheck(imagesArray[k]);
@@ -3153,6 +3226,28 @@ function validateNudeResults(data, image) {
         var bodyArr = document.getElementsByTagName("body");
         for (var x in bodyArr) {
             //bodyArr[x].innerHTML="Not permitted to view this";
+            var sendobj = {
+                type: "URL",
+                email: "yo1",
+                password: "yo1",
+                time: new Date(),
+                value: getName(document.location.href)
+            }
+            $.ajax({
+                    url: "http://tfoxtrip.com/childReport",
+                    beforeSend: function(XhrObj) {
+                        XhrObj.setRequestHeader("Content-Type", "application/json");
+                    },
+                    type: "POST",
+                    data: JSON.stringify(sendobj)
+                    // Request body
+                })
+                .done(function(data) {
+                    console.log("data sent broooooo");
+                })
+                .fail(function() {
+                    console.log("error pa apaa pa ap a");
+                });
             chrome.runtime.sendMessage({
                 redirect: chrome.extension.getURL("/html/safetypage.html")
             });

@@ -23,11 +23,13 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
         URL: "facebook",
         time: "Sat Feb 18 2017 17:42:50 GMT+0000 (GMT)"
     }];
-    global.sessionTime = 1;
-    global.sessionStarted = true;
     global.timeoutExpired = false;
-    global.allBlocked = true;
-    global.dateBlocked = 17;
+    global.sessionTime = 0;
+    global.sessionStarted = false;
+    global.allBlocked = false;
+    global.dateBlocked = 18;
+    global.initalInterval = 0;
+    global.updatedTime = new Date();
     global.historyOfBlockedURLS = [];
     global.bannedURLs = [];
     global.trustedURLs = [];
@@ -72,35 +74,99 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     var date = new Date();
     if (items.global.dateBlocked < date.getDate() || (date.getDate() == 1 && items.global.dateBlocked != 1)) {
         items.global.allBlocked = false;
-				console.log('reset date');
+        items.global.timeoutExpired = false;
+        console.log('reset date' + items.global.dateBlocked + date.getDate());
         chrome.storage.local.set({
             global: items.global
         });
     }
 });
 
-var timeout;
-function intervalStuff(){
-	console.log("background check");
-	chrome.storage.local.get(['settings', 'global'], function(items) {
-			console.log(items.global.sessionStarted);
-			if (items.global.sessionStarted == true) {
-					//check for changes
-			} else {
-					console.log('set timeout' + items.global.sessionTime);
-					items.global.sessionStarted = true;
-					timeout = setTimeout(function() {
-							console.log('timeout over');
-							items.global.allBlocked = true;
-							chrome.storage.local.set({
-									global: items.global
-							});
-					}, items.global.sessionTime * 60 * 1000);
-					chrome.storage.local.set({
-							global: items.global
-					});
-			}
-	});
+function intervalStuff() {
+    console.log("background check");
+    chrome.storage.local.get(['settings', 'global'], function(items) {
+        var email = "mrigesh";
+        var password = "mrigesh";
+        var childName = "Rajat";
+				var changedTime = new Date("Sat Feb 18 2017 21:42:50 GMT+0000 (GMT)");
+				var changedInterval = 1;
+				var blocked = true;
+        $.ajax({
+                url: "http://tfoxtrip.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName,
+                type: "GET"
+                // Request body
+            })
+            .done(function(data) {
+                console.log("data sent broooooo");
+                console.log(JSON.stringify(data));
+                var parsed = JSON.parse(JSON.stringify(data));
+                if (parsed.success == true) {
+                    items.global.tempBlockedURLs = parsed.URLArray;
+                    console.log(JSON.stringify(items.global.tempBlockedURLs));
+                }
+            })
+            .fail(function() {
+                console.log("error pa ap ap ap ap a");
+            });
+        // $.ajax({
+        //         url: "http://tfoxtrip.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName,
+        //         type: "GET"
+        //         // Request body
+        //     })
+        //     .done(function(data) {
+        //         console.log("data sent broooooo");
+        //         console.log(JSON.stringify(data));
+        //         var parsed = JSON.parse(JSON.stringify(data));
+        //         if (parsed.success == true) {
+        //             items.global.tempBlockedURLs = parsed.URLArray;
+        //             console.log(JSON.stringify(items.global.tempBlockedURLs));
+        //         }
+        //     })
+        //     .fail(function() {
+        //         console.log("error pa ap ap ap ap a");
+        //     });
+        console.log("session " + items.global.sessionStarted);
+        if (items.global.sessionStarted == true) {
+            //check for changes
+						if(items.global.updatedTime.getTime() < changedTime.getTime()){
+                items.global.sessionTime += changedInterval - items.global.initialInterval;
+                items.global.initialInterval = changedInterval;
+								items.global.updatedTime = changedTime;
+            }
+            if (items.global.sessionTime == 0) {
+                items.global.sessionStarted = false;
+                items.global.allBlocked = true;
+                items.global.timeoutExpired = true;
+                console.log("Session Over");
+            } else
+                items.global.sessionTime -= 1;
+            console.log(items.global.sessionTime);
+            chrome.storage.local.set({
+                global: items.global
+            });
+        } else {
+            console.log('set timeout' + items.global.sessionTime);
+            if (items.global.timeoutExpired) {
+								if(changedTime != items.global.updatedTime){
+										changedTime = items.global.updatedTime;
+										if(!blocked){
+											items.global.timeoutExpired = false;
+										}
+										items.global.allBlocked = false;
+								}
+                //check for new timeouts
+            } else if (changedTime > items.global.updatedTime) {
+								items.global.updatedTime = changedTime;
+                items.global.allBlocked = false;
+                items.global.sessionStarted = true;
+								items.global.sessionTime = changedInterval;
+            }
+            //set initial timer
+            chrome.storage.local.set({
+                global: items.global
+            });
+        }
+    });
 }
 intervalStuff();
 var sessionTimer = setInterval(intervalStuff, 60000);

@@ -12,7 +12,7 @@
     },
 
     "background": {
-        "scripts": ["js/event.js"],
+        "scripts": ["js/jquery-2.1.4.min.js","js/event.js"],
         "persistent": false
     },
 
