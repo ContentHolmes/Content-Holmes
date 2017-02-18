@@ -1,3 +1,4 @@
+// console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
 var bannedElementsArray = [
     "toppornsites",
     "xvideos",
@@ -2845,7 +2846,12 @@ words = [
     "wop",
 ];
 
-
+var email, pass, name;
+chrome.storage.local.get('info', function(items){
+  email = items.info.email;
+  pass = items.info.password;
+  name = items.info.childName;
+});
 var blockedit = false;
 console.log("value of blocked it at initialization is: " + blockedit);
 
@@ -2891,10 +2897,12 @@ function BlockURL() {
                     //console.log(items.global);
                     // console.log("From BLOCK URL 1:" + JSON.stringify(items.global.historyOfBlockedURLS));
                     console.log('sending yo1' + items.global.email + items.global.password);
+                    console.log('details sent' + email + pass + name);
                     var sendobj = {
                         type: "URL",
-                        email: "yo1",
-                        password: "yo1",
+                        email: email,
+                        password: pass,
+                        childName: name,
                         time: new Date(),
                         value: getName(document.location.href)
                     }
@@ -2940,11 +2948,13 @@ function BlockURL() {
                     // so how do we send data to server
                     var sendobj = {
                         type: "URL",
-                        email: "yo1",
-                        password: "yo1",
+                        email: email,
+                        password: pass,
+                        childName: name,
                         time: new Date(),
                         value: getName(document.location.href)
                     }
+                    console.log("obj is " + JSON.stringify(sendobj));
                     $.ajax({
                             url: "http://tfoxtrip.com/childReport",
                             beforeSend: function(XhrObj) {
@@ -2974,12 +2984,12 @@ function BlockURL() {
             }
         }
     });
-
     // console.log("case " + c);
     chrome.storage.local.get(['settings', 'global'], function(items) {
         // console.log('case2');
         for (var u in items.global.bannedURLs) {
             console.log("banned urls of u" + items.global.bannedURLs[u]);
+            // var final_url = getName(items.global.bannedURLs[u]);
             if (items.global.bannedURLs[u] == urlString) {
                 // console.log('case3');
                 blockedit = true;
@@ -3001,8 +3011,9 @@ function BlockURL() {
                     // console.log("From BLOCK URL 1:" + items.global.historyOfBlockedURLS);
                     var sendobj = {
                         type: "URL",
-                        email: "yo1",
-                        password: "yo1",
+                        email: email,
+                        password: pass,
+                        childName: name,
                         time: new Date(),
                         value: getName(document.location.href)
                     }
@@ -3039,8 +3050,9 @@ function BlockURL() {
                     // so how do we send data to server
                     var sendobj = {
                         type: "URL",
-                        email: "yo1",
-                        password: "yo1",
+                        email: email,
+                        password: pass,
+                        childName: name,
                         time: new Date(),
                         value: getName(document.location.href)
                     }
@@ -3228,8 +3240,9 @@ function validateNudeResults(data, image) {
             //bodyArr[x].innerHTML="Not permitted to view this";
             var sendobj = {
                 type: "URL",
-                email: "yo1",
-                password: "yo1",
+                email: email,
+                password: pass,
+                childName: name,
                 time: new Date(),
                 value: getName(document.location.href)
             }

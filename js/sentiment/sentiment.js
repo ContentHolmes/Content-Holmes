@@ -3435,7 +3435,7 @@ function startSentiment(){
     }
   }
   console.log(depressionmin);
-  
+
   chrome.storage.local.get('info',function(things){
     console.log("things is :"+JSON.stringify(things));
     console.log("email from sentiment: "+things.info.email);
@@ -3444,6 +3444,7 @@ function startSentiment(){
        "type":"depressionScores",
        "email":things.info.email,
        "password":things.info.password,
+       "childName": things.info.childName,
        "time":new Date(),
        "value":depressionmin
     };
@@ -3453,7 +3454,7 @@ function startSentiment(){
         // Request headers
         xhrObj.setRequestHeader("Content-Type","application/json");
       },
-      
+
       type: "POST",
       data: JSON.stringify(newObj),
       // Request body
@@ -3487,13 +3488,13 @@ function parseParagraphs(node){
     formatWordsInArray(newSentence);
     totalWords=totalWords+newSentence.length;
     var newSum=calculateSum(newSentence);
-    console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum); 
-    sum=sum+newSum/**newSentence.length*/;   
-  
+    console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
+    sum=sum+newSum/**newSentence.length*/;
+
   }
   var depressionCalc=sum/*/totalWords*/;
   if(depressionCalc  || depressionCalc==0){
-    //console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);  
+    //console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);
   }
   return depressionCalc;
 }

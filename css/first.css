@@ -15,6 +15,10 @@
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
+#hidden{
+  visibility: hidden;
+  color: red !important;
+}
 .form input {
   font-family: "Roboto", sans-serif;
   outline: 0;
@@ -96,7 +100,7 @@ body {
   background: linear-gradient(to left, #76b852, #8DC26F);
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;      
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .center {

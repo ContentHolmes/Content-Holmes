@@ -82,23 +82,34 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     }
 });
 
+
+var email, password, childName;
+chrome.storage.local.get('info', function(item){
+  email = item.info.email;
+  password = item.info.password;
+  childName = item.info.childName;
+});
+
 function intervalStuff() {
     console.log("background check");
     chrome.storage.local.get(['settings', 'global'], function(items) {
-        var email = "mrigesh";
-        var password = "mrigesh";
-        var childName = "Rajat";
+        // var email = "mrigesh";
+        // var password = "mrigesh";
+        // var childName = "Rajat";
 				var changedTime = new Date("Sat Feb 18 2017 21:42:50 GMT+0000 (GMT)");
 				var changedInterval = 1;
 				var blocked = true;
+        var url = "http://tfoxtrip.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName;
+        console.log("url is " + url);
         $.ajax({
                 url: "http://tfoxtrip.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName,
                 type: "GET"
                 // Request body
             })
             .done(function(data) {
-                console.log("data sent broooooo");
-                console.log(JSON.stringify(data));
+                console.log('username' + email);
+                console.log("data got broooooo");
+                // console.log(JSON.stringify(data));
                 var parsed = JSON.parse(JSON.stringify(data));
                 if (parsed.success == true) {
                     items.global.tempBlockedURLs = parsed.URLArray;

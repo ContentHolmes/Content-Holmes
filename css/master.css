@@ -156,7 +156,7 @@
     height: auto;
 }
 
-.login_box{
+.login_box {
     position: fixed;
     width: auto;
     height: auto;
@@ -164,65 +164,259 @@
     left: 40%;
 }
 
-.fb_login_button{
-  color: var(--secondary);
-  padding: 5px 10px 5px 10px;
-  background-color: #3b5998;
-  font-family: var(--font_c);
-  font-weight: 300;
-  font-size: 30px;
-  border-radius: 5px;
-  transition: all 0.3s ease;
+.fb_login_button {
+    color: var(--secondary);
+    padding: 5px 10px 5px 10px;
+    background-color: #3b5998;
+    font-family: var(--font_c);
+    font-weight: 300;
+    font-size: 30px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
 }
 
-.fb_login_button:hover{
-  color: #3b5998;
-  background-color: var(--secondary);
-  border-color: #3b5998;
-  border-style: solid;
-  border-width: thin;
+.fb_login_button:hover {
+    color: #3b5998;
+    background-color: var(--secondary);
+    border-color: #3b5998;
+    border-style: solid;
+    border-width: thin;
 }
 
-#container2{
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 5;
-  left: 0;
-  right: 0;
+#container2 {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 5;
+    left: 0;
+    right: 0;
 }
 
-.image{
-  opacity: 0.7;
-  position: absolute;
-  z-index: 1;
-  background-image: url('http://zeeko.ie/wp-content/uploads/2015/07/Internet-Safety.jpg');
-  background-repeat: no-repeat;
-  background-position: center;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.image {
+    opacity: 0.7;
+    position: absolute;
+    z-index: 1;
+    background-image: url('http://zeeko.ie/wp-content/uploads/2015/07/Internet-Safety.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
-.pin_display{
-  font-family: var(--font);
-  font-size: 20px;
-  display: inline;
-  color: var(--primary);
-  font-weight: 400;
-  transition: all 0.3s ease;
-  -webkit-transition: all 0.3s ease;
-}
-.pin_display:hover{
-  color: var(--accent_2);
+.pin_display {
+    font-family: var(--font);
+    font-size: 20px;
+    display: inline;
+    color: var(--primary);
+    font-weight: 400;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
 }
 
-.pin_hidden{
-  font-family: var(--font_c);
-  font-size: 20px;
-  display: inline;
-  color: var(--accent);
-  font-weight: 400;
-  visibility: hidden;
+.pin_display:hover {
+    color: var(--accent_2);
+}
+
+.pin_hidden {
+    font-family: var(--font_c);
+    font-size: 20px;
+    display: inline;
+    color: var(--accent);
+    font-weight: 400;
+    visibility: hidden;
+}
+
+#login_body {
+    background-image: url('http://zeeko.ie/wp-content/uploads/2015/07/Internet-Safety.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@keyframes anim-title {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes anim-login-page {
+    from {
+        transform: translateY(80vh);
+        transform-origin: center;
+        -webkit-transform: translateY(80vh);
+        -webkit-transform-origin: center;
+        -moz-transform: translateY(80vh);
+        -moz-transform-origin: center;
+    }
+    to {
+        transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+    }
+}
+
+@keyframes anim-bottom-bar {
+    from {
+        transform: translateY(200px);
+        transform-origin: center;
+        -webkit-transform: translateY(200px);
+        -webkit-transform-origin: center;
+        -moz-transform: translateY(200px);
+        -moz-transform-origin: center;
+    }
+    to {
+        transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+    }
+}
+
+.historyBox {}
+
+.head_history {
+    color: var(--main);
+    font-family: var(--font_c);
+    font-size: 40px;
+    font-weight: 300;
+}
+
+.item {
+    padding-left: 20px;
+    margin-bottom: 5px;
+}
+
+.Name {
+    color: var(--primary);
+    font-family: var(--font);
+    font-size: 24px;
+    margin-bottom: 0;
+}
+
+.Time {
+  margin-top: 0;
+    color: var(--accent_2);
+    font-family: var(--font_c);
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.center {
+    font-family: var(--font_c);
+    font-size: 60px;
+    font-weight: 700;
+    color: var(--main);
+    margin-top: 20vh;
+    margin-bottom: 6vh;
+    animation: anim-title 1s ease;
+}
+
+.center2 {
+    font-family: var(--font_c);
+    font-size: 60px;
+    font-weight: 700;
+    color: var(--main);
+    margin-top: 20vh;
+    margin-bottom: 6vh;
+    visibility: hidden;
+}
+
+.login-page {
+    background-color: var(--secondary);
+    padding: 30px;
+    width: 18vw;
+    margin-left: 41vw;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    border-radius: 5px;
+    animation: anim-login-page 0.8s ease;
+}
+
+.login-text {
+    font-family: var(--font);
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--main);
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 20px;
+}
+
+.input_login {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-color: var(--main);
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    font-family: var(--font_c);
+    font-size: 20px;
+    font-weight: 300;
+    padding-left: 4px;
+    padding-right: 4px;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.input_login:focus {
+    border-color: var(--accent_2);
+    border-left: none;
+    border-top: none;
+    border-radius: 0;
+    outline: none;
+    border-right: none;
+}
+
+#myBtn {
+    margin-top: 10px;
+    padding-top: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 4px;
+    background-color: var(--accent_2);
+    color: var(--secondary);
+    border-radius: 5px;
+    border-color: var(--accent_2);
+    border-style: solid;
+    border-width: thin;
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+#myBtn:hover {
+    background-color: var(--secondary);
+    color: var(--accent_2);
+}
+
+.bottom_redirect {
+    background-color: var(--main);
+    border-radius: 5px;
+    left: 40vw;
+    right: 40vw;
+    bottom: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    top: 85vh;
+    position: fixed;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    animation: anim-bottom-bar 1s ease;
+}
+
+.center3 {
+    /*font-family: var(--font_c);*/
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 300;
+    color: var(--secondary);
+    animation: anim-title 1s ease;
+}
+
+.load {
+    background-color: var(--secondary);
+    width: 0;
+    height: 2px;
 }
