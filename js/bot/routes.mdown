@@ -1,0 +1,41 @@
+_/childArray_
+
+*Send*
+
+	email
+	password
+
+*Recieve*
+
+	success
+	childArray
+
+_/blockURL_
+
+*Send*
+
+	email
+	password
+	childName
+	url
+	duration
+
+*Recieve*
+
+	success
+
+_/unblockURL_
+
+*Send*
+
+	email
+	password
+	childName
+	url
+
+*Recieve*
+
+	success
+	reason
+
+_History and depression scores are same as Report_
