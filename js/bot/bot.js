@@ -42,6 +42,15 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         session.send('Hello %s!', session.userData.name);
     }
     ])
+.matches('profile', [
+    function (session) {
+        session.beginDialog('/profile');
+    },
+    function (session, results) {
+        session.sendTyping();
+        session.send('Okay! I made the changes %s :-)', session.userData.name);
+    }
+])
 .matches('history', [
     function (session, args, next) {
         session.dialogData.childname = builder.EntityRecognizer.findEntity(args.entities, 'childname');
@@ -113,9 +122,11 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     function (session) {
         session.sendTyping();
         session.send("I am your own personal AI bot, capable of understanding normal human speech. You can ask me about -");
-        session.send("1. Recent history of the browser");
-        session.send("2. Depression profile of the user");
-        session.send("3. Change your profile :-)");
+        session.send("1. Recent history of all children");
+        session.send("2. Depression profile of all children");
+        session.send("3. Blocking sites externally for some time for all children");
+        session.send("4. Change your profile :-)");
+        session.send("Although I work on natural anguage input, and can answer general queries like \"Are you real?\", to get some useful commands that always work, send \"Help\", pretty cheesy right?");
         session.send("That's all for now %s, the game is on", session.userData.name);
     }
     ])
@@ -285,6 +296,16 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         })
         // session.send(session.dialogData.name);
         // session.send(session.dialogData.website);
+    }
+    ])
+.matches('Help', [
+    function (session) {
+        session.sendTyping();
+        session.send("Here are some queries that always work -");
+        session.send("To change your login details - Change my info");
+        session.send("To request Depression Reports - How depressed is <Child name>?");
+        session.send("To block a URL - Block <Site name> for <Child name> for <Time in hours>");
+        session.send("To unblock a URL - Unblock <Stite name> for <Child name>");
     }
     ])
 .matches('depressionscores', [
