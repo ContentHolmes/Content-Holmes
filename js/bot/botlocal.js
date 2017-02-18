@@ -54,7 +54,6 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 ])
 .matches('history', [
     function (session, args, next) {
-        //Get request here
         session.dialogData.childname = builder.EntityRecognizer.findEntity(args.entities, 'childname');
         if(!session.dialogData.childname) {
         	session.sendTyping();
@@ -70,6 +69,22 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     	}
 
     	//Communication goes here.
+    	request('htttp://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
+    		if(!error) {
+    			session.sendTyping();
+    			var res = JSON.parse(body);
+    			if(res.text.success==true) {
+    				session.send("Report for %s - ", session.dialogData.childname);
+    				res.text.answers.history.URls.forEach(function(item,index) {
+                        session.send(item.time+item.Url);
+                    });
+    			} else {
+    				session.send("I can't fetch that right now. Sorry :-(");
+    			}
+    		} else {
+    			session.send("There has been an error, please try to re-enter your data!");
+    		}
+    	});
     }
     ])
 .matches('Report', [
@@ -153,7 +168,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 		//session.send(args);
 		if(!session.dialogData.name) {
 			session.sendTyping();
-			builder.Prompts.text(session, "Sorry, I couldn't understand the name. Could you repeat?");
+			builder.Prompts.choice(session, "Sorry, I couldn't understand the name. Could you repeat?", session.userData.childArray);
 		} else {
 			session.dialogData.name = session.dialogData.name.entity;
 			next();
@@ -177,9 +192,22 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 		}
 		
 		//Communication goes here!
-		session.send(session.dialogData.name);
-		session.send(session.dialogData.website);
-		session.send(session.dialogData.time);
+		request('http://tfoxtrip.com/blockURL/?email='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website+'&duration='+session.dialogData.time, function (error, response, body) {
+			if(!error) {
+				session.sendTyping();
+				var res = JSON.parse(body);
+				if(res.text.success==true) {
+					session.send("Blocked %s for %s for %s hours", session.dialogData.website, session.dialogData.name, session.dialogData.time);
+				} else {
+					session.send("Oops. This is way ahead of my thinking curve. I seem to have lost my charm.");
+				}
+			} else {
+				session.send("Something went wrong. Please \"Change your personal info\"");
+			}
+		});
+		// session.send(session.dialogData.name);
+		// session.send(session.dialogData.website);
+		// session.send(session.dialogData.time);
 	}
 	])
 .matches('Session', [
@@ -226,7 +254,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 		session.dialogData.website = builder.EntityRecognizer.findEntity(args.entities, 'blocking::website');
 		if(!session.dialogData.name) {
 			session.sendTyping();
-			builder.Prompts.text(session, "Sorry, I couldn't understand the name. Could you repeat?");
+			builder.Prompts.choice(session, "Sorry, I couldn't understand the name. Could you repeat?", session.userData.childArray);
 		} else {
 			session.dialogData.name = session.dialogData.name.entity;
 			next();
@@ -250,8 +278,23 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 		}
 		
 		//Communication goes here!
-		session.send(session.dialogData.name);
-		session.send(session.dialogData.website);
+
+		request('http://tfoxtrip.com/unblockURL/email?='+session.userData.email+'&password='+session.userData.password+'&childname='+session.dialogData.childname+'&url='+session.dialogData.website, function (error, response, body) {
+			if(!error) {
+				session.sendTyping();
+				var res = JSON.parse(body);
+				if(res.text.success==true) {
+					session.send("Unblocked %s for %s", session.dialogData.website, session.dialogData.childname);
+				} else {
+					session.send(res.text.reason);
+				}
+			} else {
+				session.sendTyping();
+				session.send("Okay... I guess your data is wrong. Try \"Changing your info\".");
+			}
+		})
+		// session.send(session.dialogData.name);
+		// session.send(session.dialogData.website);
 	}
 	])
 .matches('depressionscores', [
@@ -272,6 +315,22 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     	}
 
     	//Communication goes here.
+    	request('htttp://tfoxtrip/data/?email='+session.userData.email+'&password='+session.userData.password+'&childName='+session.dialogData.childname, function(error, response, body) {
+    		if(!error) {
+    			session.sendTyping();
+    			var res = JSON.parse(body);
+    			if(res.text.success==true) {
+    				session.send("Report for %s - ", session.dialogData.childname);
+    				res.text.answers.history.depressionScores.forEach(function(item,index) {
+                        session.send(item.time+item.score);
+                    });
+    			} else {
+    				session.send("I can't fetch that right now. Sorry :-(");
+    			}
+    		} else {
+    			session.send("There has been an error, please try to re-enter your data!");
+    		}
+    	});
     }
     ]);
 
@@ -296,12 +355,28 @@ bot.dialog('/profile', [
     function (session,results) {
         session.userData.email = results.response;
         session.sendTyping();
-        builder.Prompts.text(session, 'Please give me your PIN');
+        builder.Prompts.number(session, 'Please give me your PIN');
     },
     function (session, results) {
         session.userData.password = results.response;
 
         //Get Children Array Here!
+        //'http://tfoxtrip.com/data/?email='+session.userData.email+'&password='+session.userData.password
+        request('http://tfoxtrip.com/childArray/?email='+session.userData.email+'&password='+session.userData.password, function(error, response, body) {
+        	if(!error) {
+        		session.sendTyping();
+        		var res = JSON.parse(body);
+        		if(res.text.success=="true") {
+        			session.userData.childArray = [].concat(res.text.childArray);
+        		} else {
+        			session.sendTyping();
+        			session.send("I guess you've added no children yet. And maybe this extension is not for you. :D");
+        		}
+        	} else {
+        		session.sendTyping();
+        		session.send("Your data is wrong, you need to \"Change your profile info\"");
+        	}
+        })
         session.endDialog();
     }
 ]);
