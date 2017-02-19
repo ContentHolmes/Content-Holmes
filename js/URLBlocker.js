@@ -2847,10 +2847,16 @@ words = [
 ];
 
 var email, pass, name;
-chrome.storage.local.get('info', function(items){
-  email = items.info.email;
-  pass = items.info.password;
-  name = items.info.childName;
+chrome.storage.local.get('info', function(items) {
+    if (!items.info) {
+        email = "default";
+        pass = "default";
+        name = "default";
+    } else {
+        email = items.info.email;
+        pass = items.info.password;
+        name = items.info.childName;
+    }
 });
 var blockedit = false;
 console.log("value of blocked it at initialization is: " + blockedit);
@@ -3089,9 +3095,9 @@ function BlockURL() {
             // console.log(JSON.stringify(items.global.tempBlockedURLs[u]));
             // console.log("u is " + u);
             var parsed = JSON.parse(JSON.stringify(items.global.tempBlockedURLs[u]));
-            var tempURL = parsed.URL;
+            var tempURL = parsed.url;
             var time = new Date(parsed.time.toString());
-            var curr_time = new Date();
+            var curr_time = new Date(new Date().toUTCString());
             // console.log(curr_time + "curr_time" + time + "time" + tempURL + "URL" + "here");
             // console.log(time.getTime() < curr_time.getTime());
             if (time.getTime() < curr_time.getTime()) {
@@ -3331,6 +3337,7 @@ function checkPresenceInTrusted(url) {
         }
     });
     console.log("present in good: " + good);
+    document.getElementsByTagName('body')[0].style.display = "block";
     return good;
 }
 
@@ -3393,4 +3400,4 @@ console.log('not over');
 //     }
 // }, 100);
 console.log("over");
-document.getElementsByTagName('body')[0].style.display = 'block';
+// document.getElementsByTagName('body')[0].style.display = 'block';
