@@ -9,7 +9,7 @@
   "author": "Rajat",
   "license": "ISC",
   "dependencies": {
-    "botbuilder": "^3.5.4",
+    "botbuilder": "^3.6.0",
     "botbuilder-azure": "^3.0.2",
     "request": "^2.79.0",
     "restify": "^4.3.0"
