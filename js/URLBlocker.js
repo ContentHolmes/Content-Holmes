@@ -3097,7 +3097,8 @@ function BlockURL() {
             var parsed = JSON.parse(JSON.stringify(items.global.tempBlockedURLs[u]));
             var tempURL = parsed.url;
             var time = new Date(parsed.time.toString());
-            var curr_time = new Date(new Date().toUTCString());
+            var time2 = new Date();
+            var curr_time = new Date(time2.getTime()+time2.getTimezoneOffset()*60000);
             // console.log(curr_time + "curr_time" + time + "time" + tempURL + "URL" + "here");
             // console.log(time.getTime() < curr_time.getTime());
             if (time.getTime() < curr_time.getTime()) {

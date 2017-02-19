@@ -170,7 +170,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         session.dialogData.name = builder.EntityRecognizer.findEntity(args.entities, 'blocking::name');
         session.dialogData.website = builder.EntityRecognizer.findEntity(args.entities, 'blocking::website');
         session.dialogData.time = builder.EntityRecognizer.findEntity(args.entities, 'blocking::time');
-        session.dialogData.time = session.dialogData.time ? session.dialogData.time.entity : "Inf";
+        session.dialogData.time = session.dialogData.time ? session.dialogData.time.entity : "1";
         // session.send(args);
         // console.log(session.userData.childArray[0]);
         if(!session.dialogData.name) {

@@ -185,7 +185,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 	},
 	function (session, results, next) {
 		if(results.response) {
-			session.dialogData.name=results.response;
+			session.dialogData.name=results.response.entity;
 		}
 		if(!session.dialogData.website) {
 			session.sendTyping();
@@ -249,7 +249,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     },
     function (session, results, next) {
         if(results.response) {
-            session.dialogData.name=results.response;
+            session.dialogData.name=results.response.entity;
         }
         if(!session.dialogData.time) {
             session.sendTyping();

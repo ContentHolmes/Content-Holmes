@@ -83,9 +83,22 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     }
 });
 
-
 var email, password, childName, dataAvailable = false;
 var changedTime = "", changedInterval = 0, blocked = false;
+
+chrome.storage.local.get('info', function(item) {
+            console.log(item.info);
+            if (!item.info) {
+                console.log('you r here');
+                dataAvailable = false;
+                chrome.tabs.create({
+                    url: chrome.extension.getURL("/html/first.html")
+                });
+                // chrome.runtime.sendMessage({
+                //     redirect: chrome.extension.getURL("/html/first.html")
+                // });
+            }
+            });
 
 function intervalStuff() {
     console.log("background check");
@@ -104,9 +117,6 @@ function intervalStuff() {
             if (!item.info) {
                 console.log('you r here');
                 dataAvailable = false;
-                chrome.tabs.create({
-                    url: chrome.extension.getURL("/html/first.html")
-                });
                 // chrome.runtime.sendMessage({
                 //     redirect: chrome.extension.getURL("/html/first.html")
                 // });
@@ -136,7 +146,7 @@ function intervalStuff() {
                     var parsed = JSON.parse(JSON.stringify(data));
                     if (parsed.success == true) {
                         items.global.tempBlockedURLs = parsed.URLArray;
-                        // console.log(JSON.stringify(items.global.tempBlockedURLs));
+                        console.log(JSON.stringify(items.global.tempBlockedURLs));
                         chrome.storage.local.set({
                             global: items.global
                         });
