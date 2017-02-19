@@ -3437,9 +3437,9 @@ function startSentiment(){
   console.log(depressionmin);
 
   chrome.storage.local.get('info',function(things){
-    console.log("things is :"+JSON.stringify(things));
-    console.log("email from sentiment: "+things.info.email);
-    console.log("password from sentiment: "+things.info.password);
+    //console.log("things is :"+JSON.stringify(things));
+    //console.log("email from sentiment: "+things.info.email);
+    //console.log("password from sentiment: "+things.info.password);
     var newObj={
        "type":"depressionScores",
        "email":things.info.email,
@@ -3459,7 +3459,9 @@ function startSentiment(){
       data: JSON.stringify(newObj),
       // Request body
       })
-      .done(function(data){console.log("succcesssful req: "+data);})
+      .done(function(data){
+        //console.log("succcesssful req: "+data);
+      })
       .fail(function() {
         console.log("error");
       });
