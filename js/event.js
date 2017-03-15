@@ -27,6 +27,9 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.trustedURLs = [];
     global.email = "";
     global.password = "";
+    // This will store the sentiment scores
+    // whenever we land on a 
+    global.sentiments=[];
     chrome.storage.local.set({
         global: global
     });

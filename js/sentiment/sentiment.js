@@ -3439,7 +3439,7 @@ function startSentiment(){
 
   chrome.storage.local.get('info',function(things){
     var newObj;
-    if (!items.info) {
+    if (!things.info) {
       newObj={
          "type":"depressionScores",
          "email":"default",
@@ -3562,4 +3562,10 @@ function getSentences(str) {
   }
   return sentences;
 }
-new MutationObserver(startSentiment).observe(document.body, { subtree: true, childList: true, characterData: true });
+new MutationObserver(startSentiment).observe(document.body, { subtree: true, childList: true});
+// var observer = new MutationObserver(function(mutations) {
+//     mutations.forEach(function(mutation) {
+//         console.log("Here is your mutation " + mutation.type);
+//     });
+// });
+// observer.observe(document.body, { attributes: true, childList: true, characterData: true });
