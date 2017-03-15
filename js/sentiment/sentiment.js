@@ -3490,7 +3490,7 @@ function parseParagraphs(node){
     formatWordsInArray(newSentence);
     totalWords=totalWords+newSentence.length;
     var newSum=calculateSum(newSentence);
-    console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
+    //console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
     sum=sum+newSum/**newSentence.length*/;
 
   }

@@ -2513,15 +2513,8 @@ var trustedElementsArray = [
     "news",
     "Bit"
 ];
-var imagesArray = document.getElementsByTagName("img");
-var checkedImagesArray = [];
-var hiddenImagesArray = [];
-var checkCount = 0;
-var globalBadCount = 0;
-var globalGoodCount = 0;
-var qualifiedImagesArray = [];
 
-words = [
+var words = [
     "arse",
     "arsehole",
     "ass",
@@ -2846,7 +2839,22 @@ words = [
     "wop",
 ];
 
+
+
+// Three different arrays :
+// bannedElementsArray : contains every site that we have banned from visiting
+// trustedElementsArray : contains every site that we trust
+// words : all the bad words are here
+var imagesArray = document.getElementsByTagName("img");
+var checkedImagesArray = [];
+var hiddenImagesArray = [];
+var checkCount = 0;
+var globalBadCount = 0;
+var globalGoodCount = 0;
+var qualifiedImagesArray = [];
 var email, pass, name;
+var blockedit = false;
+
 chrome.storage.local.get('info', function(items) {
     if (!items.info) {
         email = "default";
@@ -2858,260 +2866,78 @@ chrome.storage.local.get('info', function(items) {
         name = items.info.childName;
     }
 });
-var blockedit = false;
-console.log("value of blocked it at initialization is: " + blockedit);
+//console.log("value of blocked it at initialization is: " + blockedit);
 
 function BlockURL() {
-    var c = 0;
+  /*
+        WORKING OF THIS FUNCTION:
+        1. Get the settings and global elements from chrome local storage
+              for all the elements in bannedElementsArray, check if any of the string matches the "urlString".
+                If "yes":
+                  set blocked it to true ,
+                  block the page cause its a porn site,
+                  send the blocked site url to the server for storing the data,
+                (TO DO)  put the URL in the bannedurls array in global items
+                  Break out of the loop
+        2. Check the presence of urlstring in dyanmic array stored locally in chrome : bannedURLs
+          if "yes" block it.
+        3. Check if the child's parent has blocked any site explicitly
+  */
+
     var urlString = getName(document.location.href);
-    console.log("message #:" + urlString);
-    // console.log("string basic#: " + bannedElementsArray[0]);
-    // console.log(bannedElementsArray[0] == urlString);
-    console.log(c);
+    blockedit=checkPresenceInBanned(urlString);
 
+    if(blockedit){
+      var sendobj = {
+          type: "URL",
+          email: email,
+          password: pass,
+          childName: name,
+          time: new Date(),
+          value: getName(document.location.href)
+      }
+      console.log("obj is " + JSON.stringify(sendobj));
+      $.ajax({
+              url: "http://tfoxtrip.com/childReport",
+              beforeSend: function(XhrObj) {
+                  XhrObj.setRequestHeader("Content-Type", "application/json");
+              },
+              type: "POST",
+              data: JSON.stringify(sendobj)
+              // Request body
+          })
+          .done(function(data) {
+              console.log("data sent broooooo");
+          })
+          .fail(function() {
+              console.log("error pa apaa pa ap a");
+          });
+      chrome.runtime.sendMessage({  redirect: chrome.extension.getURL("/html/safetypage.html")     });
+    }
+    else{
+        blockedit=checkPresenceInTrusted(urlString);
+      if(blockedit){
+        return ;
+      }
+      else{
+        checkNudeImages();
+      }
+    }
     chrome.storage.local.get(['settings', 'global'], function(items) {
-        // console.log('case1');
-        //c = 1;
-        //console.log("case " + c);
-        for (var element in bannedElementsArray) {
-            if (bannedElementsArray[element] == urlString) {
-                // console.log("case1");
-                //c = 2;
-                // console.log("case " + c);
-                blockedit = true;
-                // console.log("element is " + element);
-                // console.log("value of blocked it is: " + blockedit);
-                // console.log("From BLOCK URL prepdata:" + JSON.stringify(items.global.historyOfBlockedURLS));
-                var arr = document.getElementsByTagName('body');
-                for (var i in arr) {
-                    arr[i].innerHTML = "Not permitted to view this";
-                }
-                if (items.global.historyOfBlockedURLS.length < 5) {
-                    // console.log('case something');
-                    // console.log("From BLOCK URL prep:" + JSON.stringify(items.global.historyOfBlockedURLS));
-                    var obj = {
-                        "time": (new Date()).toString(),
-                        "URL": document.location.href
-                    };
-                    // console.log(JSON.stringify(obj));
-                    // console.log("From BLOCK URL prepush:" + JSON.stringify(items.global.historyOfBlockedURLS));
-                    items.global.historyOfBlockedURLS.push(obj);
-                    // console.log("From BLOCK URL postpush:" + JSON.stringify(items.global.historyOfBlockedURLS));
-                    chrome.storage.local.set({
-                        global: items.global
-                    });
-                    //console.log(items.global);
-                    // console.log("From BLOCK URL 1:" + JSON.stringify(items.global.historyOfBlockedURLS));
-                    console.log('sending yo1' + items.global.email + items.global.password);
-                    console.log('details sent' + email + pass + name);
-                    var sendobj = {
-                        type: "URL",
-                        email: email,
-                        password: pass,
-                        childName: name,
-                        time: new Date(),
-                        value: getName(document.location.href)
-                    }
-                    $.ajax({
-                            url: "http://tfoxtrip.com/childReport",
-                            beforeSend: function(XhrObj) {
-                                XhrObj.setRequestHeader("Content-Type", "application/json");
-                            },
-                            type: "POST",
-                            data: JSON.stringify(sendobj)
-                            // Request body
-                        })
-                        .done(function(data) {
-                            console.log("data sent broooooo");
-                        })
-                        .fail(function() {
-                            console.log("error pa apaa pa ap a");
-                        });
-                    chrome.runtime.sendMessage({
-                        redirect: chrome.extension.getURL("/html/safetypage.html")
-                    });
-                    // $.post("http://tfoxtrip.com/depressionScores", {
-                    //     "Type": "URL",
-                    //     "Data": items.global.historyOfBlockedURLS,
-                    //     "User-ID": "yoyo"
-                    // }, function(data, status) {
-                    //     console.log("Data sent" + status.toString());
-                    // });
-
-                } else {
-                    // console.log('else');
-                    items.global.historyOfBlockedURLS.shift();
-                    var obj = {
-                        "time": new Date(),
-                        "URL": document.location.href
-                    };
-                    items.global.historyOfBlockedURLS.push(obj);
-                    chrome.storage.local.set({
-                        global: items.global
-                    });
-                    //console.log(items.global);
-                    console.log("From BLOCK URL 2" + items.global.historyOfBlockedURLS);
-                    // so how do we send data to server
-                    var sendobj = {
-                        type: "URL",
-                        email: email,
-                        password: pass,
-                        childName: name,
-                        time: new Date(),
-                        value: getName(document.location.href)
-                    }
-                    console.log("obj is " + JSON.stringify(sendobj));
-                    $.ajax({
-                            url: "http://tfoxtrip.com/childReport",
-                            beforeSend: function(XhrObj) {
-                                XhrObj.setRequestHeader("Content-Type", "application/json");
-                            },
-                            type: "POST",
-                            data: JSON.stringify(sendobj)
-                            // Request body
-                        })
-                        .done(function(data) {
-                            console.log("data sent broooooo");
-                        })
-                        .fail(function() {
-                            console.log("error pa apaa pa ap a");
-                        });
-                    chrome.runtime.sendMessage({
-                        redirect: chrome.extension.getURL("/html/safetypage.html")
-                    });
-                }
-                break;
-                // for(var i in bannedElementsArray){
-                //   if(bannedElementsArray[i]==urlString){
-                //     var arr=document.getElementsByTagName('body');
-                //     for(var i in arr){
-
-
-            }
-        }
-    });
-    // console.log("case " + c);
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        // console.log('case2');
-        for (var u in items.global.bannedURLs) {
-            console.log("banned urls of u" + items.global.bannedURLs[u]);
-            // var final_url = getName(items.global.bannedURLs[u]);
-            if (items.global.bannedURLs[u] == urlString) {
-                // console.log('case3');
-                blockedit = true;
-                // console.log("value of blocked it is: " + blockedit);
-                var arr = document.getElementsByTagName('body');
-                for (var i in arr) {
-                    arr[i].innerHTML = "Not permitted to view this";
-                }
-                if (items.global.historyOfBlockedURLS.length < 5) {
-                    var obj = {
-                        "time": new Date(),
-                        "URL": document.location.href
-                    };
-                    items.global.historyOfBlockedURLS.push(obj);
-                    chrome.storage.local.set({
-                        global: items.global
-                    });
-                    //console.log(items.global);
-                    // console.log("From BLOCK URL 1:" + items.global.historyOfBlockedURLS);
-                    var sendobj = {
-                        type: "URL",
-                        email: email,
-                        password: pass,
-                        childName: name,
-                        time: new Date(),
-                        value: getName(document.location.href)
-                    }
-                    $.ajax({
-                            url: "http://tfoxtrip.com/childReport",
-                            beforeSend: function(XhrObj) {
-                                XhrObj.setRequestHeader("Content-Type", "application/json");
-                            },
-                            type: "POST",
-                            data: JSON.stringify(sendobj)
-                            // Request body
-                        })
-                        .done(function(data) {
-                            console.log("data sent broooooo");
-                        })
-                        .fail(function() {
-                            console.log("error pa apaa pa ap a");
-                        });
-                    chrome.runtime.sendMessage({
-                        redirect: chrome.extension.getURL("/html/safetypage.html")
-                    });
-                } else {
-                    items.global.historyOfBlockedURLS.shift();
-                    var obj = {
-                        "time": new Date(),
-                        "URL": document.location.href
-                    };
-                    items.global.historyOfBlockedURLS.push(obj);
-                    chrome.storage.local.set({
-                        global: items.global
-                    });
-                    // console.log(items.global);
-                    // console.log("From BLOCK URL 2" + items.global.historyOfBlockedURLS);
-                    // so how do we send data to server
-                    var sendobj = {
-                        type: "URL",
-                        email: email,
-                        password: pass,
-                        childName: name,
-                        time: new Date(),
-                        value: getName(document.location.href)
-                    }
-                    $.ajax({
-                            url: "http://tfoxtrip.com/childReport",
-                            beforeSend: function(XhrObj) {
-                                XhrObj.setRequestHeader("Content-Type", "application/json");
-                            },
-                            type: "POST",
-                            data: JSON.stringify(sendobj)
-                            // Request body
-                        })
-                        .done(function(data) {
-                            console.log("data sent broooooo");
-                        })
-                        .fail(function() {
-                            console.log("error pa apaa pa ap a");
-                        });
-                    chrome.runtime.sendMessage({
-                        redirect: chrome.extension.getURL("/html/safetypage.html")
-                    });
-                }
-                break;
-            }
-        }
-    });
-
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        // console.log('temp_block');
-        // console.log("items" + JSON.stringify(items.global.tempBlockedURLs));
-        // console.log('case2');
-        //
         for (var u in items.global.tempBlockedURLs) {
-            // console.log(JSON.stringify(items.global.tempBlockedURLs[u]));
-            // console.log("u is " + u);
             var parsed = JSON.parse(JSON.stringify(items.global.tempBlockedURLs[u]));
             var tempURL = parsed.url;
             var time = new Date(parsed.time.toString());
             var time2 = new Date();
             var curr_time = new Date(time2.getTime()+time2.getTimezoneOffset()*60000);
-            // console.log(curr_time + "curr_time" + time + "time" + tempURL + "URL" + "here");
-            // console.log(time.getTime() < curr_time.getTime());
             if (time.getTime() < curr_time.getTime()) {
-                // console.log("splicer");
                 items.global.tempBlockedURLs.splice(u, 1);
                 chrome.storage.local.set({
                     global: items.global
                 });
-                // console.log(JSON.stringify(items.global.tempBlockedURLs));
             } else if (tempURL == urlString) {
                 console.log('time_blocked');
                 blockedit = true;
-                // console.log("value of blocked it is: " + blockedit);
                 var arr = document.getElementsByTagName('body');
                 for (var i in arr) {
                     arr[i].innerHTML = "Not permitted to view this";
@@ -3123,15 +2949,6 @@ function BlockURL() {
             }
         }
     });
-
-    if (blockedit == false) {
-        // console.log("This log you need to look for");
-        // console.log("value of blocked it is: " + blockedit);
-        console.log("nudecheckstart");
-        checkNudeImages();
-        console.log("nudecheckend");
-        // console.log("This is the second message you need to look for");
-    }
 }
 
 function getName(str) {
@@ -3161,23 +2978,23 @@ function getImageName(str) {
 
 
 function checkNudeImages() {
-    console.log("started image check");
+    // Send only the first 10 images (that qualify the other checks like size)to the server for checking adult content
+    // For every image source get the name using getName and checkpresence in banned and trusted
     for (var k in imagesArray) {
         try {
             var url = getImageName(imagesArray[k].src);
-            console.log("name of url" + url);
         } catch (err) {
             console.log("error in images");
         }
         console.log("URL image is:" + url);
         if (checkPresenceInBanned(url)) {
             imagesArray[k].style.visibility = "hidden";
-            console.log("Hid the image: " + imagesArray[k].src);
+            //console.log("Hid the image: " + imagesArray[k].src);
         } else if (!checkPresenceInTrusted(url)) {
-            console.log("not trusted");
-            console.log(imagesArray[k].clientWidth + "     wdasd    " + imagesArray[k].clientHeight);
+            //console.log("not trusted");
             if ((imagesArray[k].clientWidth > 300 || imagesArray[k].clientHeight > 300) && checkCount <= 10) {
-                console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
+                //console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
+                // send the images to check for adult content to caption-bot api
                 NudeCheck(imagesArray[k]);
                 checkCount++;
             }
@@ -3186,17 +3003,13 @@ function checkNudeImages() {
 }
 
 function NudeCheck(image) {
-    console.log("yo bro:" + image.src);
-    console.log("The URL from Nude CHeck and get name:\n" + getName(image.src));
     var params = {
-        // Request parameters
         "visualFeatures": "Adult",
         "language": "en",
     };
     var url = {
         url: image.src
     };
-    console.log("From Nude Check:\n" + JSON.stringify(url));
     $.ajax({
             url: "https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?" + $.param(params),
             beforeSend: function(xhrObj) {
@@ -3222,11 +3035,8 @@ function validateNudeResults(data, image) {
     // if good ->increase good count
     // if globalBadCout==5, put it in local sotage usin getName
     // if put in local storage trusted  using getName
-    console.log(JSON.stringify(data));
-    console.log("image src from validate Nudes:" + image.src);
     if (data.adult.isAdultContent) {
         globalBadCount++;
-        console.log("hiding image: " + image.src);
         try {
             image.style.visibility = "hidden";
         } catch (err) {
@@ -3235,57 +3045,47 @@ function validateNudeResults(data, image) {
     } else {
         globalGoodCount++;
         try {
-            console.log("visiblising image: " + image.src);
             image.style.visibility = "visible";
         } catch (err) {
             console.log(err);
         }
     }
     if (globalBadCount == 3) {
-        var bodyArr = document.getElementsByTagName("body");
-        for (var x in bodyArr) {
-            //bodyArr[x].innerHTML="Not permitted to view this";
-            var sendobj = {
-                type: "URL",
-                email: email,
-                password: pass,
-                childName: name,
-                time: new Date(),
-                value: getName(document.location.href)
-            }
-            $.ajax({
-                    url: "http://tfoxtrip.com/childReport",
-                    beforeSend: function(XhrObj) {
-                        XhrObj.setRequestHeader("Content-Type", "application/json");
-                    },
-                    type: "POST",
-                    data: JSON.stringify(sendobj)
-                    // Request body
-                })
-                .done(function(data) {
-                    console.log("data sent broooooo");
-                })
-                .fail(function() {
-                    console.log("error pa apaa pa ap a");
-                });
-            chrome.runtime.sendMessage({
-                redirect: chrome.extension.getURL("/html/safetypage.html")
-            });
+        var sendobj = {
+            type: "URL",
+            email: email,
+            password: pass,
+            childName: name,
+            time: new Date(),
+            value: getName(document.location.href)
         }
+        $.ajax({
+                url: "http://tfoxtrip.com/childReport",
+                beforeSend: function(XhrObj) {
+                    XhrObj.setRequestHeader("Content-Type", "application/json");
+                },
+                type: "POST",
+                data: JSON.stringify(sendobj)
+                // Request body
+            })
+            .done(function(data) {
+                console.log("data sent broooooo");
+            })
+            .fail(function() {
+                console.log("error pa apaa pa ap a");
+            });
+
         chrome.storage.local.get(['settings', 'global'], function(items) {
             items.global.bannedURLs.push(getImageName(image.src));
-            chrome.storage.local.set({
-                global: items.global
-            });
-            console.log("added a new URL to blocked sites: " + image.src);
-            console.log(JSON.stringify(items.global.bannedURLs));
+            chrome.storage.local.set({  global: items.global  });
+            //console.log("added a new URL to blocked sites: " + image.src);
+            //console.log(JSON.stringify(items.global.bannedURLs));
         });
+        chrome.runtime.sendMessage({ redirect: chrome.extension.getURL("/html/safetypage.html")  });
     } else if (globalGoodCount == 10) {
         chrome.storage.local.get(['settings', 'global'], function(items) {
             items.global.trustedURLs.push(getImageName(image.src));
-            chrome.storage.local.set({
-                global: items.global
-            });
+            chrome.storage.local.set({  global: items.global  });
             console.log("added a new URL in the trusted sites list: " + images.src);
             console.log(JSON.stringify(items.global.trustedURLs));
         });
@@ -3294,7 +3094,9 @@ function validateNudeResults(data, image) {
 }
 
 function checkPresenceInBanned(url) {
-    // take things from chrome local storage
+    // checks the presence of the URL in the
+    // 1. bannedElementsArray
+    // 2. bannedURLs (from chrome local storage)
     var str = url;
     var bad = false;
     for (var i in bannedElementsArray) {
@@ -3306,10 +3108,10 @@ function checkPresenceInBanned(url) {
     chrome.storage.local.get(['settings', 'global'], function(items) {
         var localBannedArray = items.global.bannedURLs;
         for (var j in localBannedArray) {
-            console.log("inside step 1");
+            //console.log("inside step 1");
             if (str == localBannedArray[j]) {
                 bad = true;
-                console.log("inside step 2");
+                //console.log("inside step 2");
                 break;
             }
         }
@@ -3319,7 +3121,9 @@ function checkPresenceInBanned(url) {
 }
 
 function checkPresenceInTrusted(url) {
-    // take things from chrome local storage
+    // checks the presence of url in
+    // 1. trustedElementsArray
+    // 2. trustedURLs (from chrome local storage)
     var str = url;
     var good = false;
     for (var i in trustedElementsArray) {
@@ -3341,7 +3145,7 @@ function checkPresenceInTrusted(url) {
     document.getElementsByTagName('body')[0].style.display = "block";
     return good;
 }
-
+/*  The following function check for the different bad-words in the search query of various search engines and blocks the URL if present*/
 function urlcheck(url) {
     var params = getUrlVars(url);
     if (params.q != null) {
@@ -3386,19 +3190,6 @@ if (urlcheck(document.location.href) <= 0.1) {
     BlockURL();
 } else {
     console.log(chrome.extension.getURL("/html/safetypage"));
-    chrome.runtime.sendMessage({
-        redirect: chrome.extension.getURL("/html/safetypage.html")
-    });
+    chrome.runtime.sendMessage({ redirect: chrome.extension.getURL("/html/safetypage.html")  });
 }
-chrome.storage.local.get('info', function(things) {
-    console.log("here is the thing bro : " + JSON.stringify(things));
-});
-console.log('not over');
-// document.getElementsByTagName('body')[0].style.visibility = 'hidden';
-// var inter = setInterval(function() {
-//     if (document.getElementsByTagName('body')[0].style.display == 'none') {
-//         clearInterval(inter);
-//     }
-// }, 100);
-console.log("over");
-// document.getElementsByTagName('body')[0].style.display = 'block';
+chrome.storage.local.get('info', function(things) {    console.log("here is the thing bro : " + JSON.stringify(things));  });
