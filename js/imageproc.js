@@ -1,4 +1,6 @@
-
+/*
+This contains OCR at the most preliminary stage
+*/
 
 
 
