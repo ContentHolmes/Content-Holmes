@@ -13,11 +13,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
 
 
 var fn2 = function() {
-    if (document.getElementsByTagName('body')[0] != null) {
-        document.getElementsByTagName('body')[0].style.display = 'none';
-        console.log("hidden ho gaya");
-        clearInterval(inter2);
-    }
+    console.log('running');
+    document.getElementsByTagName('body')[0].style.visibility = 'hidden';
 };
 fn2();
-var inter2 = setInterval(fn2, 100);

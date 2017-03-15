@@ -35,7 +35,7 @@
         "all_frames": true,
         "js": ["js/URLInviz.js"],
         "matches": ["<all_urls>"],
-        "run_at": "document_start"
+        "run_at": "document_end"
     }, {
         "all_frames": true,
         "js": ["js/jquery-2.1.4.min.js", "js/URLBlocker.js"],
@@ -46,11 +46,6 @@
         "js": ["js/jquery-2.1.4.min.js", "js/content_script.js", "js/sentiment/sentiment.js"],
         "matches": ["<all_urls>"],
         "run_at": "document_end"
-    }, {
-        "all_frames": true,
-        "js": ["js/URLUnInviz.js"],
-        "matches": ["<all_urls>"],
-        "run_at": "document_idle"
     }],
     "permissions": [
         "tabs", "storage", "activeTab"

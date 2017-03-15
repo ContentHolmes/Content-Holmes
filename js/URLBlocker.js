@@ -1,4 +1,5 @@
 // console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
+var no_of_checks = 0;
 var bannedElementsArray = [
     "toppornsites",
     "xvideos",
@@ -331,7 +332,6 @@ var bannedElementsArray = [
     "pornbits",
     "torsky",
     "webop",
-    "amazon",
     "pinkcherryaffiliate",
     "edenfantasys",
     "bestpornstardb",
@@ -2885,6 +2885,7 @@ function BlockURL() {
   */
 
     var urlString = getName(document.location.href);
+    console.log('url string' + urlString);
     blockedit=checkPresenceInBanned(urlString);
 
     if(blockedit){
@@ -2917,6 +2918,8 @@ function BlockURL() {
     else{
         blockedit=checkPresenceInTrusted(urlString);
       if(blockedit){
+      	console.log('trust');
+	    document.getElementsByTagName('body')[0].style.visibility = 'visible';
         return ;
       }
       else{
@@ -2978,6 +2981,8 @@ function getImageName(str) {
 
 
 function checkNudeImages() {
+	no_of_checks = 0;
+    checkCount = 0;
     // Send only the first 10 images (that qualify the other checks like size)to the server for checking adult content
     // For every image source get the name using getName and checkpresence in banned and trusted
     for (var k in imagesArray) {
@@ -3000,6 +3005,10 @@ function checkNudeImages() {
             }
         }
     }
+    if(checkCount == 0){
+        document.getElementsByTagName('body')[0].style.visibility = 'visible';
+    }
+    console.log('check count2' + checkCount);
 }
 
 function NudeCheck(image) {
@@ -3044,11 +3053,6 @@ function validateNudeResults(data, image) {
         }
     } else {
         globalGoodCount++;
-        try {
-            image.style.visibility = "visible";
-        } catch (err) {
-            console.log(err);
-        }
     }
     if (globalBadCount == 3) {
         var sendobj = {
@@ -3090,7 +3094,12 @@ function validateNudeResults(data, image) {
             console.log(JSON.stringify(items.global.trustedURLs));
         });
     }
-
+    no_of_checks++;
+    console.log('check count' + checkCount);
+    if(no_of_checks == checkCount){	 
+        console.log("end here");
+	    document.getElementsByTagName('body')[0].style.visibility = 'visible';
+    }
 }
 
 function checkPresenceInBanned(url) {
@@ -3141,8 +3150,6 @@ function checkPresenceInTrusted(url) {
             }
         }
     });
-    console.log("present in good: " + good);
-    document.getElementsByTagName('body')[0].style.display = "block";
     return good;
 }
 /*  The following function check for the different bad-words in the search query of various search engines and blocks the URL if present*/
