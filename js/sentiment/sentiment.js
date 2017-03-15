@@ -3425,29 +3425,39 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function startSentiment(){
+  // Gets all the text nodes and checks the text to calculate the sentiment score.
   var iterator=document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
   var depressionmin = 0;
   var depressionCalc;
   while ((node = iterator.nextNode())) {
     depressionCalc=parseParagraphs(node);
-    if(depressionCalc<depressionmin) {
+    if(depressionCalc < depressionmin) {
       depressionmin = depressionCalc;
     }
   }
   console.log(depressionmin);
 
   chrome.storage.local.get('info',function(things){
-    //console.log("things is :"+JSON.stringify(things));
-    //console.log("email from sentiment: "+things.info.email);
-    //console.log("password from sentiment: "+things.info.password);
-    var newObj={
-       "type":"depressionScores",
-       "email":things.info.email,
-       "password":things.info.password,
-       "childName": things.info.childName,
-       "time":new Date(),
-       "value":depressionmin
-    };
+    var newObj;
+    if (!items.info) {
+      newObj={
+         "type":"depressionScores",
+         "email":"default",
+         "password":"default",
+         "childName": "default",
+         "time":new Date(),
+         "value":depressionmin
+      };
+    } else {
+      newObj={
+         "type":"depressionScores",
+         "email":things.info.email,
+         "password":things.info.password,
+         "childName": things.info.childName,
+         "time":new Date(),
+         "value":depressionmin
+      };
+    }
     $.ajax({
       url: "http://tfoxtrip.com/childReport",
       beforeSend: function(xhrObj){
@@ -3469,6 +3479,7 @@ function startSentiment(){
 
   return;
 }
+
 function parseParagraphs(node){
   var ignoreThese = {
     "STYLE": 0,
