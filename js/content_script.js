@@ -303,7 +303,7 @@ var g_replacements = [{
     {
         "active": true,
         "case": "Override",
-        "repA": "ass",
+        "repA": "mrigesh",
         "repB": "butt",
         "type": "Simple"
     },
