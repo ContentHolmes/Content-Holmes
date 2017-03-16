@@ -775,12 +775,7 @@ var bannedElementsArray = [
     "pepsaga",
     "thetalkingcunt",
     "kitnkayboodle.comicgenesis",
-    "videolan",
     "codecguide",
-    "google",
-    "chrome.google",
-    "getfirefox",
-    "ccleaner",
     "gifmeat.tumblr",
     "thegifer.tumblr",
     "ruinedorgasms",
@@ -2415,6 +2410,7 @@ var bannedElementsArray = [
 
 var trustedElementsArray = [
     "google",
+    "google.co",
     "youtube",
     "facebook",
     "baidu",
@@ -2869,62 +2865,62 @@ chrome.storage.local.get('info', function(items) {
 //console.log("value of blocked it at initialization is: " + blockedit);
 
 function BlockURL() {
-  /*
-        WORKING OF THIS FUNCTION:
-        1. Get the settings and global elements from chrome local storage
-              for all the elements in bannedElementsArray, check if any of the string matches the "urlString".
-                If "yes":
-                  set blocked it to true ,
-                  block the page cause its a porn site,
-                  send the blocked site url to the server for storing the data,
-                (TO DO)  put the URL in the bannedurls array in global items
-                  Break out of the loop
-        2. Check the presence of urlstring in dyanmic array stored locally in chrome : bannedURLs
-          if "yes" block it.
-        3. Check if the child's parent has blocked any site explicitly
-  */
+    /*
+          WORKING OF THIS FUNCTION:
+          1. Get the settings and global elements from chrome local storage
+                for all the elements in bannedElementsArray, check if any of the string matches the "urlString".
+                  If "yes":
+                    set blocked it to true ,
+                    block the page cause its a porn site,
+                    send the blocked site url to the server for storing the data,
+                  (TO DO)  put the URL in the bannedurls array in global items
+                    Break out of the loop
+          2. Check the presence of urlstring in dyanmic array stored locally in chrome : bannedURLs
+            if "yes" block it.
+          3. Check if the child's parent has blocked any site explicitly
+    */
 
     var urlString = getName(document.location.href);
     console.log('url string' + urlString);
-    blockedit=checkPresenceInBanned(urlString);
+    blockedit = checkPresenceInBanned(urlString);
 
-    if(blockedit){
-      var sendobj = {
-          type: "URL",
-          email: email,
-          password: pass,
-          childName: name,
-          time: new Date(),
-          value: getName(document.location.href)
-      }
-      console.log("obj is " + JSON.stringify(sendobj));
-      $.ajax({
-              url: "http://tfoxtrip.com/childReport",
-              beforeSend: function(XhrObj) {
-                  XhrObj.setRequestHeader("Content-Type", "application/json");
-              },
-              type: "POST",
-              data: JSON.stringify(sendobj)
-              // Request body
-          })
-          .done(function(data) {
-              console.log("data sent broooooo");
-          })
-          .fail(function() {
-              console.log("error pa apaa pa ap a");
-          });
-      chrome.runtime.sendMessage({  redirect: chrome.extension.getURL("/html/safetypage.html")     });
-    }
-    else{
-        blockedit=checkPresenceInTrusted(urlString);
-      if(blockedit){
-      	console.log('trust');
-	    document.getElementsByTagName('body')[0].style.visibility = 'visible';
-        return ;
-      }
-      else{
-        checkNudeImages();
-      }
+    if (blockedit) {
+        var sendobj = {
+            type: "URL",
+            email: email,
+            password: pass,
+            childName: name,
+            time: new Date(),
+            value: getName(document.location.href)
+        }
+        // console.log("obj is " + JSON.stringify(sendobj));
+        $.ajax({
+                url: "http://tfoxtrip.com/childReport",
+                beforeSend: function(XhrObj) {
+                    XhrObj.setRequestHeader("Content-Type", "application/json");
+                },
+                type: "POST",
+                data: JSON.stringify(sendobj)
+                // Request body
+            })
+            .done(function(data) {
+                console.log("data sent to server");
+            })
+            .fail(function() {
+                console.log("error in server upload");
+            });
+        chrome.runtime.sendMessage({
+            redirect: chrome.extension.getURL("/html/safetypage.html")
+        });
+    } else {
+        blockedit = checkPresenceInTrusted(urlString);
+        if (blockedit) {
+            // console.log('trust');
+            document.getElementsByTagName('body')[0].style.visibility = 'visible';
+            return;
+        } else {
+            checkNudeImages();
+        }
     }
     chrome.storage.local.get(['settings', 'global'], function(items) {
         for (var u in items.global.tempBlockedURLs) {
@@ -2932,14 +2928,14 @@ function BlockURL() {
             var tempURL = parsed.url;
             var time = new Date(parsed.time.toString());
             var time2 = new Date();
-            var curr_time = new Date(time2.getTime()+time2.getTimezoneOffset()*60000);
+            var curr_time = new Date(time2.getTime() + time2.getTimezoneOffset() * 60000);
             if (time.getTime() < curr_time.getTime()) {
                 items.global.tempBlockedURLs.splice(u, 1);
                 chrome.storage.local.set({
                     global: items.global
                 });
             } else if (tempURL == urlString) {
-                console.log('time_blocked');
+                // console.log('time_blocked');
                 blockedit = true;
                 var arr = document.getElementsByTagName('body');
                 for (var i in arr) {
@@ -2981,7 +2977,7 @@ function getImageName(str) {
 
 
 function checkNudeImages() {
-	no_of_checks = 0;
+    no_of_checks = 0;
     checkCount = 0;
     // Send only the first 10 images (that qualify the other checks like size)to the server for checking adult content
     // For every image source get the name using getName and checkpresence in banned and trusted
@@ -2991,7 +2987,7 @@ function checkNudeImages() {
         } catch (err) {
             console.log("error in images");
         }
-        console.log("URL image is:" + url);
+        // console.log("URL image is:" + url);
         if (checkPresenceInBanned(url)) {
             imagesArray[k].style.visibility = "hidden";
             //console.log("Hid the image: " + imagesArray[k].src);
@@ -3005,10 +3001,10 @@ function checkNudeImages() {
             }
         }
     }
-    if(checkCount == 0){
+    if (checkCount == 0) {
         document.getElementsByTagName('body')[0].style.visibility = 'visible';
     }
-    console.log('check count2' + checkCount);
+    // console.log('check count2' + checkCount);
 }
 
 function NudeCheck(image) {
@@ -3035,8 +3031,16 @@ function NudeCheck(image) {
             validateNudeResults(data, image);
         })
         .fail(function() {
-            console.log("error");
+            failreturn();
         });
+}
+
+function failreturn() {
+    no_of_checks++;
+    if (no_of_checks == checkCount) {
+        // console.log("end here");
+        document.getElementsByTagName('body')[0].style.visibility = 'visible';
+    }
 }
 
 function validateNudeResults(data, image) {
@@ -3073,32 +3077,39 @@ function validateNudeResults(data, image) {
                 // Request body
             })
             .done(function(data) {
-                console.log("data sent broooooo");
+                // console.log("data sent to server");
             })
             .fail(function() {
-                console.log("error pa apaa pa ap a");
+                // console.log("error in request to server");
             });
 
         chrome.storage.local.get(['settings', 'global'], function(items) {
             items.global.bannedURLs.push(getImageName(image.src));
-            chrome.storage.local.set({  global: items.global  });
+            chrome.storage.local.set({
+                global: items.global
+            });
             //console.log("added a new URL to blocked sites: " + image.src);
             //console.log(JSON.stringify(items.global.bannedURLs));
         });
-        chrome.runtime.sendMessage({ redirect: chrome.extension.getURL("/html/safetypage.html")  });
+        // console.log('going to safetypage');
+        chrome.runtime.sendMessage({
+            redirect: chrome.extension.getURL("/html/safetypage.html")
+        });
     } else if (globalGoodCount == 10) {
         chrome.storage.local.get(['settings', 'global'], function(items) {
             items.global.trustedURLs.push(getImageName(image.src));
-            chrome.storage.local.set({  global: items.global  });
+            chrome.storage.local.set({
+                global: items.global
+            });
             console.log("added a new URL in the trusted sites list: " + images.src);
             console.log(JSON.stringify(items.global.trustedURLs));
         });
     }
     no_of_checks++;
-    console.log('check count' + checkCount);
-    if(no_of_checks == checkCount){	 
-        console.log("end here");
-	    document.getElementsByTagName('body')[0].style.visibility = 'visible';
+    // console.log('check count' + checkCount);
+    if (no_of_checks == checkCount) {
+        // console.log("end here");
+        document.getElementsByTagName('body')[0].style.visibility = 'visible';
     }
 }
 
@@ -3125,7 +3136,7 @@ function checkPresenceInBanned(url) {
             }
         }
     });
-    console.log("present in bad: " + bad);
+    // console.log("present in bad: " + bad);
     return bad;
 }
 
@@ -3192,11 +3203,16 @@ function getUrlVars(href) {
     }
     return vars;
 }
-console.log("Chal gya");
+// console.log("Chal gya");
 if (urlcheck(document.location.href) <= 0.1) {
     BlockURL();
 } else {
-    console.log(chrome.extension.getURL("/html/safetypage"));
-    chrome.runtime.sendMessage({ redirect: chrome.extension.getURL("/html/safetypage.html")  });
+    // console.log('else');
+    // console.log(chrome.extension.getURL("/html/safetypage"));
+    chrome.runtime.sendMessage({
+        redirect: chrome.extension.getURL("/html/safetypage.html")
+    });
 }
-chrome.storage.local.get('info', function(things) {    console.log("here is the thing bro : " + JSON.stringify(things));  });
+// chrome.storage.local.get('info', function(things) {
+//     console.log("here is the thing bro : " + JSON.stringify(things));
+// });
