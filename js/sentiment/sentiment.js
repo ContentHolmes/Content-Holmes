@@ -3435,49 +3435,131 @@ function startSentiment(){
       depressionmin = depressionCalc;
     }
   }
-  console.log(depressionmin);
+  console.log("From minimum depression: "+depressionmin);
+  var newT=lessThanPrevious(depressionmin);
+  if(newT==true){
+    // if yes then add it back into the array with a good logic maintainance.
+    // and send it to the server.
+    console.log("I am inside hrer bros");
+    chrome.storage.local.get('info',function(things){
+      var newObj;
+      if (!things.info) {
+        newObj={
+           "type":"depressionScores",
+           "email":"default",
+           "password":"default",
+           "childName": "default",
+           "time":new Date(),
+           "value":depressionmin
+        };
+      } else {
+        newObj={
+           "type":"depressionScores",
+           "email":things.info.email,
+           "password":things.info.password,
+           "childName": things.info.childName,
+           "time":new Date(),
+           "value":depressionmin
+        };
+      }
+      $.ajax({
+        url: "http://tfoxtrip.com/childReport",
+        beforeSend: function(xhrObj){
+          // Request headers
+          xhrObj.setRequestHeader("Content-Type","application/json");
+        },
 
-  chrome.storage.local.get('info',function(things){
-    var newObj;
-    if (!things.info) {
-      newObj={
-         "type":"depressionScores",
-         "email":"default",
-         "password":"default",
-         "childName": "default",
-         "time":new Date(),
-         "value":depressionmin
-      };
-    } else {
-      newObj={
-         "type":"depressionScores",
-         "email":things.info.email,
-         "password":things.info.password,
-         "childName": things.info.childName,
-         "time":new Date(),
-         "value":depressionmin
-      };
-    }
-    $.ajax({
-      url: "http://tfoxtrip.com/childReport",
-      beforeSend: function(xhrObj){
-        // Request headers
-        xhrObj.setRequestHeader("Content-Type","application/json");
-      },
-
-      type: "POST",
-      data: JSON.stringify(newObj),
-      // Request body
-      })
-      .done(function(data){
-        //console.log("succcesssful req: "+data);
-      })
-      .fail(function() {
-        console.log("error");
-      });
-  });
+        type: "POST",
+        data: JSON.stringify(newObj),
+        // Request body
+        })
+        .done(function(data){
+          console.log("succcesssful req: "+data);
+        })
+        .fail(function() {
+          console.log("error");
+        });
+    });
+  }
 
   return;
+}
+
+function lessThanPrevious(score){
+  /*
+    new=false ;
+    get The sentiments array from global chrome storage. 
+    If empty:
+      simply insert
+      new = true;
+    else :
+      if newDate than previous stored thing, then
+        if length in array==7
+          sentiments.shift()
+          insert a new Element();
+        else 
+          insert a newElement();
+      new=true;
+      else{
+          if array.lastElement().value > score:
+            array.lastElemet()=new Element;
+            new=true;
+      } 
+  */
+  /*
+    object type to store in sentiments array:
+    {
+      "Date":new Date();
+      "value":int;
+    }
+  */
+  var arr=[];
+  var globaling={};
+  var newThing=false;
+  chrome.storage.local.get(['settings', 'global'], function(items) {
+    arr=items.global.sentimentThings;
+    globaling=items.global;
+    console.log("Logging sentiment things : "+JSON.stringify(arr));
+  
+  
+  var newObj={"Date":new Date(),"value":score};
+  if(arr.length == 0){
+    arr.push(newObj);
+    newThing=true;
+  }
+  else{
+    var d=new Date();
+    var dateval=new Date(arr[arr.length-1].Date);
+    if(( d.getTime() - dateval.getTime() )>  86400000){
+      if(arr.length==7){
+        arr.shift();
+        arr.push(newObj);
+      }
+      else{
+        arr.push(newObj);
+      }
+      newThing=true;
+    }
+    else{
+      if(arr[arr.length-1].value > score){
+        arr[arr.length-1]=newObj;
+        newThing=true;
+      }
+    }
+  }
+  if(newThing==true){
+    // globaling.sentimentThings=arr;
+    items.global.sentimentThings=arr;
+    chrome.storage.local.set({
+      global:items.global
+    });
+    console.log("Final global array : "+JSON.stringify(arr));
+  }
+
+  });
+
+  return newThing;
+
 }
 
 function parseParagraphs(node){
@@ -3563,9 +3645,3 @@ function getSentences(str) {
   return sentences;
 }
 new MutationObserver(startSentiment).observe(document.body, { subtree: true, childList: true});
-// var observer = new MutationObserver(function(mutations) {
-//     mutations.forEach(function(mutation) {
-//         console.log("Here is your mutation " + mutation.type);
-//     });
-// });
-// observer.observe(document.body, { attributes: true, childList: true, characterData: true });
