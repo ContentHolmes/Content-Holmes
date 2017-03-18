@@ -12,7 +12,7 @@
     },
 
     "background": {
-        "scripts": ["js/jquery-2.1.4.min.js","js/event.js"],
+        "scripts": ["js/jquery-2.1.4.min.js", "js/event.js"],
         "persistent": false
     },
 
@@ -32,6 +32,11 @@
     // },
 
     "content_scripts": [{
+        "all_frames": true,
+        "js": ["js/jquery-2.1.4.min.js", "js/URLBlock.js"],
+        "matches": ["<all_urls>"],
+        "run_at": "document_start"
+    }, {
         "all_frames": true,
         "js": ["js/URLInviz.js"],
         "matches": ["<all_urls>"],

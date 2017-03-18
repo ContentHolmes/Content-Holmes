@@ -15,5 +15,6 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
 var fn2 = function() {
     console.log('running');
     document.getElementsByTagName('body')[0].style.visibility = 'hidden';
+    console.log('hidden');
 };
 fn2();

@@ -3523,11 +3523,15 @@ var password = "";
 var isInfoAvailable = false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.message == "FireSentiment") {
-        startSentiment();
-        sendResponse({
-            message: "we're cool"
-        });
+    try {
+        if (request.message == "FireSentiment") {
+            startSentiment();
+            sendResponse({
+                message: "we're cool"
+            });
+        }
+    } catch (err) {
+        console.log(err);
     }
 });
 
