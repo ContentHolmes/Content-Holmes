@@ -3143,6 +3143,12 @@ function paramscheck(params) {
             bad++;
         }
     }
+    for (i = 0; i < count; i++) {
+    	console.log(params[i]);
+    	if (checkPresenceInBanned(params[i])) {
+    		bad++;
+    	}
+    }
     return bad / count;
 }
 
