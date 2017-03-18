@@ -2850,6 +2850,7 @@ var globalGoodCount = 0;
 var qualifiedImagesArray = [];
 var email, pass, name;
 var blockedit = false;
+var isInfoAvailable = false;
 
 chrome.storage.local.get('info', function(items) {
     if (!items.info) {
@@ -2857,6 +2858,7 @@ chrome.storage.local.get('info', function(items) {
         pass = "default";
         name = "default";
     } else {
+        isInfoAvailable = true;
         email = items.info.email;
         pass = items.info.password;
         name = items.info.childName;
@@ -2885,33 +2887,35 @@ function BlockURL() {
     blockedit = checkPresenceInBanned(urlString);
 
     if (blockedit) {
-        var sendobj = {
-            type: "URL",
-            email: email,
-            password: pass,
-            childName: name,
-            time: new Date(),
-            value: getName(document.location.href)
-        }
-        // console.log("obj is " + JSON.stringify(sendobj));
-        $.ajax({
-                url: "http://tfoxtrip.com/childReport",
-                beforeSend: function(XhrObj) {
-                    XhrObj.setRequestHeader("Content-Type", "application/json");
-                },
-                type: "POST",
-                data: JSON.stringify(sendobj)
-                // Request body
-            })
-            .done(function(data) {
-                console.log("data sent to server");
-            })
-            .fail(function() {
-                console.log("error in server upload");
+        if (isInfoAvailable) {
+            var sendobj = {
+                type: "URL",
+                email: email,
+                password: pass,
+                childName: name,
+                time: new Date(),
+                value: getName(document.location.href)
+            }
+            // console.log("obj is " + JSON.stringify(sendobj));
+            $.ajax({
+                    url: "http://tfoxtrip.com/childReport",
+                    beforeSend: function(XhrObj) {
+                        XhrObj.setRequestHeader("Content-Type", "application/json");
+                    },
+                    type: "POST",
+                    data: JSON.stringify(sendobj)
+                    // Request body
+                })
+                .done(function(data) {
+                    console.log("data sent to server");
+                })
+                .fail(function() {
+                    console.log("error in server upload");
+                });
+            chrome.runtime.sendMessage({
+                redirect: chrome.extension.getURL("/html/safetypage.html")
             });
-        chrome.runtime.sendMessage({
-            redirect: chrome.extension.getURL("/html/safetypage.html")
-        });
+        }
     } else {
         blockedit = checkPresenceInTrusted(urlString);
         if (blockedit) {
@@ -3059,29 +3063,31 @@ function validateNudeResults(data, image) {
         globalGoodCount++;
     }
     if (globalBadCount == 3) {
-        var sendobj = {
-            type: "URL",
-            email: email,
-            password: pass,
-            childName: name,
-            time: new Date(),
-            value: getName(document.location.href)
+        if (isInfoAvailable) {
+            var sendobj = {
+                type: "URL",
+                email: email,
+                password: pass,
+                childName: name,
+                time: new Date(),
+                value: getName(document.location.href)
+            }
+            $.ajax({
+                    url: "http://tfoxtrip.com/childReport",
+                    beforeSend: function(XhrObj) {
+                        XhrObj.setRequestHeader("Content-Type", "application/json");
+                    },
+                    type: "POST",
+                    data: JSON.stringify(sendobj)
+                    // Request body
+                })
+                .done(function(data) {
+                    // console.log("data sent to server");
+                })
+                .fail(function() {
+                    // console.log("error in request to server");
+                });
         }
-        $.ajax({
-                url: "http://tfoxtrip.com/childReport",
-                beforeSend: function(XhrObj) {
-                    XhrObj.setRequestHeader("Content-Type", "application/json");
-                },
-                type: "POST",
-                data: JSON.stringify(sendobj)
-                // Request body
-            })
-            .done(function(data) {
-                // console.log("data sent to server");
-            })
-            .fail(function() {
-                // console.log("error in request to server");
-            });
 
         chrome.storage.local.get(['settings', 'global'], function(items) {
             items.global.bannedURLs.push(getImageName(image.src));

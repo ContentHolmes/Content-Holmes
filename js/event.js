@@ -28,8 +28,8 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.email = "";
     global.password = "";
     // This will store the sentiment scores
-    // whenever we land on a 
-    global.sentimentThings=[];
+    // whenever we land on a
+    global.sentimentThings = [];
     chrome.storage.local.set({
         global: global
     });
@@ -78,22 +78,40 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     }
 });
 
-var email, password, childName, dataAvailable = false;
-var changedTime = "", changedInterval = 0, blocked = false;
 
-chrome.storage.local.get('info', function(item) {
-            console.log(item.info);
-            if (!item.info) {
-                console.log('you r here');
-                dataAvailable = false;
-                chrome.tabs.create({
-                    url: chrome.extension.getURL("/html/first.html")
-                });
-                // chrome.runtime.sendMessage({
-                //     redirect: chrome.extension.getURL("/html/first.html")
-                // });
-            }
+var email, password, childName, dataAvailable = false;
+var changedTime = "",
+    changedInterval = 0,
+    blocked = false;
+
+// chrome.storage.local.get('info', function(item) {
+//     console.log(item.info);
+//     if (!item.info) {
+//         console.log('you r here');
+//         dataAvailable = false;
+//         chrome.tabs.create({
+//             url: chrome.extension.getURL("/html/first.html")
+//         });
+//         // chrome.runtime.sendMessage({
+//         //     redirect: chrome.extension.getURL("/html/first.html")
+//         // });
+//     }
+// });
+
+chrome.runtime.onInstalled.addListener(function(details) {
+    chrome.storage.local.get('info', function(item) {
+        // console.log(item.info);
+        if (!item.info) {
+            dataAvailable = false;
+            chrome.tabs.create({
+                url: chrome.extension.getURL("/html/first.html")
             });
+            // chrome.runtime.sendMessage({
+            //     redirect: chrome.extension.getURL("/html/first.html")
+            // });
+        }
+    });
+});
 
 function intervalStuff() {
     console.log("background check");
@@ -174,24 +192,24 @@ function intervalStuff() {
             console.log("session " + items.global.sessionStarted);
             if (items.global.sessionStarted == true) {
                 //check for changes
-                if(!blocked){
-                  items.global.sessionStarted = false;
-                  items.global.allBlocked = false;
-                  items.global.timeoutExpired = true;
-                }else{
-                  if (items.global.updatedTime != changedTime) {
-                    items.global.sessionTime = changedInterval;
-                    items.global.initialInterval = changedInterval;
-                    items.global.updatedTime = changedTime;
-                  }
-                  if (items.global.sessionTime == 0) {
+                if (!blocked) {
                     items.global.sessionStarted = false;
-                    items.global.allBlocked = true;
+                    items.global.allBlocked = false;
                     items.global.timeoutExpired = true;
-                    console.log("Session Over");
-                  } else
-                  items.global.sessionTime -= 1;
-                  console.log(items.global.sessionTime);
+                } else {
+                    if (items.global.updatedTime != changedTime) {
+                        items.global.sessionTime = changedInterval;
+                        items.global.initialInterval = changedInterval;
+                        items.global.updatedTime = changedTime;
+                    }
+                    if (items.global.sessionTime == 0) {
+                        items.global.sessionStarted = false;
+                        items.global.allBlocked = true;
+                        items.global.timeoutExpired = true;
+                        console.log("Session Over");
+                    } else
+                        items.global.sessionTime -= 1;
+                    console.log(items.global.sessionTime);
                 }
                 chrome.storage.local.set({
                     global: items.global
@@ -215,16 +233,16 @@ function intervalStuff() {
                     }
                     //check for new timeouts
                 } else if (changedTime != items.global.updatedTime) {
-                  console.log("start");
-                  // console.log('start');
-                  // console.log(blocked == true);
-                    if(blocked){
-                      console.log("start with new time" + changedTime + items.global.updatedTime.toString());
-                      items.global.updatedTime = changedTime;
-                      items.global.allBlocked = false;
-                      items.global.sessionStarted = true;
-                      items.global.sessionTime = changedInterval;
-                      console.log("Interval is : " + changedInterval + " @ " + changedTime);
+                    console.log("start");
+                    // console.log('start');
+                    // console.log(blocked == true);
+                    if (blocked) {
+                        console.log("start with new time" + changedTime + items.global.updatedTime.toString());
+                        items.global.updatedTime = changedTime;
+                        items.global.allBlocked = false;
+                        items.global.sessionStarted = true;
+                        items.global.sessionTime = changedInterval;
+                        console.log("Interval is : " + changedInterval + " @ " + changedTime);
                     }
                 }
                 //set initial timer
