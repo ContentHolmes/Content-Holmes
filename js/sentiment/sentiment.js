@@ -3600,7 +3600,7 @@ function lessThanPrevious(score) {
             var d = new Date();
             var dateval = new Date(arr[arr.length - 1].Date);
             // console.log(dateval + "  date   " + d);
-            if ((d.getTime() - dateval.getTime()) > 1000) {
+            if ((d.getDay != dateval.getDay())) {
                 if (arr.length == 7) {
                     arr.shift();
                     arr.push(newObj);
