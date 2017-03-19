@@ -51,6 +51,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
         global: global
     });
 });
+var prev = true;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log("something must happen right now");
@@ -149,6 +150,7 @@ var conn = function() {
             // });
             console.log('empty');
         } else {
+            dataAvailable = true;
             console.log('connect');
             email = item.info.email;
             childName = item.info.childName;
@@ -285,6 +287,41 @@ function runInterval() {
         chrome.storage.local.set({
             global: items.global
         });
+    });
+    chrome.extension.isAllowedIncognitoAccess(function(access) {
+        // console.log(access);
+        if (!access) {
+            if (prev) {
+                // console.log(prev);
+                if (dataAvailable) {
+                    prev = false;
+                    var sendobj = {
+                        email: email,
+                        password: password,
+                        notification: "Extension not enabled on incognito for " + childName
+                    }
+                    $.ajax({
+                            url: "http://tfoxtrip.com/notification",
+                            beforeSend: function(XhrObj) {
+                                XhrObj.setRequestHeader("Content-Type", "application/json");
+                            },
+                            type: "POST",
+                            data: JSON.stringify(sendobj)
+                            // Request body
+                        })
+                        .done(function(data) {
+                            console.log('request sent ' + data);
+                            // console.log("data sent to server");
+                        })
+                        .fail(function() {
+                            console.log('request fail');
+                            // console.log("error in request to server");
+                        });
+                }
+            }
+        } else {
+            prev = true;
+        }
     });
 }
 setInterval(runInterval, 6000);

@@ -219,6 +219,15 @@
     color: var(--accent_2);
 }
 
+#hidden{
+  color: red;
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: 1em;
+  visibility: hidden;
+  padding-top: 5px;
+}
+
 .pin_hidden {
     font-family: var(--font_c);
     font-size: 20px;

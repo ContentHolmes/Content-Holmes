@@ -7,26 +7,25 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="./../js/jquery-2.1.4.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="./../css/master.css">
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,700|Roboto:400,600,700" rel="stylesheet">
-
 </head>
 
 <body id="login_body">
 	<h1 class="center text-center">Content Rectifier</h1>
 	<div class="login-page">
 		<div class="form">
-			<form class="login-form text-center" action="http://tfoxtrip.com/user/new" method="post" id="forms">
+			<form class="login-form text-center" action"http://tfoxtrip.com/user/new" id="forms">
 				<p class="login-text text-center">Login</p>
 				<input class="input_login text-center" type="text" placeholder="username" name="email" id="id" />
 				<input class="input_login text-center" type="password" placeholder="password" name="password" id="pass" />
 				<input class="input_login text-center" type="text" placeholder="child name" name="childName" id="childName" />
-				<!-- <p id="hidden">Invalid Details</p> -->
-				<button type="submit" class="text-center" id="myBtn">Login/Sign up</button>
+				<p id="hidden"><i class="fa fa-exclamation" aria-hidden="true"></i> <span id="error_text">Invalid Details</span></p>
+				<button type="submit" class="text-center" id="myBtn">Login</button>
 			</form>
 		</div>
 	</div>
