@@ -20,3 +20,4 @@ console.log(getUrlVars('https://www.google.co.in/search?q=Hey+you%2C+how+are+you
 console.log(getUrlVars('https://www.youtube.com/results?search_query=batman+the+brave+and+the+bold+saves+jl'));
 console.log(getUrlVars('https://www.google.co.in/search?q=Ahem+Ahem&rlz=1C1CHZL_enIN700IN700&oq=Ahem+Ahem&aqs=chrome..69i57.2490j0j1&sourceid=chrome&ie=UTF-8#dobs=ahem'));
 console.log(getUrlVars('https://www.google.co.in/#q=Yp+brp&*'));
+console.log(getUrlVars('https://www.google.co.in/search?q=pornhub.com+there&rlz=1C1CHZL_enIN700IN700&oq=pornhub.com+there&aqs=chrome..69i57j69i60.6814j0j1&sourceid=chrome&ie=UTF-8#q=pornhub+where+are+you&*'));

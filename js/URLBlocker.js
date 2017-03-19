@@ -3132,11 +3132,14 @@ function urlcheck(url) {
 function paramscheck(params) {
     count = 0.0;
     bad = 0.0;
-    if (params.includes("+")) {
-        params = params.split("+");
-    } else {
-        params = params.split("%");
-    }
+    var extracts;
+    // if (params.includes("+")) {
+    //     params = params.split("+");
+    // } else {
+    //     params = params.split("%");
+    // }
+    params = params.replace(/[^\w\s]|_/g, '.');
+    params = params.split('.');
     count = params.length;
     for (i = 0; i < words.length; i++) {
         if (params.indexOf(words[i]) != -1) {
@@ -3144,10 +3147,9 @@ function paramscheck(params) {
         }
     }
     for (i = 0; i < count; i++) {
-    	console.log(params[i]);
-    	if (checkPresenceInBanned(params[i])) {
-    		bad++;
-    	}
+	    if (checkPresenceInBanned(params[i])) {
+	   		bad++;
+	   	}
     }
     return bad / count;
 }
