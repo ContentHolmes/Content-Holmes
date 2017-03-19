@@ -2406,6 +2406,15 @@ var bannedElementsArray = [
     "public‐sluts"
 ];
 
+chrome.storage.local.get(['settings', 'global'], function(items) {
+    if (items.global.allBlocked == true) {
+        console.log('session over' + items.global.allBlocked);
+        chrome.runtime.sendMessage({
+            redirect: chrome.extension.getURL("/html/sessionExpired.html")
+        });
+    }
+});
+
 var email, pass, name;
 var isInfoAvailable = false;
 chrome.storage.local.get('info', function(items) {
@@ -2420,6 +2429,7 @@ chrome.storage.local.get('info', function(items) {
         name = items.info.childName;
     }
 });
+
 
 function checkURL() {
     // console.log('check');
@@ -2440,19 +2450,24 @@ function checkURL() {
         var localBannedArray = items.global.bannedURLs;
         console.log('these many sites' + localBannedArray.length);
         for (var j in localBannedArray) {
-          // console.log(localBannedArray[j]);
+            // console.log(localBannedArray[j]);
             if (urlString == localBannedArray[j]) {
                 // console.log('match2');
                 blockURL();
             }
         }
         var tempBannedURLs = items.global.tempBlockedURLs;
+        // console.log(tempBannedURLs.length);
+        console.log('temp banned' + JSON.stringify(tempBannedURLs));
         for (var u in tempBannedURLs) {
             var parsed = JSON.parse(JSON.stringify(tempBannedURLs[u]));
             var tempURL = parsed.url;
-            var time = new Date(parsed.time.toString());
+            // console.log('temp url is' + tempURL);
+            var time1 = new Date(parsed.time.toString());
             var time2 = new Date();
+            var time = new Date(time1.getTime() + time1.getTimezoneOffset * 60000);
             var curr_time = new Date(time2.getTime() + time2.getTimezoneOffset() * 60000);
+            // console.log(curr_time + time + "time123123");
             if (time.getTime() < curr_time.getTime()) {
                 items.global.tempBlockedURLs.splice(u, 1);
                 chrome.storage.local.set({
