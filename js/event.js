@@ -29,6 +29,23 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.password = "";
     // This will store the sentiment scores
     // whenever we land on a
+    global.interests = {
+        "Technology": 0,
+        "Games": 0,
+        "News": 0,
+        "Social": 0,
+        "Pets": 0,
+        "Science": 0,
+        "Sports": 0,
+        "Books": 0,
+        "Beauty": 0,
+        "Vehicles": 0,
+        "Art": 0,
+        "Music": 0,
+        "Entertainment": 0,
+        "Total": 0
+    };
+    global.interestpushdate = "";
     global.sentimentThings = [];
     chrome.storage.local.set({
         global: global
@@ -72,10 +89,20 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
         items.global.allBlocked = false;
         items.global.timeoutExpired = false;
         console.log('reset date' + items.global.dateBlocked + date.getDate());
-        chrome.storage.local.set({
-            global: items.global
-        });
     }
+    // if (items.global.interestpushdate == "") {
+    //     items.global.interestpushdate = date;
+    //     //push date
+    // } else {
+    //     var date2 = new Date(items.global.interestpushdate);
+    //     if (date.getTime() - date2.getTime() > 604800000) {
+    //         items.global.interestpushdate = date;
+    //         //push
+    //     }
+    // }
+    chrome.storage.local.set({
+        global: items.global
+    });
 });
 
 
