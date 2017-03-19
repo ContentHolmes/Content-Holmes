@@ -12,5 +12,5 @@ function validateForm() {
             "childName": childName
         }
     });
-    chrome.runtime.setUninstallURL("http://tfoxtrip.com/uninstall/?email=" + email + "&password=" + password + "&childName=" + childName);
+    chrome.runtime.setUninstallURL("http://tfoxtrip.com/uninstall/?email=" + email + "&childName=" + childName);
 }
