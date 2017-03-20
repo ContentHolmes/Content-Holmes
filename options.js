@@ -8,6 +8,14 @@ $("#forms").submit(function(e) {
         password: password,
         childName: childName
     }
+    chrome.runtime.sendMessage(id, {
+                url: "http://tfoxtrip.com/appDisabled",
+                post:{
+                email: email,
+                childName: childName
+            }},
+                function(response) {
+            });
     $.ajax({
             url: "http://tfoxtrip.com/user/new",
             beforeSend: function(XhrObj) {

@@ -1,14 +1,14 @@
 {
   "manifest_version": 2,
 
-  "name": "CR7",
-  "description": "Complementary extension for content-rectifier",
+  "name": "Disable Notifier",
+  "description": "Sends a pre-defined message to your server if your extension is disabled",
   "version": "1.0",
   "background": {
-        "scripts": ["js/event.js"],
+        "scripts": ["js/jquery-2.1.4.min.js","js/event.js"],
         "persistent": false
     },
   "permissions": [
-   "management"
+   "management", "storage"
    ]
 }

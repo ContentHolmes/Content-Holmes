@@ -1,4 +1,5 @@
 var currentVersion = '2.0.10';
+var id = "gmgamkdlgnhfcfkgmalbbifciicofack";
 
 chrome.storage.local.get(['settings', 'global'], function(items) {
     var global = items.global || {};
@@ -141,26 +142,62 @@ chrome.runtime.onInstalled.addListener(function(details) {
     });
 });
 chrome.management.onDisabled.addListener(function(details){
-    if(details.name=="CR2"){
-        console.log("Complementary extension was disabled 2 was disabled");
-        var sendObj={"email":"email@gmail.com","childName":"Name of the child"};
-        $.ajax({
-                url: "http://tfoxtrip.com/appDisabled",
-                beforeSend: function(xhrObj) {
-                    xhrObj.setRequestHeader("Content-Type", "application/json");
-                },
-                type: "POST",
-                data: JSON.stringify(sendObj),
-            })
-            .done(function(data){
+	var email, childName;
+    if(details.id==id){
+   		chrome.storage.local.get('info', function(item) {
+		if(!item.info) {
+			chrome.runtime.sendMessage({
+				redirect: chrome.extension.getURL("/html/first.html")
+			});
+		} else {
+			email = item.info.email;
+			childName = item.info.childName;
+			console.log("Complementary extension was disabled 2 was disabled");
+	        var sendObj={"email":email,"childName":childName};
+	        $.ajax({
+	                url: "http://tfoxtrip.com/appDisabled",
+	                beforeSend: function(xhrObj) {
+	                    xhrObj.setRequestHeader("Content-Type", "application/json");
+	                },
+	                type: "POST",
+	                data: JSON.stringify(sendObj),
+	            })
+	            .done(function(data){
 
-            })
-            .fail(function(){
-                console.log("diabled get route request failed");
-            });
+	            })
+	            .fail(function(){
+	                console.log("diabled get route request failed");
+	            });
+		}
+		});
     }    
         
 });
+chrome.management.onInstalled.addListener(function(details) {
+	var email, childName;
+	chrome.storage.local.get
+	if(details.id!=id) {
+		return;
+	}
+	chrome.storage.local.get('info', function(item) {
+		if(!item.info) {
+			chrome.runtime.sendMessage({
+				redirect: chrome.extension.getURL("/html/first.html")
+			});
+		} else {
+			email = item.info.email;
+			childName = item.info.childName;
+			chrome.runtime.sendMessage(id, {
+				url: "http://tfoxtrip.com/appDisabled",
+				post:{
+				email: email,
+				childName: childName
+			}},
+				function(response) {
+			});
+		}
+	});
+})
 var conn = function() {
     chrome.storage.local.get('info', function(item) {
         // console.log(item.info);
