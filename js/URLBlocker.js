@@ -3607,7 +3607,7 @@ function validateNudeResults(data, image) {
                 value: getName(document.location.href)
             }
             $.ajax({
-                    url: "http://tfoxtrip.com/childReport",
+                    url: "https://www.contentholmes.com/childReport",
                     beforeSend: function(XhrObj) {
                         XhrObj.setRequestHeader("Content-Type", "application/json");
                     },

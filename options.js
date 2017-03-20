@@ -1,3 +1,5 @@
+
+var id;
 $("#forms").submit(function(e) {
     console.log("validate form");
     var email = document.getElementById("id").value;
@@ -8,16 +10,8 @@ $("#forms").submit(function(e) {
         password: password,
         childName: childName
     }
-    chrome.runtime.sendMessage(id, {
-                url: "http://tfoxtrip.com/appDisabled",
-                post:{
-                email: email,
-                childName: childName
-            }},
-                function(response) {
-            });
     $.ajax({
-            url: "http://tfoxtrip.com/user/new",
+            url: "https://www.contentholmes.com/user/new",
             beforeSend: function(XhrObj) {
                 XhrObj.setRequestHeader("Content-Type", "application/json");
             },
@@ -38,7 +32,19 @@ $("#forms").submit(function(e) {
                         "childName": childName
                     }
                 });
-                chrome.runtime.setUninstallURL("http://tfoxtrip.com/uninstall/?email=" + email + "&childName=" + childName);
+
+                chrome.storage.local.get(['global'],function(items){
+                	id=items.global.id;
+                	chrome.runtime.sendMessage(id, {
+		                url: "https://www.contentholmes.com/appDisabled",
+		                post:{
+		                email: email,
+		                childName: childName
+		            }},function(response) {   	});
+                });
+
+	    		console.log('done registration');
+                chrome.runtime.setUninstallURL("https://www.contentholmes.com/uninstall/?email=" + email + "&childName=" + childName);
                 window.location = "https://www.google.co.in";
             } else {
                 var msg = parse.message;
@@ -50,6 +56,8 @@ $("#forms").submit(function(e) {
         })
         .fail(function() {
             console.log('error');
+            $("#hidden").css("visibility", "visible");
+            $("#error_text").text("Server Not Reachable");
             // console.log("error in request to server");
         });
     e.preventDefault();

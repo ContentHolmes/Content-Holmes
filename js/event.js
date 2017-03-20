@@ -17,6 +17,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
         time: "Sat Feb 18 2017 17:42:50 GMT+0000 (GMT)"
     }];
     global.timeoutExpired = false;
+    global.id=id;
     global.sessionTime = 0;
     global.sessionStarted = false;
     global.allBlocked = false;
@@ -56,6 +57,7 @@ var prev = true;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log("something must happen right now");
+    console.log(request);
     if (request.message == "sentiment") {
         console.log("sentiment will be fired");
         chrome.tabs.query({
@@ -72,14 +74,32 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         sendResponse({
             message: "good luck bro"
         });
-    } else /*if(request.message == "redirect")*/ {
+    } else if(request.type=="redirect")/*if(request.message == "redirect")*/ {
         console.log("I am here");
+        
         chrome.tabs.update(sender.tab.id, {
             url: request.redirect
         });
         sendResponse({
             message: "good luck bro2"
         });
+    }
+    else if(request.type=="sendReport"){
+        console.log('send report');
+        $.ajax({
+                url: "https://www.contentholmes.com/childReport",
+                beforeSend: function(XhrObj) {
+                    XhrObj.setRequestHeader("Content-Type", "application/json");
+                },
+                type: "POST",
+                data: request.sendReport
+            })
+            .done(function(data) {
+                console.log("data sent to server");
+            })
+            .fail(function() {
+                console.log("error in server upload");
+            });
     }
 
 });
@@ -155,7 +175,7 @@ chrome.management.onDisabled.addListener(function(details){
 			console.log("Complementary extension was disabled 2 was disabled");
 	        var sendObj={"email":email,"childName":childName};
 	        $.ajax({
-	                url: "http://tfoxtrip.com/appDisabled",
+	                url: "https://www.contentholmes.com/appDisabled",
 	                beforeSend: function(xhrObj) {
 	                    xhrObj.setRequestHeader("Content-Type", "application/json");
 	                },
@@ -188,7 +208,7 @@ chrome.management.onInstalled.addListener(function(details) {
 			email = item.info.email;
 			childName = item.info.childName;
 			chrome.runtime.sendMessage(id, {
-				url: "http://tfoxtrip.com/appDisabled",
+				url: "https://www.contentholmes.com/appDisabled",
 				post:{
 				email: email,
 				childName: childName
@@ -221,7 +241,7 @@ conn();
 setInterval(conn, 300000);
 
 function sockconn() {
-    var socket = io("http://tfoxtrip.com");
+    var socket = io("https://www.contentholmes.com");
     socket.on('connect', function(data) {
         // console.log('yo im connected');
         socket.emit('newUser', JSON.stringify({
@@ -358,7 +378,7 @@ function runInterval() {
                         notification: "Extension not enabled on incognito for " + childName
                     }
                     $.ajax({
-                            url: "http://tfoxtrip.com/notification",
+                            url: "https://www.contentholmes.com/notification",
                             beforeSend: function(XhrObj) {
                                 XhrObj.setRequestHeader("Content-Type", "application/json");
                             },
@@ -415,10 +435,10 @@ setInterval(runInterval, 6000);
 //             console.log("changed time : " + changedTime);
 //             // var changedInterval = 5;
 //             // var blocked = false;
-//             var url = "http://tfoxtrip.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName;
+//             var url = "https://www.contentholmes.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName;
 //             // console.log("url is " + url);
 //             $.ajax({
-//                     url: "http://tfoxtrip.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName,
+//                     url: "https://www.contentholmes.com/getBlockedURLs/?email=" + email + "&password=" + password + "&childName=" + childName,
 //                     type: "GET"
 //                     // Request body
 //                 })
@@ -439,7 +459,7 @@ setInterval(runInterval, 6000);
 //                     console.log("error pa ap ap ap ap a");
 //                 });
 //             $.ajax({
-//                     url: "http://tfoxtrip.com/getsession/?email=" + email + "&password=" + password + "&childName=" + childName,
+//                     url: "https://www.contentholmes.com/getsession/?email=" + email + "&password=" + password + "&childName=" + childName,
 //                     type: "GET"
 //                     // Request body
 //                 })

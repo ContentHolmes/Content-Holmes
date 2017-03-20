@@ -3658,7 +3658,7 @@ function sendData(depressionmin) {
         }
         if (isInfoAvailable) {
             $.ajax({
-                    url: "http://tfoxtrip.com/childReport",
+                    url: "https://www.contentholmes.com/childReport",
                     beforeSend: function(xhrObj) {
                         // Request headers
                         xhrObj.setRequestHeader("Content-Type", "application/json");
@@ -3759,7 +3759,13 @@ function getSentences(str) {
     }
     return sentences;
 }
-new MutationObserver(startSentiment).observe(document.body, {
-    subtree: true,
-    childList: true
-});
+try{
+    new MutationObserver(startSentiment).observe(document.body, {
+        subtree: true,
+        childList: true
+    });
+}
+catch(e){
+    console.log("Some error in MutationObserver");
+}
+
