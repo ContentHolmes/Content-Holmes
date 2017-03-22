@@ -3531,7 +3531,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
         }
     } catch (err) {
-        console.log(err);
+        ////console.log(err);
     }
 });
 
@@ -3546,7 +3546,7 @@ function startSentiment() {
             depressionmin = depressionCalc;
         }
     }
-    console.log("From minimum depression: " + depressionmin);
+    ////console.log("From minimum depression: " + depressionmin);
     lessThanPrevious(depressionmin);
     return;
 }
@@ -3585,26 +3585,26 @@ function lessThanPrevious(score) {
     chrome.storage.local.get(['settings', 'global'], function(items) {
         arr = items.global.sentimentThings;
         globaling = items.global;
-        console.log("Logging sentiment things : " + JSON.stringify(arr[arr.length - 1]));
+        ////console.log("Logging sentiment things : " + JSON.stringify(arr[arr.length - 1]));
         var newObj = {
             "Date": (new Date()).toString(),
             "value": score
         };
-        // console.log("newObj is " + JSON.stringify(newObj));
+        // ////console.log("newObj is " + JSON.stringify(newObj));
         if (!arr) {
-            arr = []
+            arr = [];
             arr.push(newObj);
-            // console.log('no arr' + JSON.stringify(arr[0]));
+            // ////console.log('no arr' + JSON.stringify(arr[0]));
             newThing = true;
         } else if (arr.length == 0) {
             arr.push(newObj);
-            // console.log('length = 0' + JSON.stringify(arr[0]));
+            // ////console.log('length = 0' + JSON.stringify(arr[0]));
             newThing = true;
         } else {
             var d = new Date();
             var dateval = new Date(arr[arr.length - 1].Date);
-            // console.log(dateval + "  date   " + d);
-            if ((d.getDay != dateval.getDay())) {
+            // ////console.log(dateval + "  date   " + d);
+            if ((d.getDay() != dateval.getDay())) {
                 if (arr.length == 7) {
                     arr.shift();
                     arr.push(newObj);
@@ -3614,7 +3614,7 @@ function lessThanPrevious(score) {
                 newThing = true;
             } else {
                 if (arr[arr.length - 1].value > score) {
-                    // console.log("scroe is " + score);
+                    // ////console.log("scroe is " + score);
                     arr[arr.length - 1] = newObj;
                     newThing = true;
                 }
@@ -3626,14 +3626,14 @@ function lessThanPrevious(score) {
             chrome.storage.local.set({
                 global: items.global
             });
-            // console.log("Final global array : " + JSON.stringify(arr));
+            // ////console.log("Final global array : " + JSON.stringify(arr));
             sendData(score);
         }
     });
 }
 
 function sendData(depressionmin) {
-    console.log("I am inside hrer bros");
+    ////console.log("I am inside hrer bros");
     chrome.storage.local.get('info', function(things) {
         var newObj;
         if (!things.info) {
@@ -3669,10 +3669,10 @@ function sendData(depressionmin) {
                     // Request body
                 })
                 .done(function(data) {
-                    console.log("succcesssful req: " + data);
+                    ////console.log("succcesssful req: " + data);
                 })
                 .fail(function() {
-                    console.log("error");
+                    ////console.log("error");
                 });
         }
     });
@@ -3687,7 +3687,7 @@ function parseParagraphs(node) {
     if (node.parentElement.tagName in ignoreThese) {
         return;
     }
-    //console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
+    //////console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
     var str = node.nodeValue.toString();
     //var str="I am not happy";
     var sentenceArray = getSentences(str);
@@ -3699,13 +3699,13 @@ function parseParagraphs(node) {
         formatWordsInArray(newSentence);
         totalWords = totalWords + newSentence.length;
         var newSum = calculateSum(newSentence);
-        //console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
+        //////console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
         sum = sum + newSum /**newSentence.length*/ ;
 
     }
     var depressionCalc = sum /*/totalWords*/ ;
     if (depressionCalc || depressionCalc == 0) {
-        //console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);
+        //////console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);
     }
     return depressionCalc;
 }
@@ -3728,7 +3728,7 @@ function calculateSum(wordsArray) {
         // check for booster array
         if (boosters.hasOwnProperty(newWord)) {
             sum += boosters[newWord];
-            //console.log("new Words : "+newWord);
+            //////console.log("new Words : "+newWord);
         }
         // there is a limitation to it. Two false won't make a true
         if (negs.hasOwnProperty(newWord)) {
@@ -3766,6 +3766,6 @@ try{
     });
 }
 catch(e){
-    console.log("Some error in MutationObserver");
+    ////console.log("Some error in MutationObserver");
 }
 

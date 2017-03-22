@@ -1,7 +1,7 @@
-$(document).ready(function(){
-    $(".load").animate({
-      width: "100%"
-    }, 5000, "linear", function(){
-        window.location="https://www.google.co.in";
-    });
+$(document).ready(function() {
+    console.log('ready');
+    setTimeout(function() {
+        console.log('ya');
+        window.location = "https://www.google.co.in";
+    }, 5000);
 });
