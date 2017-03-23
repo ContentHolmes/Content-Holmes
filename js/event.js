@@ -26,7 +26,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     //console.log(global.allBlocked);
     global.dateBlocked = global.dateBlocked || 0;
     global.initalInterval = global.initalInterval || 0;
-    global.updatedTime = global.updatedTime || "";
+    global.updatedTime = global.updatedTime || new Date();
     global.historyOfBlockedURLS =  global.historyOfBlockedURLS || [];
     global.bannedURLs = global.bannedURLs || [];
     global.trustedURLs = global.trustedURLs || [];
@@ -87,7 +87,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         catch(err){
          chrome.tabs.update(sender.tab.id, {
             url: request.redirect
-        });   
+        });
         }
     }
     else if(request.type=="sendReport"){
@@ -208,8 +208,8 @@ chrome.management.onDisabled.addListener(function(details){
 	            });
 		}
 		});
-    }    
-        
+    }
+
 });
 chrome.management.onInstalled.addListener(function(details) {
 	var email, childName;
