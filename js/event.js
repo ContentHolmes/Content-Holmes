@@ -2,7 +2,7 @@ var currentVersion = '2.0.10';
 var id = "gcnbnjihboomeoienidpgjccgnicioom";
 
 chrome.storage.local.get(['settings', 'global'], function(items) {
-	//console.log('resetting');
+    //console.log('resetting');
     var global = items.global || {};
 
     if (global.version != currentVersion) {
@@ -18,16 +18,17 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
         time: "Sat Feb 18 2017 17:42:50 GMT+0000 (GMT)"
     }];
     global.timeoutExpired = global.timeoutExpired || false;
-    global.id= global.id || id;
-    global.sessionTime =  global.sessionTime || 0;
+    global.id = global.id || id;
+    global.sessionTime = global.sessionTime || 0;
     global.sessionStarted = global.sessionStarted || false;
     //console.log(global.allBlocked);
-    global.allBlocked =  global.allBlocked || false;
+    global.allBlocked = global.allBlocked || false;
     //console.log(global.allBlocked);
     global.dateBlocked = global.dateBlocked || 0;
     global.initalInterval = global.initalInterval || 0;
     global.updatedTime = global.updatedTime || new Date();
-    global.historyOfBlockedURLS =  global.historyOfBlockedURLS || [];
+    // console.log(global.updatedTime);
+    global.historyOfBlockedURLS = global.historyOfBlockedURLS || [];
     global.bannedURLs = global.bannedURLs || [];
     global.trustedURLs = global.trustedURLs || [];
     global.email = global.email || "";
@@ -77,54 +78,60 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         sendResponse({
             message: "good luck bro"
         });
-    } else if(request.type=="redirect"){
+    } else if (request.type == "redirect") {
         //console.log("I am here");
-        try{
-        chrome.tabs.update(sender.tab.id, {
-            url: request.redirect
-        });
+        try {
+            chrome.tabs.update(sender.tab.id, {
+                url: request.redirect
+            });
+        } catch (err) {
+            chrome.tabs.update(sender.tab.id, {
+                url: request.redirect
+            });
         }
-        catch(err){
-         chrome.tabs.update(sender.tab.id, {
-            url: request.redirect
-        });
-        }
-    }
-    else if(request.type=="sendReport"){
+    } else if (request.type == "sendReport") {
         //console.log('send report' + sender.tab.id);
         // sendResponse({tabId:sender.tab.id});
         $.ajax({
-            url: "https://www.contentholmes.com/childReport",
-            beforeSend: function(XhrObj) {
-                XhrObj.setRequestHeader("Content-Type", "application/json");
-            },
-            type: "POST",
-            data: request.sendReport
-        })
-        .done(function(data) {
-            //console.log("data sent to server");
-            sendResponse({message: "shoot"});
-        })
-        .fail(function() {
-            //console.log("error in server upload");
-        });
-    } else if(request.type =="messaging") {
-        chrome.runtime.sendMessage(id, {
-            url: "https://www.contentholmes.com/appDisabled",
-            post: {
-                email: request.email,
-                childName: request.childName
-            }},
-                function(response) {
+                url: "https://www.contentholmes.com/childReport",
+                beforeSend: function(XhrObj) {
+                    XhrObj.setRequestHeader("Content-Type", "application/json");
+                },
+                type: "POST",
+                data: request.sendReport
+            })
+            .done(function(data) {
+                //console.log("data sent to server");
+                sendResponse({
+                    message: "shoot"
+                });
+            })
+            .fail(function() {
+                //console.log("error in server upload");
             });
+    } else if (request.type == "messaging") {
+        chrome.runtime.sendMessage(id, {
+                url: "https://www.contentholmes.com/appDisabled",
+                post: {
+                    email: request.email,
+                    childName: request.childName
+                }
+            },
+            function(response) {});
     }
 
 });
 
 chrome.storage.local.get(['settings', 'global'], function(items) {
     var date = new Date();
-    var date2 = new Date(items.global.updatedTime);
-    //console.log(date2.getDate() + "   " + date.getDate());
+    // console.log(items.global.updatedTime);
+    var date2;
+    if (items.global) {
+        date2 = new Date(items.global.updatedTime);
+    } else {
+        date2 = new Date();
+    }
+    // console.log(date2.getDate() + "   " + date.getDate());
     if (date2.getDate() != date.getDate()) {
         items.global.allBlocked = false;
         items.global.timeoutExpired = false;
@@ -179,61 +186,64 @@ chrome.runtime.onInstalled.addListener(function(details) {
         }
     });
 });
-chrome.management.onDisabled.addListener(function(details){
-	var email, childName;
-    if(details.id==id){
-   		chrome.storage.local.get('info', function(item) {
-		if(!item.info) {
-			chrome.runtime.sendMessage({
-				redirect: chrome.extension.getURL("/html/first.html")
-			});
-		} else {
-			email = item.info.email;
-			childName = item.info.childName;
-			//console.log("Complementary extension was disabled 2 was disabled");
-	        var sendObj={"email":email,"childName":childName};
-	        $.ajax({
-	                url: "https://www.contentholmes.com/appDisabled",
-	                beforeSend: function(xhrObj) {
-	                    xhrObj.setRequestHeader("Content-Type", "application/json");
-	                },
-	                type: "POST",
-	                data: JSON.stringify(sendObj),
-	            })
-	            .done(function(data){
+chrome.management.onDisabled.addListener(function(details) {
+    var email, childName;
+    if (details.id == id) {
+        chrome.storage.local.get('info', function(item) {
+            if (!item.info) {
+                chrome.runtime.sendMessage({
+                    redirect: chrome.extension.getURL("/html/first.html")
+                });
+            } else {
+                email = item.info.email;
+                childName = item.info.childName;
+                //console.log("Complementary extension was disabled 2 was disabled");
+                var sendObj = {
+                    "email": email,
+                    "childName": childName
+                };
+                $.ajax({
+                        url: "https://www.contentholmes.com/appDisabled",
+                        beforeSend: function(xhrObj) {
+                            xhrObj.setRequestHeader("Content-Type", "application/json");
+                        },
+                        type: "POST",
+                        data: JSON.stringify(sendObj),
+                    })
+                    .done(function(data) {
 
-	            })
-	            .fail(function(){
-	                //console.log("diabled get route request failed");
-	            });
-		}
-		});
+                    })
+                    .fail(function() {
+                        //console.log("diabled get route request failed");
+                    });
+            }
+        });
     }
 
 });
 chrome.management.onInstalled.addListener(function(details) {
-	var email, childName;
-	if(details.id!=id) {
-		return;
-	}
-	chrome.storage.local.get('info', function(item) {
-		if(!item.info) {
-			chrome.runtime.sendMessage({
-				redirect: chrome.extension.getURL("/html/first.html")
-			});
-		} else {
-			email = item.info.email;
-			childName = item.info.childName;
-			chrome.runtime.sendMessage(id, {
-				url: "https://www.contentholmes.com/appDisabled",
-				post:{
-				email: email,
-				childName: childName
-			}},
-				function(response) {
-			});
-		}
-	});
+    var email, childName;
+    if (details.id != id) {
+        return;
+    }
+    chrome.storage.local.get('info', function(item) {
+        if (!item.info) {
+            chrome.runtime.sendMessage({
+                redirect: chrome.extension.getURL("/html/first.html")
+            });
+        } else {
+            email = item.info.email;
+            childName = item.info.childName;
+            chrome.runtime.sendMessage(id, {
+                    url: "https://www.contentholmes.com/appDisabled",
+                    post: {
+                        email: email,
+                        childName: childName
+                    }
+                },
+                function(response) {});
+        }
+    });
 });
 var conn = function() {
     chrome.storage.local.get('info', function(item) {
@@ -369,7 +379,7 @@ function sockconn() {
 
 function runInterval() {
     chrome.storage.local.get(['settings', 'global'], function(items) {
-    	//console.log("final " + items.global.allBlocked)
+        //console.log("final " + items.global.allBlocked)
         if (items.global.sessionStarted) {
             if (items.global.sessionTime <= 0) {
                 items.global.sessionStarted = false;
