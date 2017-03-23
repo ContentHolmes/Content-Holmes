@@ -1,5 +1,5 @@
 var currentVersion = '2.0.10';
-var id = "gifjnlobicmdccndlfhklhdhlmdnepdd";
+var id = "gcnbnjihboomeoienidpgjccgnicioom";
 
 chrome.storage.local.get(['settings', 'global'], function(items) {
 	//console.log('resetting');
@@ -108,6 +108,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         .fail(function() {
             //console.log("error in server upload");
         });
+    } else if(request.type =="messaging") {
+        chrome.runtime.sendMessage(id, {
+            url: "https://www.contentholmes.com/appDisabled",
+            post: {
+                email: request.email,
+                childName: request.childName
+            }},
+                function(response) {
+            });
     }
 
 });
@@ -204,7 +213,6 @@ chrome.management.onDisabled.addListener(function(details){
 });
 chrome.management.onInstalled.addListener(function(details) {
 	var email, childName;
-	chrome.storage.local.get
 	if(details.id!=id) {
 		return;
 	}

@@ -2507,7 +2507,8 @@ var trustedElementsArray = [
     "answers",
     "news",
     "news",
-    "Bit"
+    "Bit",
+    "contentholmes"
 ];
 
 var words = [

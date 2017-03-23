@@ -31,19 +31,16 @@ $("#forms").submit(function(e) {
                         "childName": childName
                     }
                 });
+                chrome.runtime.sendMessage({
+                    type: "messaging",
+                    email: email,
+                    childName: childName
+                });
                 chrome.storage.local.get(['global'], function(items) {
-                    id = items.global.id;
                     items.global.sentimentThings = [];
                     chrome.storage.local.set({
                         global: items.global
                     });
-                    chrome.runtime.sendMessage(id, {
-                        url: "https://www.contentholmes.com/appDisabled",
-                        post: {
-                            email: email,
-                            childName: childName
-                        }
-                    }, function(response) {});
                 });
                 chrome.runtime.setUninstallURL("https://contentholmes.com/uninstall/?email=" + email + "&childName=" + childName);
                 window.location = "https://www.google.co.in";
