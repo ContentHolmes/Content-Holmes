@@ -1,4 +1,4 @@
-// console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
+// //console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
 var no_of_checks = 0;
 var bannedElementsArray = [
     "toppornsites",
@@ -2507,7 +2507,8 @@ var trustedElementsArray = [
     "answers",
     "news",
     "news",
-    "Bit"
+    "Bit",
+    "contentholmes"
 ];
 
 var words = [
@@ -3456,7 +3457,7 @@ chrome.storage.local.get('info', function(items) {
         name = items.info.childName;
     }
 });
-//console.log("value of blocked it at initialization is: " + blockedit);
+////console.log("value of blocked it at initialization is: " + blockedit);
 
 function BlockURL() {
     /*
@@ -3475,15 +3476,15 @@ function BlockURL() {
     */
 
     var urlString = getName(document.location.href);
-    console.log('url string' + urlString);
+    //console.log('url string' + urlString);
 
     blockedit = checkPresenceInTrusted(urlString);
     if (blockedit) {
-        console.log('trust');
+        //console.log('trust');
         document.getElementsByTagName('body')[0].style.visibility = 'visible';
         return;
     } else {
-        console.log('nudecheck');
+        //console.log('nudecheck');
         checkNudeImages();
     }
 }
@@ -3492,8 +3493,8 @@ function getName(str) {
     const regex = /\/\/w{0,3}\.?(.*)\.\w{1,4}\/.*/gi;
     str = str + "/";
     var name = regex.exec(str);
-    console.log('regex');
-    //console.log(name[1]);
+    //console.log('regex');
+    ////console.log(name[1]);
     try {
         return name[1];
     } catch (err) {}
@@ -3523,16 +3524,16 @@ function checkNudeImages() {
         try {
             var url = getImageName(imagesArray[k].src);
         } catch (err) {
-            console.log("error in images");
+            //console.log("error in images");
         }
-        console.log("URL image is:" + url);
+        //console.log("URL image is:" + url);
         if (checkPresenceInBanned(url)) {
             imagesArray[k].style.visibility = "hidden";
-            // console.log("Hid the image: " + imagesArray[k].src);
+            // //console.log("Hid the image: " + imagesArray[k].src);
         } else if (!checkPresenceInTrusted(url)) {
-            //console.log("not trusted");
+            ////console.log("not trusted");
             if ((imagesArray[k].clientWidth > 300 || imagesArray[k].clientHeight > 300) && checkCount <= 10) {
-                //console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
+                ////console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
                 // send the images to check for adult content to caption-bot api
                 NudeCheck(imagesArray[k]);
                 checkCount++;
@@ -3542,7 +3543,7 @@ function checkNudeImages() {
     if (checkCount == 0) {
         document.getElementsByTagName('body')[0].style.visibility = 'visible';
     }
-    // console.log('check count2' + checkCount);
+    // //console.log('check count2' + checkCount);
 }
 
 function NudeCheck(image) {
@@ -3576,7 +3577,7 @@ function NudeCheck(image) {
 function failreturn() {
     no_of_checks++;
     if (no_of_checks == checkCount) {
-        // console.log("end here");
+        // //console.log("end here");
         document.getElementsByTagName('body')[0].style.visibility = 'visible';
     }
 }
@@ -3591,7 +3592,7 @@ function validateNudeResults(data, image) {
         try {
             image.style.visibility = "hidden";
         } catch (err) {
-            console.log(err);
+            //console.log(err);
         }
     } else {
         globalGoodCount++;
@@ -3607,7 +3608,7 @@ function validateNudeResults(data, image) {
                 value: getName(document.location.href)
             }
             $.ajax({
-                    url: "http://tfoxtrip.com/childReport",
+                    url: "https://www.contentholmes.com/childReport",
                     beforeSend: function(XhrObj) {
                         XhrObj.setRequestHeader("Content-Type", "application/json");
                     },
@@ -3616,10 +3617,10 @@ function validateNudeResults(data, image) {
                     // Request body
                 })
                 .done(function(data) {
-                    // console.log("data sent to server");
+                    //console.log("data sent to server from URLblocker");
                 })
                 .fail(function() {
-                    // console.log("error in request to server");
+                    // //console.log("error in request to server");
                 });
         }
 
@@ -3628,11 +3629,12 @@ function validateNudeResults(data, image) {
             chrome.storage.local.set({
                 global: items.global
             });
-            console.log("added a new URL to blocked sites: " + image.src);
-            //console.log(JSON.stringify(items.global.bannedURLs));
+            //console.log("added a new URL to blocked sites: " + image.src);
+            ////console.log(JSON.stringify(items.global.bannedURLs));
         });
-        // console.log('going to safetypage');
+        // //console.log('going to safetypage');
         chrome.runtime.sendMessage({
+            type: "redirect",
             redirect: chrome.extension.getURL("/html/safetypage.html")
         });
     } else if (globalGoodCount == 10) {
@@ -3641,14 +3643,14 @@ function validateNudeResults(data, image) {
             chrome.storage.local.set({
                 global: items.global
             });
-            console.log("added a new URL in the trusted sites list: " + images.src);
-            console.log(JSON.stringify(items.global.trustedURLs));
+            //console.log("added a new URL in the trusted sites list: " + images.src);
+            //console.log(JSON.stringify(items.global.trustedURLs));
         });
     }
     no_of_checks++;
-    // console.log('check count' + checkCount);
+    // //console.log('check count' + checkCount);
     if (no_of_checks == checkCount) {
-        // console.log("end here");
+        // //console.log("end here");
         document.getElementsByTagName('body')[0].style.visibility = 'visible';
     }
 }
@@ -3669,18 +3671,18 @@ function checkPresenceInBanned(url) {
     chrome.storage.local.get(['settings', 'global'], function(items) {
         var localBannedArray = items.global.bannedURLs;
         for (var j in localBannedArray) {
-            // console.log("inside step 1");
-            // console.log(localBannedArray[j]);
+            // //console.log("inside step 1");
+            // //console.log(localBannedArray[j]);
             if (str == localBannedArray[j]) {
                 bad = true;
-                //console.log("inside step 2");
+                ////console.log("inside step 2");
                 return bad;
                 break;
             }
         }
         return bad;
     });
-    // console.log("present in bad: " + bad);
+    // //console.log("present in bad: " + bad);
     // return bad;
 }
 
@@ -3769,18 +3771,18 @@ function checkInterest() {
 
     for (var i = 0; i < metaTags.length; i++) {
         if (metaTags[i].getAttribute("name") == "keywords" || metaTags[i].getAttribute("name") == "description") {
-            console.log(metaTags[i].getAttribute("content"));
+            //console.log(metaTags[i].getAttribute("content"));
             var vals = metaTags[i].getAttribute("content").toString().replace(",", "").replace(".", "").split(" ");
             chrome.storage.local.get(['settings', 'global'], function(items) {
                 for (var cat in categories) {
                     var name = cat;
                     var subs = categories[cat];
                     for (var j in subs) {
-                        // console.log(subs[j] + " is " + vals.indexOf(subs[j]));
+                        // //console.log(subs[j] + " is " + vals.indexOf(subs[j]));
                         for (var k in vals) {
                             if (vals[k]) {
                                 if (vals[k].toLowerCase() === subs[j].toLowerCase()) {
-                                    // console.log(subs[j]);
+                                    // //console.log(subs[j]);
                                     if (!items.global.interests) {
                                         items.global.interests = {};
                                     }
@@ -3791,7 +3793,7 @@ function checkInterest() {
                                         (items.global.interests)[name] += 1;
                                         (items.global.interests)["Total"] += 1;
                                     }
-                                    console.log("interest is " + name + " : " + items.global.interests[name]);
+                                    //console.log("interest is " + name + " : " + items.global.interests[name]);
                                     break;
                                 }
                             }
@@ -3804,7 +3806,7 @@ function checkInterest() {
                     }
                     items.global.interests["Total"] = 500;
                 }
-                console.log("Final interest is : " + JSON.stringify(items.global.interests));
+                //console.log("Final interest is : " + JSON.stringify(items.global.interests));
                 chrome.storage.local.set({
                     global: items.global
                 });
@@ -3812,21 +3814,22 @@ function checkInterest() {
         }
     }
 }
-// console.log("Chal gya");
+// //console.log("Chal gya");
 if (urlcheck(document.location.href) <= 0.1) {
-    checkInterest();
+    // checkInterest();
     try {
         BlockURL();
     } catch (err) {
-        console.log(err);
+        //console.log(err);
     }
 } else {
-    // console.log('else');
-    // console.log(chrome.extension.getURL("/html/safetypage"));
+    // //console.log('else');
+    // //console.log(chrome.extension.getURL("/html/safetypage"));
     chrome.runtime.sendMessage({
+        type: "redirect",
         redirect: chrome.extension.getURL("/html/safetypage.html")
     });
 }
 // chrome.storage.local.get('info', function(things) {
-//     console.log("here is the thing bro : " + JSON.stringify(things));
+//     //console.log("here is the thing bro : " + JSON.stringify(things));
 // });

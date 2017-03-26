@@ -303,7 +303,7 @@ var g_replacements = [{
     {
         "active": true,
         "case": "Override",
-        "repA": "mrigesh",
+        "repA": "ass",
         "repB": "butt",
         "type": "Simple"
     },
@@ -2789,7 +2789,7 @@ function main() {
         applyReplacements($('title')[0]);
 
         var end = new Date().getMilliseconds();
-        console.log('Initial replacements took ' + end + 'ms.');
+        //console.log('Initial replacements took ' + end + 'ms.');
 
         // calling the sentiment part
         // And then apply them Mutations
@@ -2815,13 +2815,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
 });
 
 function sentiment() {
-    console.log("message was loaded");
+    //console.log("message was loaded");
     chrome.runtime.sendMessage({
         message: "sentiment"
     }, function(response) {
-        console.log(response.message);
+        //console.log(response.message);
     });
-    console.log("message was sent");
+    //console.log("message was sent");
 }
 
 main();

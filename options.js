@@ -1,23 +1,16 @@
 $("#forms").submit(function(e) {
-    console.log("validate form");
+    //content.log("validate form");
     var email = document.getElementById("id").value;
     var password = document.getElementById("pass").value;
-    var childName = document.getElementById("childName").value;
+    var childName = document.getElementById("childName").value.toLowerCase();
     var sendobj = {
         email: email,
         password: password,
         childName: childName
     }
-    chrome.runtime.sendMessage(id, {
-                url: "http://tfoxtrip.com/appDisabled",
-                post:{
-                email: email,
-                childName: childName
-            }},
-                function(response) {
-            });
+    $('.loading').addClass('front');
     $.ajax({
-            url: "http://tfoxtrip.com/user/new",
+            url: "https://contentholmes.com/user/new",
             beforeSend: function(XhrObj) {
                 XhrObj.setRequestHeader("Content-Type", "application/json");
             },
@@ -27,10 +20,10 @@ $("#forms").submit(function(e) {
         })
         .done(function(data) {
             var parse = JSON.parse(data);
-            console.log('request data ' + data);
-            console.log('request sent ' + parse.success);
+            //content.log('request data ' + data);
+            //content.log('request sent ' + parse.success);
             if (parse.success) {
-                console.log('successful');
+                //content.log('successful');
                 chrome.storage.local.set({
                     "info": {
                         "email": email,
@@ -38,19 +31,34 @@ $("#forms").submit(function(e) {
                         "childName": childName
                     }
                 });
-                chrome.runtime.setUninstallURL("http://tfoxtrip.com/uninstall/?email=" + email + "&childName=" + childName);
+                chrome.runtime.sendMessage({
+                    type: "messaging",
+                    email: email,
+                    childName: childName
+                });
+                chrome.storage.local.get(['global'], function(items) {
+                    items.global.sentimentThings = [];
+                    chrome.storage.local.set({
+                        global: items.global
+                    });
+                });
+                chrome.runtime.setUninstallURL("https://contentholmes.com/uninstall/?email=" + email + "&childName=" + childName);
                 window.location = "https://www.google.co.in";
             } else {
                 var msg = parse.message;
-                console.log('error message is' + msg);
+                //content.log('error message is' + msg);
+                $('.loading').removeClass('front');
                 $("#hidden").css("visibility", "visible");
                 $("#error_text").text(msg);
             }
-            // console.log("data sent to server");
+            // //content.log("data sent to server");
         })
         .fail(function() {
-            console.log('error');
-            // console.log("error in request to server");
+            $('.loading').removeClass('front');
+            //content.log('error');
+            $("#hidden").css("visibility", "visible");
+            $("#error_text").text("Server Not Reachable");
+            // //content.log("error in request to server");
         });
     e.preventDefault();
 });

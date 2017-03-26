@@ -1,62 +1,59 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-	<title>Page is blocked</title>
-	<!-- <link rel="stylesheet" type="text/css" href="./../css/first.css" /> -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script> -->
-	<link rel="stylesheet" href="./../css/master.css">
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
-	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,700|Roboto:400,600,700" rel="stylesheet">
-
+    <title>Access Blocked</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./../css/bootstrap.min.css">
+    <script type="text/javascript" src="./../js/jquery-2.1.4.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+    <script src="./../js/bootstrap.min.js"></script>
+    <link href="./../css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Raleway:400|Oxygen:400" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:300,400|Josefin+Sans:300i,400" rel="stylesheet">
+    <link rel="stylesheet" href="./../css/local.css">
+    <link rel="stylesheet" href="./../css/animate.css">
+    <!-- <script src="./../js/main.js"></script> -->
+    <!-- <script src="./../js/wow.min.js"></script> -->
+    <!-- <script src="./../js/scrolleffect.js"></script> -->
 </head>
 
-<body id="login_body">
-	<h1 class="center2 text-center">Content Rectifier</h1>
-	<div class="login-page">
-		<div class="form text-center">
-			<p class="login-text text-center">You don't have permission to access this content</p>
-		</div>
-	</div>
-	<div class="bottom_redirect text-center">
-		<p class="center3">Redirecting</p>
-		<div class="load"></div>
-	</div>
-	<script type="text/javascript" src="./../js/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src="./../js/redirect.js"></script>
-	<!-- <script type="text/javascript" src="./../options.js"></script> -->
+<body>
+    <div class="background" id="backdrop2"></div>
+    <div class="container-fluid">
+        <div class="container">
+            <div class="overlay">
+                <div class="row-vertical-center">
+                    <div class="row animated fadeInUp">
+                        <div class="text-center">
+                            <div class="login_box">
+                              <div class="push-top2"></div>
+                                <div class="loading2">
+                                    <div class="text-center">
+                                        <div class="spinner">
+                                            <div class="rect1"></div>
+                                            <div class="rect2"></div>
+                                            <div class="rect3"></div>
+                                            <div class="rect4"></div>
+                                            <div class="rect5"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="safetyText">
+																		<p class="safetyMessage">You cannot access this page</p>
+                                    <p class="redirecting">Redirecting</p>
+                                    <div class="push-top2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+		<script type="text/javascript" src="./../js/redirect.js"></script>
+    <!-- <script type="text/javascript" src="./../options.js"></script> -->
 </body>
 
 </html>
-<!--
-<head>
-	<title>Page is blocked</title>
-	<meta charset="utf-8"/>
-	<link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-	<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="./../css/login.css">
-</head>
-<body>
-	<div class="container">
-		<div class="topspace"></div>
-		<div class = "row">
-			<h1 class = "col-sm-12 text-center white">Content Rectifier</h1>
-		</div>
-		<div class="topspace2">
-		</div>
-		<div class="box col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
-			<div class = "row">
-				<div class = "col-sm-12 vertical_align">
-					<h4 class = "col-sm-12 text-center">You don't have the permission to access this site. A log of this will be sent to you know who .....</h3>
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
-</html> -->
