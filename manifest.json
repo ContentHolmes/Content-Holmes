@@ -18,7 +18,7 @@
 
     "browser_action": {
          "default_icon": "./logo_xs.png",
-        "default_title": "Content Rectifier 2",
+        "default_title": "Content Holmes",
         "default_popup": "html/popup.html"
     },
 
@@ -27,9 +27,6 @@
     ],
 
     "options_page": "html/first.html",
-    // "options_ui": {
-    //   "page": "html/login.html"
-    // },
 
     "content_scripts": [{
         "all_frames": true,

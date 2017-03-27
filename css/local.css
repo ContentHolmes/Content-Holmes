@@ -378,6 +378,16 @@ body {
     width: 100%;
 }
 
+.loading3 {
+    position: absolute;
+    margin: auto;
+    background-color: transparent;
+    z-index: 10;
+    bottom: -80px;
+    width: 100%;
+    top: -100px;
+}
+
 .front {
     z-index: 10;
 }
@@ -504,6 +514,45 @@ body {
     animation-fill-mode: both;
     -webkit-animation-name: pushup;
     animation-name: pushup;
+}
+
+.data {
+    position: relative;
+    height: 50px;
+}
+
+.final_text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 30;
+    top: 0;
+    display: none;
+}
+
+.LoginText {
+    display: inline;
+    font-family: var(--font_c);
+    font-size: 1.4em;
+}
+
+.link {
+    font-family: var(--font_c);
+    color: var(--main);
+    font-size: 1.4em;
+}
+
+#NoLogin {
+    display: none;
+}
+
+#Login {
+    display: none;
+}
+
+.link:hover {
+    color: var(--accent_2);
+    text-decoration: none;
 }
 
 .ch_t {

@@ -1,3 +1,11 @@
+$(document).ready(function() {
+    chrome.storage.local.get('info', function(item) {
+        if (item.info) {
+            window.location = "https://www.contentholmes.com/";
+        }
+    });
+});
+
 $("#forms").submit(function(e) {
     //content.log("validate form");
     var email = document.getElementById("id").value;
@@ -43,7 +51,8 @@ $("#forms").submit(function(e) {
                     });
                 });
                 chrome.runtime.setUninstallURL("https://contentholmes.com/uninstall/?email=" + email + "&childName=" + childName);
-                window.location = "https://www.google.co.in";
+                window.alert("Successful Login");
+                window.location = "https://www.contentholmes.com/gettingstarted";
             } else {
                 var msg = parse.message;
                 //content.log('error message is' + msg);
