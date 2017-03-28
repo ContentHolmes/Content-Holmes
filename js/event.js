@@ -192,6 +192,7 @@ chrome.management.onDisabled.addListener(function(details) {
         chrome.storage.local.get('info', function(item) {
             if (!item.info) {
                 chrome.runtime.sendMessage({
+                    type: "redirect",
                     redirect: chrome.extension.getURL("/html/first.html")
                 });
             } else {
@@ -229,6 +230,7 @@ chrome.management.onInstalled.addListener(function(details) {
     chrome.storage.local.get('info', function(item) {
         if (!item.info) {
             chrome.runtime.sendMessage({
+                type: "redirect",
                 redirect: chrome.extension.getURL("/html/first.html")
             });
         } else {
