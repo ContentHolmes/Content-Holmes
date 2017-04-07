@@ -13,7 +13,8 @@ module.exports = {
     redirect: './src/js/redirect',
     'socket.io': './src/js/socket.io',
     URLBlock: './src/js/URLBlock',
-    URLInviz: './src/js/URLInviz'
+    URLInviz: './src/js/URLInviz',
+    'bootstrap.min': './src/js/bootstrap.min'
 
   },
   output: {
