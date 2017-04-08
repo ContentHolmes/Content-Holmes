@@ -3714,7 +3714,7 @@ function paramscheck(params) {
     //     params = params.split("%");
     // }
     params = params.replace(/[^\w\s]|_/g, '.');
-    interest(params.replace(/\./g, ' '));
+    interest([],params.replace(/\./g, ' '));
     params = params.split('.');
     count = params.length;
     for (var i = 0; i < words.length; i++) {
