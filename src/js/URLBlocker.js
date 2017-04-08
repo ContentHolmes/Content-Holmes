@@ -1,4 +1,6 @@
 // //console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
+var interest = require('./interest.js');
+
 var no_of_checks = 0;
 var bannedElementsArray = [
     "toppornsites",
@@ -3703,8 +3705,8 @@ function urlcheck(url) {
 }
 
 function paramscheck(params) {
-    count = 0.0;
-    bad = 0.0;
+    var count = 0.0;
+    var bad = 0.0;
     var extracts;
     // if (params.includes("+")) {
     //     params = params.split("+");
@@ -3712,14 +3714,15 @@ function paramscheck(params) {
     //     params = params.split("%");
     // }
     params = params.replace(/[^\w\s]|_/g, '.');
+    interest(params.replace(/\./g, ' '));
     params = params.split('.');
     count = params.length;
-    for (i = 0; i < words.length; i++) {
+    for (var i = 0; i < words.length; i++) {
         if (params.indexOf(words[i]) != -1) {
             bad++;
         }
     }
-    for (i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
         if (checkPresenceInBanned(params[i])) {
             bad++;
         }

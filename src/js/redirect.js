@@ -1,7 +1,7 @@
 $(document).ready(function() {
-    console.log('ready');
+    // console.log('ready');
     setTimeout(function() {
-        console.log('ya');
+        // console.log('ya');
         window.location = "https://www.google.co.in";
     }, 5000);
 });

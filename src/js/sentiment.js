@@ -3539,14 +3539,14 @@ function startSentiment() {
     // Gets all the text nodes and checks the text to calculate the sentiment score.
     var iterator = document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
     var depressionmin = 0;
-    var depressionCalc;
+    var depressionCalc, node;
     while ((node = iterator.nextNode())) {
         depressionCalc = parseParagraphs(node);
         if (depressionCalc < depressionmin) {
             depressionmin = depressionCalc;
         }
     }
-    ////console.log("From minimum depression: " + depressionmin);
+    // console.log("From minimum depression: " + depressionmin);
     lessThanPrevious(depressionmin);
     return;
 }
@@ -3614,7 +3614,7 @@ function lessThanPrevious(score) {
                 newThing = true;
             } else {
                 if (arr[arr.length - 1].value > score) {
-                    // ////console.log("scroe is " + score);
+                    // console.log("scroe is " + score);
                     arr[arr.length - 1] = newObj;
                     newThing = true;
                 }
@@ -3749,7 +3749,8 @@ function getSentences(str) {
     const regex = /(\.\s)?([A-Z][^\.!\?]+[\.!\?])/g;
     var sentences = [];
     str = str + ".";
-
+    var m;
+    
     while ((m = regex.exec(str)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
         if (m.index === regex.lastIndex) {
