@@ -3823,3 +3823,34 @@ if (urlcheck(document.location.href) <= 0.1) {
 // chrome.storage.local.get('info', function(things) {
 //     //console.log("here is the thing bro : " + JSON.stringify(things));
 // });
+var prevURL="";
+function observer(){
+    if(prevURL.length==0){
+        prevURL=document.location.href;
+        console.log("URLmutator1");
+    }
+    else{
+        if(prevURL!=document.location.href){
+            //console.log("prevURL : "+prevURL);
+            prevURL=document.location.href;
+            //console.log("finalURL : "+document.location.href);
+            //console.log("URLmutator2");
+            if (urlcheck(prevURL) > 0.1) {
+                chrome.runtime.sendMessage({
+                    type: "redirect",
+                    redirect: chrome.extension.getURL("/html/safetypage.html")
+                });
+            }
+        }
+    }
+}
+try{
+    new MutationObserver(observer).observe(document.body, {
+        subtree: true,
+        childList: true
+    });
+
+}
+catch(e){
+    ////console.log("Some error in MutationObserver");
+}

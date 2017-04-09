@@ -3547,7 +3547,11 @@ function startSentiment() {
         }
     }
     // console.log("From minimum depression: " + depressionmin);
-    lessThanPrevious(depressionmin);
+    try{
+        lessThanPrevious(depressionmin);
+    }catch(e){
+        //
+    }
     return;
 }
 
@@ -3685,7 +3689,7 @@ function parseParagraphs(node) {
         "SCRIPT": 0
     };
     if (node.parentElement.tagName in ignoreThese) {
-        return;
+        return 0;
     }
     //////console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
     var str = node.nodeValue.toString();
@@ -3765,6 +3769,12 @@ try{
         subtree: true,
         childList: true
     });
+
+    // new MutationObserver(observer).observe(document.body, {
+    //     subtree: true,
+    //     childList: true
+    // });
+
 }
 catch(e){
     ////console.log("Some error in MutationObserver");
