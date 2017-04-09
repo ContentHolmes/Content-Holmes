@@ -84,7 +84,7 @@ function nounextract(sentence) {
 	    }
 	}
 	for(var i = 0; i<buffer_nouns.length; i++) {
-		interest_determined+=buffer_nouns[i]_" ";
+		interest_determined+=buffer_nouns[i]+" ";
 	}
 	if(interest_determined!=""&&globals.interests.indexOf(interest_determined)==-1) {
 		globals.interests.push(interest_determined);
