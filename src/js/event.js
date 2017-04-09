@@ -33,6 +33,8 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.trustedURLs = global.trustedURLs || [];
     global.email = global.email || "";
     global.password = global.password || "";
+    global.interestBuffer = global.interestBuffer || {};
+    global.interests =  global.interests || [];
     // This will store the sentiment scores
     // whenever we land on a
     // global.interests = {

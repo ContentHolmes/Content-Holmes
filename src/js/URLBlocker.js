@@ -1,4 +1,6 @@
 // //console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
+var interest = require('./modules/interest/interest.js');
+
 var no_of_checks = 0;
 var bannedElementsArray = [
     "toppornsites",
@@ -113,18 +115,10 @@ var bannedElementsArray = [
     "streetblowjobs",
     "erotica7",
     "sexforums",
-    "erooups",
-    "imagearn",
     "totallynsfw",
     "anotherpornblog.tumblr",
     "funpic",
     "thongsaroundtheworld",
-    "celebuzz",
-    "perezhilton",
-    "thehollywoodgossip",
-    "justjared",
-    "laineygossip",
-    "hollywoodlife",
     "nakednews",
     "extremetube",
     "bdsmstreak",
@@ -166,8 +160,6 @@ var bannedElementsArray = [
     "babepedia",
     "kindgirls",
     "nurglesnymphs",
-    "thechive",
-    "mandatory",
     "ebaumsworld",
     "playindianporn",
     "desikahani",
@@ -179,20 +171,13 @@ var bannedElementsArray = [
     "avn",
     "maxim",
     "playboy",
-    "menshealth",
-    "zimbio",
     "69games",
     "playporngames",
     "sexyfuckgames",
     "playforceone",
     "secure.thegfnetwork",
-    "rk",
-    "mofosnetwork",
-    "track.braincash.com",
-    "join.teamskeet",
-    "join.alljapanesepass",
+    "mofosnetwork",,
     "momsbangteens",
-    "linkfame",
     "gfrevenge",
     "videosz",
     "digitalplayground",
@@ -225,8 +210,6 @@ var bannedElementsArray = [
     "forum.xnxx",
     "the-pork",
     "pornbb",
-    "planetsuzy",
-    "forumophilia",
     "freeones",
     "phun",
     "forum.oneclickchicks",
@@ -319,7 +302,6 @@ var bannedElementsArray = [
     "pron",
     "pornmd",
     "video.search",
-    "it.bing",
     "nudevista",
     "badjojo",
     "pornmaxim",
@@ -738,7 +720,6 @@ var bannedElementsArray = [
     "tubaholic",
     "turnporn",
     "porndex",
-    "bing",
     "askjolene",
     "pornprox",
     "tubething",
@@ -3724,8 +3705,8 @@ function urlcheck(url) {
 }
 
 function paramscheck(params) {
-    count = 0.0;
-    bad = 0.0;
+    var count = 0.0;
+    var bad = 0.0;
     var extracts;
     // if (params.includes("+")) {
     //     params = params.split("+");
@@ -3733,14 +3714,23 @@ function paramscheck(params) {
     //     params = params.split("%");
     // }
     params = params.replace(/[^\w\s]|_/g, '.');
+    var query = params.replace(/\./g, ' ');
+    chrome.storage.local.get(["settings", "global"], function(items) {
+        interest.setBuffer(items.global.interestBuffer);
+        items.global.interests = interest.default(items.global.interests,query);
+        items.global.interestBuffer = interest.getBuffer();
+        chrome.storage.local.set({
+            global: items.global
+        })
+    });
     params = params.split('.');
     count = params.length;
-    for (i = 0; i < words.length; i++) {
+    for (var i = 0; i < words.length; i++) {
         if (params.indexOf(words[i]) != -1) {
             bad++;
         }
     }
-    for (i = 0; i < count; i++) {
+    for (var i = 0; i < count; i++) {
         if (checkPresenceInBanned(params[i])) {
             bad++;
         }

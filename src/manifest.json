@@ -4,7 +4,7 @@
 
     "name": "Content Holmes",
     "description": "",
-    "version": "1.0.0",
+    "version": "1.0.2",
 
     "icons": {
          "48": "logo_48.png",
@@ -45,7 +45,7 @@
         "run_at": "document_end"
     }, {
         "all_frames": true,
-        "js": ["js/jquery-2.1.4.min.js", "js/content_script.js", "js/sentiment/sentiment.js"],
+        "js": ["js/jquery-2.1.4.min.js", "js/content_script.js", "js/sentiment.js"],
         "matches": ["<all_urls>"],
         "run_at": "document_end"
     }],
