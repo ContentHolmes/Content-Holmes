@@ -14,6 +14,7 @@ export {
 };
 
 var pickup_categories = ['JJ', 'FW', 'NN', 'NNP', 'NNPS', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBZ'];
+var sentiment_categories = ['JJ', 'FW', 'NN', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBZ'];
 var buffer_categories = {};
 var MAX_LENGTH = 10;
 var globals = {};
@@ -126,8 +127,8 @@ function wordextract(sentence) {
 		var taggedWord = taggedWords[i];
 		var word = taggedWord[0];
 	    var tag = taggedWord[1];
-	    if(pickup_categories.indexOf(tag)!=-1) {
-	    	values.push(taggedWord);
+	    if(sentiment_categories.indexOf(tag)!=-1) {
+	    	values.push(word);
 	    }
 	}
 	return values;
