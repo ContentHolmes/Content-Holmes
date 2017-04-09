@@ -57,7 +57,7 @@ function interest(interests, query) {
 	});
 	maintainance();
 	// console.log(JSON.stringify(buffer_categories));
-	console.log(interests);
+	// console.log(interests);
 	return globals.interests;
 }
 

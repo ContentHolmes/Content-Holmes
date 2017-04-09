@@ -3827,7 +3827,7 @@ var prevURL="";
 function observer(){
     if(prevURL.length==0){
         prevURL=document.location.href;
-        console.log("URLmutator1");
+        // console.log("URLmutator1");
     }
     else{
         if(prevURL!=document.location.href){

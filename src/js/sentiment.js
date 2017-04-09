@@ -3716,7 +3716,7 @@ function parseParagraphs(node) {
         var newSentence = nlp.wordextract(sentenceArray[i].toString());
         formatWordsInArray(newSentence);
         totalWords = totalWords + newSentence.length;
-        console.log(newSentence);
+        // console.log(newSentence);
         var newSum = calculateSum(newSentence);
         //////console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
         sum = sum + newSum /**newSentence.length*/ ;
