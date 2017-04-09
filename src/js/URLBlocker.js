@@ -1,5 +1,5 @@
 // //console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
-var interest = require('./modules/interest/interest.js');
+var nlp = require('./modules/nlp/nlp.js');
 
 var no_of_checks = 0;
 var bannedElementsArray = [
@@ -3716,9 +3716,9 @@ function paramscheck(params) {
     params = params.replace(/[^\w\s]|_/g, '.');
     var query = params.replace(/\./g, ' ');
     chrome.storage.local.get(["settings", "global"], function(items) {
-        interest.setBuffer(items.global.interestBuffer);
-        items.global.interests = interest.default(items.global.interests,query);
-        items.global.interestBuffer = interest.getBuffer();
+        nlp.setBuffer(items.global.interestBuffer);
+        items.global.interests = nlp.interest(items.global.interests,query);
+        items.global.interestBuffer = nlp.getBuffer();
         chrome.storage.local.set({
             global: items.global
         })
