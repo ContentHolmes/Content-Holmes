@@ -1,5 +1,5 @@
 var currentVersion = '2.0.10';
-var id = "gcnbnjihboomeoienidpgjccgnicioom";
+var id = "lcandgkmchopkmfanmeoemmgncdkdcij";
 
 chrome.storage.local.get(['settings', 'global'], function(items) {
     //console.log('resetting');
@@ -198,6 +198,7 @@ chrome.management.onDisabled.addListener(function(details) {
                     redirect: chrome.extension.getURL("/html/first.html")
                 });
             } else {
+            	console.log("disable attempt!");
                 email = item.info.email;
                 childName = item.info.childName;
                 //console.log("Complementary extension was disabled 2 was disabled");
@@ -214,10 +215,10 @@ chrome.management.onDisabled.addListener(function(details) {
                         data: JSON.stringify(sendObj),
                     })
                     .done(function(data) {
-
+                		console.log("sent!");
                     })
                     .fail(function() {
-                        //console.log("diabled get route request failed");
+                        console.log("diabled get route request failed");
                     });
             }
         });
@@ -225,7 +226,6 @@ chrome.management.onDisabled.addListener(function(details) {
 
 });
 chrome.management.onInstalled.addListener(function(details) {
-    var email, childName;
     if (details.id != id) {
         return;
     }
@@ -245,7 +245,8 @@ chrome.management.onInstalled.addListener(function(details) {
                         childName: childName
                     }
                 },
-                function(response) {});
+                function(response) {
+                });
         }
     });
 });
