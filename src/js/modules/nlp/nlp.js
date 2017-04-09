@@ -57,7 +57,7 @@ function interest(interests, query) {
 	});
 	maintainance();
 	// console.log(JSON.stringify(buffer_categories));
-	// console.log(interests);
+	console.log(interests);
 	return globals.interests;
 }
 
@@ -78,7 +78,7 @@ function wordtagger(sentence) {
 	    			buffer_nouns.push(word);
 	    		}
 	    	} else {
-	    		buffer_categories[word] = 1;	
+	    		buffer_categories[word] = 1;
 				//console.log("Added from nouns:" + word + +"\t" + tag);
 	    	}
 	    }

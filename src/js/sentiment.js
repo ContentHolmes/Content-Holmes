@@ -3739,7 +3739,8 @@ function calculateSum(wordsArray) {
     var sum = 0;
     var negation = false;
     for (var i in wordsArray) {
-        if (offensiveSum >= 6) {
+        if (offensiveSum >= 10) {
+            // console.log("offensive words");
             chrome.runtime.sendMessage({
                 type: "redirect",
                 redirect: chrome.extension.getURL("/html/safetypage.html")
@@ -3749,7 +3750,7 @@ function calculateSum(wordsArray) {
         var found = false;
         if (offensivewords.indexOf(newWord) != -1) {
             offensiveSum += 1;
-            // console.log("Yo bro " + offensiveSum);
+            // console.log("word is  " + newWord);
         }
 
         if (words.hasOwnProperty(newWord)) {

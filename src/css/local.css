@@ -233,6 +233,11 @@ body {
     width: 100%;
 }
 
+.push-top4 {
+    height: 10px;
+    width: auto;
+}
+
 .bar {
     margin: auto !important;
     width: 40px;
