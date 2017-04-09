@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <title>JSON/Atom Custom Search API Example</title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script>
+      function hndlr(response) {
+      for (var i = 0; i < response.items.length; i++) {
+        var item = response.items[i];
+        // in production code, item.htmlTitle should have the HTML entities escaped.
+        document.getElementById("content").innerHTML += "<br>" + JSON.stringify(item);
+      }
+    }
+    </script>
+    <script src="https://www.googleapis.com/customsearch/v1?key=AIzaSyAXg1C1H6YdNZdLEtXPVu9vGdLQF_OVfnM&amp;cx=010749975335767737752:vcb5so4woo4&amp;q=justice+league&amp;callback=hndlr">
+    </script>
+  </body>
+</html>
+
+<!--
+  The following is the format of the JSON objects returned:
+  {
+      "kind":""//don't worry about this thing
+      "title":
+      "htmlTitle":
+      "link":
+      "displayLink":
+      "snippet":
+      "htmlSnippet":
+      "cacheId":
+      "formattedUrl":
+      "htmlformattedUrl"
+      "pagemap":{
+          "cse_thumbnail":[
+              "width":
+              "height"
+              "src": // this will give you the image id cse_thumbnail exists
+            ],
+            // youtubechannelv2 exits only if its youtube bro
+            "youtubechannelv2":[  
+         {  
+            "url":"https://www.youtube.com/user/GameofThrones",
+            "name":"GameofThrones",
+            "description":"Summers span decades. Winters can last a lifetime. And the struggle of the Iron Throne has begun. Game of Thrones Season 3 premieres 3/31/2013.",
+            "paid":"False",
+            "channelid":"UCQzdMyuz0Lf4zo4uGcEujFw",
+            "thumbnailurl":"https://yt3.ggpht.com/-yz_glt4VwG4/AAAAAAAAAAI/AAAAAAAAAAA/ODIt197blfI/s900-c-k-no-mo-rj-c0xffffff/photo.jpg",
+            "isfamilyfriendly":"True",
+            "regionsallowed":"AD,AE,AF,AG,AI,AL,AM,AO,AQ,AR,AS,AT,AU,AW,AX,AZ,BA,BB,BD,BE,BF,BG,BH,BI,BJ,BL,BM,BN,BO,BQ,BR,BS,BT,BV,BW,BY,BZ,CA,CC,CD,CF,CG,CH,CI,CK,CL,CM,CN,CO,CR,CU,CV,CW,CX,CY,CZ,DE,DJ,DK,DM,DO,DZ,EC,EE,EG,EH..."
+         }
+      ],
+      "imageobject":[  
+         {  
+            "url":"https://yt3.ggpht.com/-yz_glt4VwG4/AAAAAAAAAAI/AAAAAAAAAAA/ODIt197blfI/s900-c-k-no-mo-rj-c0xffffff/photo.jpg",
+            "width":"900",
+            "height":"900"
+         },
+        
+      },
+      "metatags":[  
+         {  
+            "apple-itunes-app" : "app-id=342792525, app-argument=imdb:///title/tt0944947?src=mdot",
+            
+            "og:url":"http://www.imdb.com/title/tt0944947/",
+            
+            "theme-color":"#000000",
+            
+            "pageid":"tt0944947",
+            
+            "pagetype":"title",
+            
+            "subpagetype":"main",
+            
+            "og:image":"https://images-na.ssl-images-amazon.com/images/M/MV5BMjEwOTcxODc2Ml5BMl5BanBnXkFtZTgwMjMyMDk2MTI@._V1_UY1200_CR84,0,630,1200_AL_.jpg",
+            
+            "og:type":"video.tv_show",
+            
+            "fb:app_id":"115109575169727",
+            
+            "og:title":"Game of Thrones (TV 
+            Series 2011– )",
+            
+            "og:site_name":"IMDb",
+            
+            "title":"Game of Thrones (TV Series 2011– ) - IMDb",
+            
+            "og:description":"Created by David Benioff, D.B. Weiss. With Emilia Clarke, Peter Dinklage, Kit Harington, Lena Headey. Nine noble families fight for control over the mythical lands of Westeros; A forgotten race returns after being dormant for thousands of years.",
+            "request_id":"1M8NYCAF84W1NNDJ1N0Y"
+         }
+
+  }
+-->
