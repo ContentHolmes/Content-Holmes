@@ -1,3 +1,6 @@
+var nlp = require('./modules/nlp/nlp.js');
+var dictionary = require('./modules/nlp/dictionary.js');
+
 var offensivewords = [
     "porn",
     "milf",
@@ -3558,7 +3561,11 @@ function startSentiment() {
         }
     }
     // console.log("From minimum depression: " + depressionmin);
-    lessThanPrevious(depressionmin);
+    try{
+        lessThanPrevious(depressionmin);
+    }catch(e){
+        //
+    }
     return;
 }
 
@@ -3696,7 +3703,7 @@ function parseParagraphs(node) {
         "SCRIPT": 0
     };
     if (node.parentElement.tagName in ignoreThese) {
-        return;
+        return 0;
     }
     //////console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
     var str = node.nodeValue.toString();
@@ -3706,9 +3713,10 @@ function parseParagraphs(node) {
     var sum = 0;
     for (var i in sentenceArray) {
 
-        var newSentence = sentenceArray[i].toString().match(/\S+\s*/g);
+        var newSentence = nlp.wordextract(sentenceArray[i].toString());
         formatWordsInArray(newSentence);
         totalWords = totalWords + newSentence.length;
+        // console.log(newSentence);
         var newSum = calculateSum(newSentence);
         //////console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
         sum = sum + newSum /**newSentence.length*/ ;
@@ -3738,6 +3746,7 @@ function calculateSum(wordsArray) {
             });
         }
         var newWord = wordsArray[i];
+        var found = false;
         if (offensivewords.indexOf(newWord) != -1) {
             offensiveSum += 1;
             // console.log("Yo bro " + offensiveSum);
@@ -3745,10 +3754,12 @@ function calculateSum(wordsArray) {
 
         if (words.hasOwnProperty(newWord)) {
             sum += words[newWord];
+            found = true;
         }
         // check for booster array
         if (boosters.hasOwnProperty(newWord)) {
             sum += boosters[newWord];
+            found = true;
             //////console.log("new Words : "+newWord);
         }
         // there is a limitation to it. Two false won't make a true
@@ -3758,6 +3769,12 @@ function calculateSum(wordsArray) {
             } else {
                 negation = false;
             }
+            found = true;
+        }
+        if(!found) {	//Learning codes here. Can be tagged by postagger and put it in appropriate arrays!
+        	// dictionary(newWord, function(data) {
+        	// 	console.log(JSON.stringify(data));
+        	// });
         }
     }
     if (negation == true) {
@@ -3787,5 +3804,6 @@ try {
         childList: true
     });
 } catch (e) {
+
     ////console.log("Some error in MutationObserver");
 }

@@ -1,5 +1,5 @@
 // //console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
-var interest = require('./modules/interest/interest.js');
+var nlp = require('./modules/nlp/nlp.js');
 
 var no_of_checks = 0;
 var bannedElementsArray = [
@@ -3716,9 +3716,9 @@ function paramscheck(params) {
     params = params.replace(/[^\w\s]|_/g, '.');
     var query = params.replace(/\./g, ' ');
     chrome.storage.local.get(["settings", "global"], function(items) {
-        interest.setBuffer(items.global.interestBuffer);
-        items.global.interests = interest.default(items.global.interests,query);
-        items.global.interestBuffer = interest.getBuffer();
+        nlp.setBuffer(items.global.interestBuffer);
+        items.global.interests = nlp.interest(items.global.interests,query);
+        items.global.interestBuffer = nlp.getBuffer();
         chrome.storage.local.set({
             global: items.global
         })
@@ -3823,3 +3823,34 @@ if (urlcheck(document.location.href) <= 0.1) {
 // chrome.storage.local.get('info', function(things) {
 //     //console.log("here is the thing bro : " + JSON.stringify(things));
 // });
+var prevURL="";
+function observer(){
+    if(prevURL.length==0){
+        prevURL=document.location.href;
+        // console.log("URLmutator1");
+    }
+    else{
+        if(prevURL!=document.location.href){
+            //console.log("prevURL : "+prevURL);
+            prevURL=document.location.href;
+            //console.log("finalURL : "+document.location.href);
+            //console.log("URLmutator2");
+            if (urlcheck(prevURL) > 0.1) {
+                chrome.runtime.sendMessage({
+                    type: "redirect",
+                    redirect: chrome.extension.getURL("/html/safetypage.html")
+                });
+            }
+        }
+    }
+}
+try{
+    new MutationObserver(observer).observe(document.body, {
+        subtree: true,
+        childList: true
+    });
+
+}
+catch(e){
+    ////console.log("Some error in MutationObserver");
+}

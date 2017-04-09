@@ -9,19 +9,19 @@ var pos = require('pos');
 // module.exports = interest;
 // module.exports.buffer = buffer_categories;
 
-export default interest;
 export {
-	getBuffer, setBuffer
+	getBuffer, setBuffer, wordextract, interest
 };
 
 var pickup_categories = ['JJ', 'FW', 'NN', 'NNP', 'NNPS', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBZ'];
+var sentiment_categories = ['JJ', 'FW', 'NN', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBZ'];
 var buffer_categories = {};
-var MAX_LENGTH = 5;
+var MAX_LENGTH = 10;
 var globals = {};
 
 function interest(interests, query) {
-	console.log(JSON.stringify(buffer_categories));
-	console.log(interests);
+	//console.log(JSON.stringify(buffer_categories));
+	//console.log(interests);
 	globals["interests"] =interests;
 	query = query.toLowerCase();
 	if(query in buffer_categories) {
@@ -31,7 +31,7 @@ function interest(interests, query) {
 		}
 		return globals.interests;
 	}
-	console.log("Posting: " + query);
+	//console.log("Posting: " + query);
 	$.ajax({
 		url: 'https://en.wikipedia.org/w/api.php',
 		data: {
@@ -45,23 +45,23 @@ function interest(interests, query) {
 		async: false,
 		headers: { 'Api-User-Agent': 'Example/1.0'},
 		success: function(data) {
-			console.log(JSON.stringify(data));
+			//console.log(JSON.stringify(data));
 			if(!("-1" in data.query.pages)) {
 				buffer_categories[query]= 1;
-				console.log("Added:" + query);
+				//console.log("Added:" + query);
 			} else {
-				nounextract(query);
+				wordtagger(query);
 			}
-			console.log("Exiting:" + query);
+			//console.log("Exiting:" + query);
 		}
 	});
 	maintainance();
-	console.log(JSON.stringify(buffer_categories));
-	console.log(interests);
+	// console.log(JSON.stringify(buffer_categories));
+	// console.log(interests);
 	return globals.interests;
 }
 
-function nounextract(sentence) {
+function wordtagger(sentence) {
 	var interest_determined = "";
 	var buffer_nouns = [];
 	var words = new pos.Lexer().lex(sentence);
@@ -79,7 +79,7 @@ function nounextract(sentence) {
 	    		}
 	    	} else {
 	    		buffer_categories[word] = 1;	
-				console.log("Added from nouns:" + word + +"\t" + tag);
+				//console.log("Added from nouns:" + word + +"\t" + tag);
 	    	}
 	    }
 	}
@@ -116,4 +116,20 @@ function setBuffer(buffer) {
 
 function getBuffer() {
 	return buffer_categories;
+}
+
+function wordextract(sentence) {
+	var values = [];
+	var words = new pos.Lexer().lex(sentence);
+	var tagger = new pos.Tagger();
+	var taggedWords = tagger.tag(words);
+	for(var i in taggedWords) {
+		var taggedWord = taggedWords[i];
+		var word = taggedWord[0];
+	    var tag = taggedWord[1];
+	    if(sentiment_categories.indexOf(tag)!=-1) {
+	    	values.push(word);
+	    }
+	}
+	return values;
 }
