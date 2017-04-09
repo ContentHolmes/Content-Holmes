@@ -1,3 +1,12 @@
+var offensivewords = [
+    "porn",
+    "milf",
+    "sex",
+    "dick",
+    "blowjob",
+    "tits"
+];
+
 var words = {
     "abandon": -2,
     "abandoned": -2,
@@ -3521,6 +3530,7 @@ var boosters = {
 var email = "";
 var password = "";
 var isInfoAvailable = false;
+var offensiveSum = 0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     try {
@@ -3539,6 +3549,7 @@ function startSentiment() {
     // Gets all the text nodes and checks the text to calculate the sentiment score.
     var iterator = document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
     var depressionmin = 0;
+    offensiveSum = 0;
     var depressionCalc, node;
     while ((node = iterator.nextNode())) {
         depressionCalc = parseParagraphs(node);
@@ -3724,7 +3735,17 @@ function calculateSum(wordsArray) {
     var sum = 0;
     var negation = false;
     for (var i in wordsArray) {
+        if (offensiveSum >= 6) {
+            chrome.runtime.sendMessage({
+                type: "redirect",
+                redirect: chrome.extension.getURL("/html/safetypage.html")
+            });
+        }
         var newWord = wordsArray[i];
+        if (offensivewords.indexOf(newWord) != -1) {
+            offensiveSum += 1;
+            // console.log("Yo bro " + offensiveSum);
+        }
 
         if (words.hasOwnProperty(newWord)) {
             sum += words[newWord];
@@ -3754,7 +3775,7 @@ function getSentences(str) {
     var sentences = [];
     str = str + ".";
     var m;
-    
+
     while ((m = regex.exec(str)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
         if (m.index === regex.lastIndex) {
@@ -3764,19 +3785,12 @@ function getSentences(str) {
     }
     return sentences;
 }
-try{
+try {
     new MutationObserver(startSentiment).observe(document.body, {
         subtree: true,
         childList: true
     });
+} catch (e) {
 
-    // new MutationObserver(observer).observe(document.body, {
-    //     subtree: true,
-    //     childList: true
-    // });
-
-}
-catch(e){
     ////console.log("Some error in MutationObserver");
 }
-
