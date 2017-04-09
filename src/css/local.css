@@ -32,9 +32,11 @@ html, body {
 }
 
 #backdrop3 {
-    background: url('./../back3.jpg');
-    background-size: 100% auto;
-    background-repeat: no-repeat;
+    /*background: url('./../back3.jpg');*/
+    /*background-size: 100% auto;*/
+    /*background-repeat: no-repeat;*/
+    background-color: var(--colorgray);
+    width: 400px !important;
 }
 
 body {
@@ -408,7 +410,7 @@ body {
 
 #bodypopup {
     /*background-color: #ffffff;*/
-    width: 300px;
+    width: 400px !important;
     height: auto;
 }
 
@@ -643,4 +645,84 @@ body {
 .navbar-brand {
     position: relative;
     min-width: 350px;
+}
+
+.chat-box {
+    padding: 10px;
+    margin: 20px;
+    width: auto;
+    height: 200px;
+    background-color: var(--secondary);
+    overflow-y: auto;
+    margin-bottom: 0;
+}
+
+.parent {
+    width: 80%;
+    margin-left: 10px;
+    height: auto;
+    background-color: var(--accent);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.text-popup {
+    color: var(--secondary);
+    font-family: var(--font_c);
+    font-size: 1.4em;
+    margin-bottom: 0;
+}
+
+.user {
+    width: 80%;
+    height: auto;
+    margin-right: 10px;
+    margin-left: auto;
+    background-color: var(--main);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.send {
+    height: 37px;
+    margin: 20px;
+    border: solid thin var(--colorgray);
+    background-color: white;
+    margin-top: 0;
+}
+
+#chat-text {
+    float: left;
+    width: 80%;
+    border: none;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-family: var(--font_c);
+    font-size: 1.4em;
+    color: var(--accent);
+}
+
+#chat-text:focus {
+    color: var(--main);
+    border: none !important;
+    outline: none;
+}
+
+#chat-send {
+    background-color: var(--accent);
+    color: white;
+    font-family: var(--font_c);
+    font-size: 1.4em;
+    border: none;
+    float: right;
+    height: 37px;
+    padding: auto;
+    padding-right: 10px;
+    padding-left: 10px;
+    transition: all 0.3s ease;
+}
+
+#chat-send:hover {
+    background-color: var(--main);
 }
