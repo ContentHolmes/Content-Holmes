@@ -2479,62 +2479,67 @@ function checkURL() {
 function blockURL() {
     // //console.log('blocked');
     //console.log('info is ' + isInfoAvailable);
-    chrome.storage.local.get('info', function(items) {
-        if (!items.info) {
-            email = "default";
-            pass = "default";
-            name = "default";
-            redirectURL();
-        } else {
-            //console.log('info available');
-            isInfoAvailable = true;
-            //console.log('i am here 2.0');
-            var sendobj = {
-                type: "URL",
-                email: items.info.email,
-                password: items.info.password,
-                childName: items.info.childName,
-                time: new Date(),
-                value: urlString
-            };
-            //console.log("here is the date "+sendobj.time);
-            chrome.runtime.sendMessage({
-                type: "sendReport",
-                sendReport: JSON.stringify(sendobj)
-            });
-            redirectURL();
-        }
+    chrome.runtime.sendMessage({
+        type: "sendReport",
+        url: urlString
     });
+    redirectURL();
+    // chrome.storage.local.get('info', function(items) {
+    //     if (!items.info) {
+    //         email = "default";
+    //         pass = "default";
+    //         name = "default";
+    //         redirectURL();
+    //     } else {
+    //         //console.log('info available');
+    //         isInfoAvailable = true;
+    //         //console.log('i am here 2.0');
+    //         var sendobj = {
+    //             type: "URL",
+    //             email: items.info.email,
+    //             password: items.info.password,
+    //             childName: items.info.childName,
+    //             time: new Date(),
+    //             value: urlString
+    //         };
+    //         //console.log("here is the date "+sendobj.time);
+    //         chrome.runtime.sendMessage({
+    //             type: "sendReport",
+    //             sendReport: JSON.stringify(sendobj)
+    //         });
+    //         redirectURL();
+    //     }
+    // });
     // if (isInfoAvailable) {
-        // //console.log('i am here 2.0');
-        // var sendobj = {
-        //     type: "URL",
-        //     email: email,
-        //     password: pass,
-        //     childName: name,
-        //     time: new Date(),
-        //     value: urlString
-        // }
-        // $.ajax({
-        //         url: "https://www.contentholmes.com/childReport",
-        //         beforeSend: function(XhrObj) {
-        //             XhrObj.setRequestHeader("Content-Type", "application/json");
-        //         },
-        //         type: "POST",
-        //         data: JSON.stringify(sendobj)
-        //     })
-        //     .done(function(data) {
-        //         //console.log("data sent to server");
-        //         redirectURL();
-        //     })
-        //     .fail(function() {
-        //         //console.log("error in server upload");
-        //         redirectURL();
-        //     });
-        // chrome.runtime.sendMessage({
-        //     type: "report",
-        //     sendReport: JSON.stringify(sendobj)
-        // });
+    // //console.log('i am here 2.0');
+    // var sendobj = {
+    //     type: "URL",
+    //     email: email,
+    //     password: pass,
+    //     childName: name,
+    //     time: new Date(),
+    //     value: urlString
+    // }
+    // $.ajax({
+    //         url: "https://www.contentholmes.com/childReport",
+    //         beforeSend: function(XhrObj) {
+    //             XhrObj.setRequestHeader("Content-Type", "application/json");
+    //         },
+    //         type: "POST",
+    //         data: JSON.stringify(sendobj)
+    //     })
+    //     .done(function(data) {
+    //         //console.log("data sent to server");
+    //         redirectURL();
+    //     })
+    //     .fail(function() {
+    //         //console.log("error in server upload");
+    //         redirectURL();
+    //     });
+    // chrome.runtime.sendMessage({
+    //     type: "report",
+    //     sendReport: JSON.stringify(sendobj)
+    // });
     // }
     // redirectURL();
 }

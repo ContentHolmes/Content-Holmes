@@ -3652,48 +3652,52 @@ function lessThanPrevious(score) {
 
 function sendData(depressionmin) {
     ////console.log("I am inside hrer bros");
-    chrome.storage.local.get('info', function(things) {
-        var newObj;
-        if (!things.info) {
-            newObj = {
-                "type": "depressionScores",
-                "email": "default",
-                "password": "default",
-                "childName": "default",
-                "time": new Date(),
-                "value": depressionmin
-            };
-        } else {
-            isInfoAvailable = true;
-            newObj = {
-                "type": "depressionScores",
-                "email": things.info.email,
-                "password": things.info.password,
-                "childName": things.info.childName,
-                "time": new Date(),
-                "value": depressionmin
-            };
-        }
-        if (isInfoAvailable) {
-            $.ajax({
-                    url: "https://www.contentholmes.com/childReport",
-                    beforeSend: function(xhrObj) {
-                        // Request headers
-                        xhrObj.setRequestHeader("Content-Type", "application/json");
-                    },
-
-                    type: "POST",
-                    data: JSON.stringify(newObj),
-                    // Request body
-                })
-                .done(function(data) {
-                    ////console.log("succcesssful req: " + data);
-                })
-                .fail(function() {
-                    ////console.log("error");
-                });
-        }
+    chrome.runtime.sendMessage({
+        type: "depressionReport",
+        score: depressionmin
     });
+    // chrome.storage.local.get('info', function(things) {
+    //     var newObj;
+    //     if (!things.info) {
+    //         newObj = {
+    //             "type": "depressionScores",
+    //             "email": "default",
+    //             "password": "default",
+    //             "childName": "default",
+    //             "time": new Date(),
+    //             "value": depressionmin
+    //         };
+    //     } else {
+    //         isInfoAvailable = true;
+    //         newObj = {
+    //             "type": "depressionScores",
+    //             "email": things.info.email,
+    //             "password": things.info.password,
+    //             "childName": things.info.childName,
+    //             "time": new Date(),
+    //             "value": depressionmin
+    //         };
+    //     }
+    //     if (isInfoAvailable) {
+    //         $.ajax({
+    //                 url: "https://www.contentholmes.com/childReport",
+    //                 beforeSend: function(xhrObj) {
+    //                     // Request headers
+    //                     xhrObj.setRequestHeader("Content-Type", "application/json");
+    //                 },
+    //
+    //                 type: "POST",
+    //                 data: JSON.stringify(newObj),
+    //                 // Request body
+    //             })
+    //             .done(function(data) {
+    //                 ////console.log("succcesssful req: " + data);
+    //             })
+    //             .fail(function() {
+    //                 ////console.log("error");
+    //             });
+    //     }
+    // });
 }
 
 function parseParagraphs(node) {

@@ -3477,22 +3477,22 @@ var checkCount = 0;
 var globalBadCount = 0;
 var globalGoodCount = 0;
 var qualifiedImagesArray = [];
-var email, pass, name;
+// var email, pass, name;
 var blockedit = false;
-var isInfoAvailable = false;
+// var isInfoAvailable = false;
 
-chrome.storage.local.get('info', function(items) {
-    if (!items.info) {
-        email = "default";
-        pass = "default";
-        name = "default";
-    } else {
-        isInfoAvailable = true;
-        email = items.info.email;
-        pass = items.info.password;
-        name = items.info.childName;
-    }
-});
+// chrome.storage.local.get('info', function(items) {
+//     if (!items.info) {
+//         email = "default";
+//         pass = "default";
+//         name = "default";
+//     } else {
+//         isInfoAvailable = true;
+//         email = items.info.email;
+//         pass = items.info.password;
+//         name = items.info.childName;
+//     }
+// });
 ////console.log("value of blocked it at initialization is: " + blockedit);
 
 function BlockURL() {
@@ -3634,31 +3634,35 @@ function validateNudeResults(data, image) {
         globalGoodCount++;
     }
     if (globalBadCount == 3) {
-        if (isInfoAvailable) {
-            var sendobj = {
-                type: "URL",
-                email: email,
-                password: pass,
-                childName: name,
-                time: new Date(),
-                value: getName(document.location.href)
-            }
-            $.ajax({
-                    url: "https://www.contentholmes.com/childReport",
-                    beforeSend: function(XhrObj) {
-                        XhrObj.setRequestHeader("Content-Type", "application/json");
-                    },
-                    type: "POST",
-                    data: JSON.stringify(sendobj)
-                    // Request body
-                })
-                .done(function(data) {
-                    //console.log("data sent to server from URLblocker");
-                })
-                .fail(function() {
-                    // //console.log("error in request to server");
-                });
-        }
+        chrome.runtime.sendMessage({
+            type: "sendReport",
+            url: getName(document.location.href)
+        });
+        // if (isInfoAvailable) {
+        //     var sendobj = {
+        //         type: "URL",
+        //         email: email,
+        //         password: pass,
+        //         childName: name,
+        //         time: new Date(),
+        //         value: getName(document.location.href)
+        //     }
+        //     $.ajax({
+        //             url: "https://www.contentholmes.com/childReport",
+        //             beforeSend: function(XhrObj) {
+        //                 XhrObj.setRequestHeader("Content-Type", "application/json");
+        //             },
+        //             type: "POST",
+        //             data: JSON.stringify(sendobj)
+        //             // Request body
+        //         })
+        //         .done(function(data) {
+        //             //console.log("data sent to server from URLblocker");
+        //         })
+        //         .fail(function() {
+        //             // //console.log("error in request to server");
+        //         });
+        // }
 
         chrome.storage.local.get(['settings', 'global'], function(items) {
             items.global.bannedURLs.push(getImageName(image.src));
@@ -3771,7 +3775,7 @@ function paramscheck(params) {
     params = params.replace(/[^\w\s]|_/g, '.');
     var query = params.replace(/\./g, ' ');
     try {
-      chrome.storage.local.get(["settings", "global"], function(items) {
+        chrome.storage.local.get(["settings", "global"], function(items) {
             nlp.setBuffer(items.global.interestBuffer);
             nlp.interest(items.global.interests, query, function(interests, data) {
                 console.log(interests);
@@ -3779,11 +3783,11 @@ function paramscheck(params) {
                 items.global.interests = interests;
                 items.global.interestBuffer = data;
                 chrome.storage.local.set({
-                      global: items.global
+                    global: items.global
                 });
             });
         });
-        
+
     } catch (e) {
 
     } finally {
