@@ -12,7 +12,7 @@
     },
 
     "background": {
-        "scripts": ["js/jquery-2.1.4.min.js", "js/socket.io.js", "js/event.js"],
+        "scripts": ["libraries/jquery-2.1.4.min.js", "libraries/socket.io.js", "js/event.js"],
         "persistent": false
     },
 
@@ -30,7 +30,7 @@
 
     "content_scripts": [{
         "all_frames": true,
-        "js": ["js/jquery-2.1.4.min.js", "js/URLBlock.js"],
+        "js": ["libraries/jquery-2.1.4.min.js", "js/URLBlock.js"],
         "matches": ["<all_urls>"],
         "run_at": "document_start"
     }, {
@@ -40,12 +40,12 @@
         "run_at": "document_end"
     }, {
         "all_frames": true,
-        "js": ["js/jquery-2.1.4.min.js", "js/URLBlocker.js"],
+        "js": ["libraries/jquery-2.1.4.min.js", "js/URLBlocker.js"],
         "matches": ["<all_urls>"],
         "run_at": "document_end"
     }, {
         "all_frames": true,
-        "js": ["js/jquery-2.1.4.min.js", "js/content_script.js", "js/sentiment.js"],
+        "js": ["libraries/jquery-2.1.4.min.js", "js/content_script.js", "js/sentiment.js"],
         "matches": ["<all_urls>"],
         "run_at": "document_end"
     }],
