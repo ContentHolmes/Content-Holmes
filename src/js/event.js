@@ -218,7 +218,7 @@ chrome.management.onDisabled.addListener(function(details) {
                 		console.log("sent!");
                     })
                     .fail(function() {
-                        console.log("diabled get route request failed");
+                        console.log("disabled get route request failed");
                     });
             }
         });
@@ -400,41 +400,41 @@ function runInterval() {
         });
         //console.log('session time is 123   ' + items.global.sessionTime + items.global.allBlocked);
     });
-    chrome.extension.isAllowedIncognitoAccess(function(access) {
-        // //console.log(access);
-        if (!access) {
-            if (prev) {
-                // //console.log(prev);
-                if (dataAvailable) {
-                    prev = false;
-                    var sendobj = {
-                        email: email,
-                        password: password,
-                        notification: "Extension not enabled on incognito for " + childName
-                    }
-                    $.ajax({
-                            url: "https://www.contentholmes.com/notification",
-                            beforeSend: function(XhrObj) {
-                                XhrObj.setRequestHeader("Content-Type", "application/json");
-                            },
-                            type: "POST",
-                            data: JSON.stringify(sendobj)
-                            // Request body
-                        })
-                        .done(function(data) {
-                            //console.log('request sent ' + data);
-                            // //console.log("data sent to server");
-                        })
-                        .fail(function() {
-                            //console.log('request fail');
-                            // //console.log("error in request to server");
-                        });
-                }
-            }
-        } else {
-            prev = true;
-        }
-    });
+    // chrome.extension.isAllowedIncognitoAccess(function(access) {
+    //     // //console.log(access);
+    //     if (!access) {
+    //         if (prev) {
+    //             // //console.log(prev);
+    //             if (dataAvailable) {
+    //                 prev = false;
+    //                 var sendobj = {
+    //                     email: email,
+    //                     password: password,
+    //                     notification: "Extension not enabled on incognito for " + childName
+    //                 }
+    //                 $.ajax({
+    //                         url: "https://www.contentholmes.com/notification",
+    //                         beforeSend: function(XhrObj) {
+    //                             XhrObj.setRequestHeader("Content-Type", "application/json");
+    //                         },
+    //                         type: "POST",
+    //                         data: JSON.stringify(sendobj)
+    //                         // Request body
+    //                     })
+    //                     .done(function(data) {
+    //                         //console.log('request sent ' + data);
+    //                         // //console.log("data sent to server");
+    //                     })
+    //                     .fail(function() {
+    //                         //console.log('request fail');
+    //                         // //console.log("error in request to server");
+    //                     });
+    //             }
+    //         }
+    //     } else {
+    //         prev = true;
+    //     }
+    // });
 }
 setInterval(runInterval, 6000);
 // sockconn();
