@@ -3942,5 +3942,4 @@ try {
 } catch (e) {
     ////console.log("Some error in MutationObserver");
 }
-
 checkInterest();
