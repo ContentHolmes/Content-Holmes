@@ -1,3 +1,15 @@
+var nlp = require('./modules/nlp/nlp.js');
+var dictionary = require('./modules/nlp/dictionary.js');
+
+var offensivewords = [
+    "porn",
+    "milf",
+    "sex",
+    "dick",
+    "blowjob",
+    "tits"
+];
+
 var words = {
     "abandon": -2,
     "abandoned": -2,
@@ -3521,6 +3533,7 @@ var boosters = {
 var email = "";
 var password = "";
 var isInfoAvailable = false;
+var offensiveSum = 0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     try {
@@ -3539,15 +3552,20 @@ function startSentiment() {
     // Gets all the text nodes and checks the text to calculate the sentiment score.
     var iterator = document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
     var depressionmin = 0;
-    var depressionCalc;
+    offensiveSum = 0;
+    var depressionCalc, node;
     while ((node = iterator.nextNode())) {
         depressionCalc = parseParagraphs(node);
         if (depressionCalc < depressionmin) {
             depressionmin = depressionCalc;
         }
     }
-    ////console.log("From minimum depression: " + depressionmin);
-    lessThanPrevious(depressionmin);
+    // console.log("From minimum depression: " + depressionmin);
+    try{
+        lessThanPrevious(depressionmin);
+    }catch(e){
+        //
+    }
     return;
 }
 
@@ -3614,7 +3632,7 @@ function lessThanPrevious(score) {
                 newThing = true;
             } else {
                 if (arr[arr.length - 1].value > score) {
-                    // ////console.log("scroe is " + score);
+                    // console.log("scroe is " + score);
                     arr[arr.length - 1] = newObj;
                     newThing = true;
                 }
@@ -3685,7 +3703,7 @@ function parseParagraphs(node) {
         "SCRIPT": 0
     };
     if (node.parentElement.tagName in ignoreThese) {
-        return;
+        return 0;
     }
     //////console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
     var str = node.nodeValue.toString();
@@ -3695,9 +3713,10 @@ function parseParagraphs(node) {
     var sum = 0;
     for (var i in sentenceArray) {
 
-        var newSentence = sentenceArray[i].toString().match(/\S+\s*/g);
+        var newSentence = nlp.wordextract(sentenceArray[i].toString());
         formatWordsInArray(newSentence);
         totalWords = totalWords + newSentence.length;
+        // console.log(newSentence);
         var newSum = calculateSum(newSentence);
         //////console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
         sum = sum + newSum /**newSentence.length*/ ;
@@ -3720,14 +3739,28 @@ function calculateSum(wordsArray) {
     var sum = 0;
     var negation = false;
     for (var i in wordsArray) {
+        if (offensiveSum >= 10) {
+            // console.log("offensive words");
+            chrome.runtime.sendMessage({
+                type: "redirect",
+                redirect: chrome.extension.getURL("/html/safetypage.html")
+            });
+        }
         var newWord = wordsArray[i];
+        var found = false;
+        if (offensivewords.indexOf(newWord) != -1) {
+            offensiveSum += 1;
+            // console.log("word is  " + newWord);
+        }
 
         if (words.hasOwnProperty(newWord)) {
             sum += words[newWord];
+            found = true;
         }
         // check for booster array
         if (boosters.hasOwnProperty(newWord)) {
             sum += boosters[newWord];
+            found = true;
             //////console.log("new Words : "+newWord);
         }
         // there is a limitation to it. Two false won't make a true
@@ -3737,6 +3770,12 @@ function calculateSum(wordsArray) {
             } else {
                 negation = false;
             }
+            found = true;
+        }
+        if(!found) {	//Learning codes here. Can be tagged by postagger and put it in appropriate arrays!
+        	// dictionary(newWord, function(data) {
+        	// 	console.log(JSON.stringify(data));
+        	// });
         }
     }
     if (negation == true) {
@@ -3749,6 +3788,7 @@ function getSentences(str) {
     const regex = /(\.\s)?([A-Z][^\.!\?]+[\.!\?])/g;
     var sentences = [];
     str = str + ".";
+    var m;
 
     while ((m = regex.exec(str)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
@@ -3759,13 +3799,12 @@ function getSentences(str) {
     }
     return sentences;
 }
-try{
+try {
     new MutationObserver(startSentiment).observe(document.body, {
         subtree: true,
         childList: true
     });
-}
-catch(e){
+} catch (e) {
+
     ////console.log("Some error in MutationObserver");
 }
-
