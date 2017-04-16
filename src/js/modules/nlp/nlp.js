@@ -19,17 +19,21 @@ var buffer_categories = {};
 var MAX_LENGTH = 10;
 var globals = {};
 
-function interest(interests, query) {
+function interest(interests, query, callback) {
 	//console.log(JSON.stringify(buffer_categories));
 	//console.log(interests);
 	globals["interests"] =interests;
 	query = query.toLowerCase();
+	console.log(JSON.stringify(buffer_categories));
 	if(query in buffer_categories) {
 		buffer_categories[query]++;
 		if(buffer_categories[query]>=3&&globals.interests.indexOf(query)==-1) {
 			globals.interests.push(query);
 		}
-		return globals.interests;
+		// console.log(interests);
+		// console.log(JSON.stringify(buffer_categories));
+		callback(interests, buffer_categories);
+		return;
 	}
 	//console.log("Posting: " + query);
 	$.ajax({
@@ -42,7 +46,7 @@ function interest(interests, query) {
 		},
 		dataType: 'json',
 		type:'POST',
-		async: false,
+		async: true,
 		headers: { 'Api-User-Agent': 'Example/1.0'},
 		success: function(data) {
 			//console.log(JSON.stringify(data));
@@ -53,12 +57,10 @@ function interest(interests, query) {
 				wordtagger(query);
 			}
 			//console.log("Exiting:" + query);
+			maintainance();
+			callback(interests,buffer_categories);
 		}
 	});
-	maintainance();
-	// console.log(JSON.stringify(buffer_categories));
-	console.log(interests);
-	return globals.interests;
 }
 
 function wordtagger(sentence) {
@@ -75,9 +77,10 @@ function wordtagger(sentence) {
 	    	if(word in buffer_categories) {
 	    		buffer_categories[word]++;
 	    		if(buffer_categories[word]>=3) {
+	    			delete buffer_categories[word];
 	    			buffer_nouns.push(word);
 	    		}
-	    	} else {
+	    	} else if(word.length>4) {
 	    		buffer_categories[word] = 1;
 				//console.log("Added from nouns:" + word + +"\t" + tag);
 	    	}
@@ -100,12 +103,18 @@ function maintainance() {
 		var ele = globals.interests.shift();
 		delete buffer_categories[ele];
 	}
-	//Resizing buffer
+	//Randomly clearing the buffer 10% of the times
+	if(Math.floor((Math.random() * 5*MAX_LENGTH))==9) {
+		buffer_categories = {};
+		for(var i=0; i< globals.interests.length && i<MAX_LENGTH; i++) {
+			buffer_categories[globals.interests[i]] = 3;
+		}
+		return;
+	}
+	//Rebasing buffer if its not cleared
 	for(var key in buffer_categories) {
 		if(buffer_categories[key]>3) {
 			buffer_categories[key] = 3;
-		} else if(buffer_categories[key]<=1) {
-			delete buffer_categories[key];
 		}
 	}
 }

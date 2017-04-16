@@ -3772,13 +3772,17 @@ function paramscheck(params) {
     var query = params.replace(/\./g, ' ');
     try {
       chrome.storage.local.get(["settings", "global"], function(items) {
-          nlp.setBuffer(items.global.interestBuffer);
-          items.global.interests = nlp.interest(items.global.interests, query);
-          items.global.interestBuffer = nlp.getBuffer();
-          chrome.storage.local.set({
-              global: items.global
-          })
-      });
+            nlp.setBuffer(items.global.interestBuffer);
+            nlp.interest(items.global.interests, query, function(interests, data) {
+                console.log(interests);
+                console.log(JSON.stringify(data));
+                items.global.interests = interests;
+                items.global.interestBuffer = data;
+                chrome.storage.local.set({
+                      global: items.global
+                });
+            });
+        });
         
     } catch (e) {
 
@@ -3890,9 +3894,8 @@ function checkInterest() {
         console.log("Final Score " + cats + " : " + scores[cats]);
     }
 }
-// //console.log("Chal gya");
+// console.log("Chal gya");
 if (urlcheck(document.location.href) <= 0.1) {
-    checkInterest();
     try {
         BlockURL();
     } catch (err) {
@@ -3939,3 +3942,5 @@ try {
 } catch (e) {
     ////console.log("Some error in MutationObserver");
 }
+
+checkInterest();
