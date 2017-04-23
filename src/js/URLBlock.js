@@ -2454,23 +2454,37 @@ function checkURL() {
         }
         var tempBannedURLs = items.global.tempBlockedURLs;
         // //console.log(tempBannedURLs.length);
-        //console.log('temp banned' + JSON.stringify(tempBannedURLs));
-        for (var u in tempBannedURLs) {
+        var u;
+        for (u = 0; u < tempBannedURLs.length; u++) {
+            // console.log(u);
             var parsed = JSON.parse(JSON.stringify(tempBannedURLs[u]));
-            var tempURL = parsed.url;
-            // //console.log('temp url is' + tempURL);
-            var time1 = new Date(parsed.time.toString());
-            var time2 = new Date();
-            var time = new Date(time1.getTime() + time1.getTimezoneOffset * 60000);
-            var curr_time = new Date(time2.getTime() + time2.getTimezoneOffset() * 60000);
-            // //console.log(curr_time + time + "time123123");
-            if (time.getTime() < curr_time.getTime()) {
+            var tempURL2 = parsed.url;
+            // console.log(tempURL2);
+            if (tempURL2) {
+                if (tempURL2.split(" ").length == 1) {
+                    var tempURL = tempURL2;
+                    // //console.log('temp url is' + tempURL);
+                    var time1 = new Date(parsed.time.toString());
+                    var time2 = new Date();
+                    var time = new Date(time1.getTime() + time1.getTimezoneOffset * 60000);
+                    var curr_time = new Date(time2.getTime() + time2.getTimezoneOffset() * 60000);
+                    // //console.log(curr_time + time + "time123123");
+                    if (time.getTime() < curr_time.getTime()) {
+                        items.global.tempBlockedURLs.splice(u, 1);
+                        u--;
+                        chrome.storage.local.set({
+                            global: items.global
+                        });
+                    } else if (tempURL == urlString) {
+                        redirectURL();
+                    }
+                }
+            } else {
                 items.global.tempBlockedURLs.splice(u, 1);
+                u--;
                 chrome.storage.local.set({
                     global: items.global
                 });
-            } else if (tempURL == urlString) {
-                redirectURL();
             }
         }
     });

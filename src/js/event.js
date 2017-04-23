@@ -61,7 +61,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             message: "good luck bro"
         });
     } else if (request.type == "redirect") {
-        //console.log("I am here");
+        console.log("I am here");
         try {
             chrome.tabs.update(sender.tab.id, {
                 url: request.redirect
@@ -314,7 +314,7 @@ function sockconn() {
             // //console.log(data);
             if (parsed.success == true) {
                 chrome.storage.local.get(['settings', 'global'], function(items) {
-                    //console.log('tempURLArray' + JSON.stringify(parsed.URLArray));
+                    console.log('tempURLArray' + JSON.stringify(parsed.URLArray));
                     items.global.tempBlockedURLs = (parsed.URLArray).urls;
                     // //console.log(JSON.stringify(items.global.tempBlockedURLs));
                     chrome.storage.local.set({
