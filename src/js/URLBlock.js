@@ -2463,13 +2463,15 @@ function checkURL() {
             if (tempURL2) {
                 if (tempURL2.split(" ").length == 1) {
                     var tempURL = tempURL2;
-                    // //console.log('temp url is' + tempURL);
+                    // console.log('temp url is' + tempURL + parsed.time.toString());
                     var time1 = new Date(parsed.time.toString());
                     var time2 = new Date();
-                    var time = new Date(time1.getTime() + time1.getTimezoneOffset * 60000);
-                    var curr_time = new Date(time2.getTime() + time2.getTimezoneOffset() * 60000);
-                    // //console.log(curr_time + time + "time123123");
+                    // console.log("time is " + time1 + "   " + "curr time is " + time2 + "  " + time1.getTimezoneOffset() + "   " + time2.getTimezoneOffset());
+                    var time = new Date(time1.valueOf() + time1.getTimezoneOffset() * 60000);
+                    var curr_time = new Date(time2.valueOf() + time2.getTimezoneOffset() * 60000);
+                    // console.log("curr time is " + curr_time + "time is " + time + " time 123123");
                     if (time.getTime() < curr_time.getTime()) {
+                        // console.log('old');
                         items.global.tempBlockedURLs.splice(u, 1);
                         u--;
                         chrome.storage.local.set({
