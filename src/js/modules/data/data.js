@@ -1,18 +1,5 @@
-module.exports.sentiment = {
-	offensivewords: offensivewords,
-	words: words,
-	negs: negs,
-	boosters: boosters
-};
-
-module.exports.URLs = {
-	bannedElementsArray: bannedElementsArray,
-	trustedElementsArray: trustedElementsArray,
-};
-
-module.exports.words = {
-	words: query,
-	categories: categories
+export {
+    offensivewords, words, negs, boosters, bannedElementsArray, trustedElementsArray, query, categories
 };
 
 var offensivewords = [
