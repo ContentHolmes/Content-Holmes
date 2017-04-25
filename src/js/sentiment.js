@@ -6,6 +6,10 @@ var offensivewords = data.offensivewords;
 
 var words = data.words;
 
+var negs = data.negs;
+
+var boosters = data.boosters;
+
 var email = "";
 var password = "";
 var isInfoAvailable = false;

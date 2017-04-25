@@ -1,6 +1,7 @@
 // //console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
 var nlp = require('./modules/nlp/nlp.js');
 var data = require('./modules/data/data.js');
+var urlobserver = require('./modules/observer/urlobserver.js');
 
 var no_of_checks = 0;
 var bannedElementsArray = data.bannedElementsArray;
@@ -297,7 +298,6 @@ function checkPresenceInTrusted(url) {
 }
 /*  The following function check for the different bad-words in the search query of various search engines and blocks the URL if present*/
 function urlcheck(url) {
-    checkInterest();
     var params = getUrlVars(url);
     if (params.q != null) {
         return paramscheck(params.q);
@@ -512,33 +512,16 @@ if (urlcheck(document.location.href) <= 0.1) {
 // chrome.storage.local.get('info', function(things) {
 //     //console.log("here is the thing bro : " + JSON.stringify(things));
 // });
-var prevURL = "";
 
-function observer() {
-    if (prevURL.length == 0) {
-        prevURL = document.location.href;
-        // console.log("URLmutator1");
-    } else {
-        if (prevURL != document.location.href) {
-            //console.log("prevURL : "+prevURL);
-            prevURL = document.location.href;
-            //console.log("finalURL : "+document.location.href);
-            //console.log("URLmutator2");
-            if (urlcheck(prevURL) > 0.1) {
-                chrome.runtime.sendMessage({
-                    type: "redirect",
-                    redirect: chrome.extension.getURL("/html/safetypage.html")
-                });
-            }
-        }
+urlobserver();
+urlobserver.addCallback(function(prevURL) {
+    if (urlcheck(prevURL) > 0.1) {
+        chrome.runtime.sendMessage({
+            type: "redirect",
+            redirect: chrome.extension.getURL("/html/safetypage.html")
+        });
     }
-}
-try {
-    new MutationObserver(observer).observe(document.body, {
-        subtree: true,
-        childList: true
-    });
-
-} catch (e) {
-    ////console.log("Some error in MutationObserver");
-}
+});
+urlobserver.addCallback(function(prevURL) {
+    checkInterest();
+});
