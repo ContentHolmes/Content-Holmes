@@ -3925,7 +3925,6 @@ var bannedElementsArray = [
     "bdsmstreak",
     "myporngay",
     "zzgays",
-    "reddit",
     "en.gay-lounge",
     "justusboys",
     "viewdesisex",

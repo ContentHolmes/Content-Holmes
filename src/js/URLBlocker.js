@@ -1,4 +1,3 @@
-// //console.log(getName("https://www.google.co.in/?gfe_rd=cr&ei=K6GoWIjwDqT98weHn7WQCQ&gws_rd=ssl"));
 var nlp = require('./modules/nlp/nlp.js');
 var data = require('./modules/data/data.js');
 var urlobserver = require('./modules/observer/urlobserver.js');
@@ -312,11 +311,6 @@ function paramscheck(params) {
     var count = 0.0;
     var bad = 0.0;
     var extracts;
-    // if (params.includes("+")) {
-    //     params = params.split("+");
-    // } else {
-    //     params = params.split("%");
-    // }
     params = params.replace(/[^\w\s]|_/g, '.');
     var query = params.replace(/\./g, ' ');
     try {
@@ -493,25 +487,18 @@ function checkInterest() {
         console.log(JSON.stringify(scores));
     });
 }
-// console.log("Chal gya");
 if (urlcheck(document.location.href) <= 0.1) {
-    // checkInterest();
+    checkInterest();
     try {
         BlockURL();
     } catch (err) {
-        //console.log(err);
     }
 } else {
-    // //console.log('else');
-    // //console.log(chrome.extension.getURL("/html/safetypage"));
     chrome.runtime.sendMessage({
         type: "redirect",
         redirect: chrome.extension.getURL("/html/safetypage.html")
     });
 }
-// chrome.storage.local.get('info', function(things) {
-//     //console.log("here is the thing bro : " + JSON.stringify(things));
-// });
 
 urlobserver();
 urlobserver.addCallback(function(prevURL) {
