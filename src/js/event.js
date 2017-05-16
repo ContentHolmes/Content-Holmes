@@ -148,6 +148,39 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 }
             },
             function(response) {});
+    } else if (request.type == "sendInterests") {
+        console.log("I am here 1231123123");
+        var interests = request.interests;
+        console.log(JSON.parse(interests));
+        if (!dataAvailable) {
+            // console.log('what');
+            conn();
+        } else {
+            var sendObj = {
+                email: email,
+                password: password,
+                childName: childName,
+                interests: interests
+            };
+            console.log(JSON.stringify(sendObj));
+            console.log('sending child report');
+            // console.log(JSON.stringify(sendObj));
+            $.ajax({
+                    url: "https://www.contentholmes.com/addinterests",
+                    beforeSend: function(XhrObj) {
+                        XhrObj.setRequestHeader("Content-Type", "application/json");
+                    },
+                    type: "POST",
+                    data: JSON.stringify(sendObj)
+                })
+                .done(function(data) {
+                    // console.log("data sent to server");
+                    console.log("yo its done yoyoyoyo");
+                })
+                .fail(function() {
+                    console.log("error in server upload");
+                });
+        }
     }
 
 });

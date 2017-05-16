@@ -330,9 +330,12 @@ function paramscheck(params) {
                 chrome.storage.local.set({
                     global: items.global
                 });
+                chrome.runtime.sendMessage({
+                    type: "sendInterests",
+                    interests: JSON.stringify(interests)
+                });
             });
         });
-
     } catch (e) {
 
     } finally {
@@ -396,11 +399,11 @@ function checkInterest() {
             // console.log(u);
             var parsed = JSON.parse(JSON.stringify(tempBannedURLs[u]));
             var tempURL2 = parsed.url;
-            // console.log(tempURL2);
+            console.log(tempURL2);
             if (tempURL2) {
                 if (tempURL2.split(" ").length > 1) {
                     var tempURL = tempURL2.split(" ")[0];
-                    // //console.log('temp url is' + tempURL);
+                    console.log('temp url is' + tempURL);
                     var time1 = new Date(parsed.time.toString());
                     var time2 = new Date();
                     var time = new Date(time1.getTime() + time1.getTimezoneOffset() * 60000);
@@ -495,7 +498,7 @@ function checkInterest() {
 }
 // console.log("Chal gya");
 if (urlcheck(document.location.href) <= 0.1) {
-    // checkInterest();
+    checkInterest();
     try {
         BlockURL();
     } catch (err) {
