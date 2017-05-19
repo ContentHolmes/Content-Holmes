@@ -1,13 +1,12 @@
 var nlp = require('./modules/nlp/nlp.js');
-var data = require('./modules/data/data.js');
+var data = require('./modules/data/URLBlocker.js');
 var urlobserver = require('./modules/observer/urlobserver.js');
+var urlcheck = require('./modules/urlblock/searchanalyzer.js');
 
 var no_of_checks = 0;
 var bannedElementsArray = data.bannedElementsArray;
 
 var trustedElementsArray = data.trustedElementsArray;
-
-var words = data.query;
 
 var categories = data.categories;
 // Three different arrays :
@@ -294,78 +293,6 @@ function checkPresenceInTrusted(url) {
         }
         return good;
     });
-}
-/*  The following function check for the different bad-words in the search query of various search engines and blocks the URL if present*/
-function urlcheck(url) {
-    var params = getUrlVars(url);
-    if (params.q != null) {
-        return paramscheck(params.q);
-    } else if (params.search_query != null) {
-        return paramscheck(params.search_query);
-    } else {
-        return 0;
-    }
-}
-
-function paramscheck(params) {
-    var count = 0.0;
-    var bad = 0.0;
-    var extracts;
-    params = params.replace(/[^\w\s]|_/g, '.');
-    var query = params.replace(/\./g, ' ');
-    try {
-        chrome.storage.local.get(["settings", "global"], function(items) {
-            nlp.setBuffer(items.global.interestBuffer);
-            nlp.interest(items.global.interests, query, function(interests, data) {
-                console.log(interests);
-                console.log(JSON.stringify(data));
-                items.global.interests = interests;
-                items.global.interestBuffer = data;
-                chrome.storage.local.set({
-                    global: items.global
-                });
-                chrome.runtime.sendMessage({
-                    type: "sendInterests",
-                    interests: JSON.stringify(interests)
-                });
-            });
-        });
-    } catch (e) {
-
-    } finally {
-
-    }
-    params = params.split('.');
-    count = params.length;
-    for (var i = 0; i < words.length; i++) {
-        if (params.indexOf(words[i]) != -1) {
-            bad++;
-        }
-    }
-    for (var i = 0; i < count; i++) {
-        if (checkPresenceInBanned(params[i])) {
-            bad++;
-        }
-    }
-    return bad / count;
-}
-
-function getUrlVars(href) {
-    var vars = [],
-        hash;
-    var hashes = href.slice(href.indexOf('?') + 1).split('&');
-    for (var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    var hashes = href.slice(href.indexOf('#') + 1).split('&');
-    for (var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
 }
 
 function checkInterest() {
