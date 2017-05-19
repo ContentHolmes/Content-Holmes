@@ -1,4 +1,4 @@
-var data = require('./modules/data/data.js');
+var data = require('./modules/data/URLBlocker.js');
 
 var bannedElementsArray = data.bannedElementsArray;
 

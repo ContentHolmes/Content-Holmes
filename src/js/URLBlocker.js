@@ -1,12 +1,10 @@
-var nlp = require('./modules/nlp/nlp.js');
 var data = require('./modules/data/URLBlocker.js');
 var urlobserver = require('./modules/observer/urlobserver.js');
-var urlcheck = require('./modules/urlblock/searchanalyzer.js');
+var search = require('./modules/urlblock/searchanalyzer.js');
+var banned = require('./modules/urlblock/bannedmanager.js');
+var trusted = require('./modules/urlblock/trustedmanager.js');
 
 var no_of_checks = 0;
-var bannedElementsArray = data.bannedElementsArray;
-
-var trustedElementsArray = data.trustedElementsArray;
 
 var categories = data.categories;
 // Three different arrays :
@@ -57,7 +55,7 @@ function BlockURL() {
     var urlString = getName(document.location.href);
     //console.log('url string' + urlString);
 
-    blockedit = checkPresenceInTrusted(urlString);
+    blockedit = trusted.checkPresenceInTrusted(urlString);
     if (blockedit) {
         //console.log('trust');
         document.getElementsByTagName('body')[0].style.visibility = 'visible';
@@ -106,10 +104,10 @@ function checkNudeImages() {
             //console.log("error in images");
         }
         //console.log("URL image is:" + url);
-        if (checkPresenceInBanned(url)) {
+        if (banned.checkPresenceInBanned(url)) {
             imagesArray[k].style.visibility = "hidden";
             // //console.log("Hid the image: " + imagesArray[k].src);
-        } else if (!checkPresenceInTrusted(url)) {
+        } else if (!trusted.checkPresenceInTrusted(url)) {
             ////console.log("not trusted");
             if ((imagesArray[k].clientWidth > 300 || imagesArray[k].clientHeight > 300) && checkCount <= 10) {
                 ////console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
@@ -238,63 +236,6 @@ function validateNudeResults(data, image) {
     }
 }
 
-function checkPresenceInBanned(url) {
-    // checks the presence of the URL in the
-    // 1. bannedElementsArray
-    // 2. bannedURLs (from chrome local storage)
-    var str = url;
-    var bad = false;
-    for (var i in bannedElementsArray) {
-        if (bannedElementsArray[i] == str) {
-            bad = true;
-            return bad;
-            break;
-        }
-    }
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        var localBannedArray = items.global.bannedURLs;
-        for (var j in localBannedArray) {
-            // //console.log("inside step 1");
-            // //console.log(localBannedArray[j]);
-            if (str == localBannedArray[j]) {
-                bad = true;
-                ////console.log("inside step 2");
-                return bad;
-                break;
-            }
-        }
-        return bad;
-    });
-    // //console.log("present in bad: " + bad);
-    // return bad;
-}
-
-function checkPresenceInTrusted(url) {
-    // checks the presence of url in
-    // 1. trustedElementsArray
-    // 2. trustedURLs (from chrome local storage)
-    var str = url;
-    var good = false;
-    for (var i in trustedElementsArray) {
-        if (trustedElementsArray[i] == str) {
-            good = true;
-            return good;
-            break;
-        }
-    }
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        var localTrustedArray = items.global.trustedURLs;
-        for (var i in localTrustedArray) {
-            if (localTrustedArray[i] == str) {
-                good = true;
-                return good;
-                break;
-            }
-        }
-        return good;
-    });
-}
-
 function checkInterest() {
     var metaTags = document.getElementsByTagName("meta");
     var scores = {
@@ -417,7 +358,7 @@ function checkInterest() {
         console.log(JSON.stringify(scores));
     });
 }
-if (urlcheck(document.location.href) <= 0.1) {
+if (search.urlcheck(document.location.href) <= 0.1) {
     checkInterest();
     try {
         BlockURL();
@@ -432,7 +373,7 @@ if (urlcheck(document.location.href) <= 0.1) {
 
 urlobserver();
 urlobserver.addCallback(function(prevURL) {
-    if (urlcheck(prevURL) > 0.1) {
+    if (search.urlcheck(prevURL) > 0.1) {
         chrome.runtime.sendMessage({
             type: "redirect",
             redirect: chrome.extension.getURL("/html/safetypage.html")
