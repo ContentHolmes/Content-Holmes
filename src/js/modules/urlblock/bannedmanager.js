@@ -1,7 +1,7 @@
 var data = require('../data/URLBlocker.js');
 
 export {
-    checkPresenceInBanned
+    checkPresenceInBanned, add
 };
 
 var bannedElementsArray = data.bannedElementsArray;
@@ -33,4 +33,15 @@ function checkPresenceInBanned(url) {
         }
         return bad;
     });
+}
+
+function add(url) {
+    chrome.storage.local.get(['settings', 'global'], function(items) {
+            items.global.bannedURLs.push(url);
+            chrome.storage.local.set({
+                global: items.global
+            });
+            console.log("added a new URL to blocked sites: " + url);
+            ////console.log(JSON.stringify(items.global.bannedURLs));
+        });
 }

@@ -1,7 +1,7 @@
 var data = require('../data/URLBlocker.js');
 
 export {
-    checkPresenceInTrusted
+    checkPresenceInTrusted, add
 };
 
 var trustedElementsArray = data.trustedElementsArray;
@@ -29,5 +29,16 @@ function checkPresenceInTrusted(url) {
             }
         }
         return good;
+    });
+}
+
+function add(url) {
+    chrome.storage.local.get(['settings', 'global'], function(items) {
+        items.global.trustedURLs.push(getImageName(url));
+        chrome.storage.local.set({
+            global: items.global
+        });
+        console.log("added a new URL in the trusted sites list: ");
+        //console.log(JSON.stringify(items.global.trustedURLs));
     });
 }
