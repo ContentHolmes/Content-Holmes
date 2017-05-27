@@ -1,4 +1,5 @@
 var data = require('./modules/data/URLBlocker.js');
+var banned = require('./modules/urlblock/bannedmanager.js');
 
 var bannedElementsArray = data.bannedElementsArray;
 
@@ -28,24 +29,10 @@ function checkURL() {
     } catch (err) {
         //console.log("regex error" + err);
     }
-    for (var i in bannedElementsArray) {
-        if (bannedElementsArray[i] == urlString) {
-            //console.log('match1');
-            blockURL();
-            break;
-        }
+    if(banned.checkPresenceInBanned(urlString)) {
+        blockURL();
     }
     chrome.storage.local.get(['settings', 'global'], function(items) {
-        var localBannedArray = items.global.bannedURLs;
-        //console.log('these many sites' + localBannedArray.length);
-        for (var j in localBannedArray) {
-            //console.log(localBannedArray[j]);
-            if (urlString == localBannedArray[j]) {
-                //console.log('match2');
-                blockURL();
-                break;
-            }
-        }
         var tempBannedURLs = items.global.tempBlockedURLs;
         // //console.log(tempBannedURLs.length);
         var u;
@@ -94,64 +81,6 @@ function blockURL() {
         url: urlString
     });
     redirectURL();
-    // chrome.storage.local.get('info', function(items) {
-    //     if (!items.info) {
-    //         email = "default";
-    //         pass = "default";
-    //         name = "default";
-    //         redirectURL();
-    //     } else {
-    //         //console.log('info available');
-    //         isInfoAvailable = true;
-    //         //console.log('i am here 2.0');
-    //         var sendobj = {
-    //             type: "URL",
-    //             email: items.info.email,
-    //             password: items.info.password,
-    //             childName: items.info.childName,
-    //             time: new Date(),
-    //             value: urlString
-    //         };
-    //         //console.log("here is the date "+sendobj.time);
-    //         chrome.runtime.sendMessage({
-    //             type: "sendReport",
-    //             sendReport: JSON.stringify(sendobj)
-    //         });
-    //         redirectURL();
-    //     }
-    // });
-    // if (isInfoAvailable) {
-    // //console.log('i am here 2.0');
-    // var sendobj = {
-    //     type: "URL",
-    //     email: email,
-    //     password: pass,
-    //     childName: name,
-    //     time: new Date(),
-    //     value: urlString
-    // }
-    // $.ajax({
-    //         url: "https://www.contentholmes.com/childReport",
-    //         beforeSend: function(XhrObj) {
-    //             XhrObj.setRequestHeader("Content-Type", "application/json");
-    //         },
-    //         type: "POST",
-    //         data: JSON.stringify(sendobj)
-    //     })
-    //     .done(function(data) {
-    //         //console.log("data sent to server");
-    //         redirectURL();
-    //     })
-    //     .fail(function() {
-    //         //console.log("error in server upload");
-    //         redirectURL();
-    //     });
-    // chrome.runtime.sendMessage({
-    //     type: "report",
-    //     sendReport: JSON.stringify(sendobj)
-    // });
-    // }
-    // redirectURL();
 }
 
 function redirectURL() {

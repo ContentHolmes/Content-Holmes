@@ -1,3 +1,9 @@
+/* Usage:
+ * var dictionary = module.import('dictionary.js');
+ * dictionary(word, callback): Returns definition of the word along woth some synonyms and antonyms
+ * dictionary.getAlterWords(word, callback): Returns synonyms and antonyms of the word exclusively.
+ */
+
 var app_id = 	'b067ddd7';
 var key = 	'7c5ecf496dbd3f2bd810f9e615716e94';
 var base = 'https://od-api.oxforddictionaries.com/api/v1/entries/en/';
