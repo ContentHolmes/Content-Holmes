@@ -1,6 +1,6 @@
 .DS_Store
 mykey.pem
-node_modules
+node_modules/*
 !node_modules/lfu-cache/*
 npm-debug.log
 build/*.crx
