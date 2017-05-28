@@ -12,28 +12,34 @@ function checkPresenceInTrusted(url) {
     // checks the presence of url in
     // 1. trustedElementsArray
     // 2. trustedURLs (from chrome local storage)
-    var str;
-    if(url) {
-        str = url;
-    } else {
-        return false;
-    }
-    for (var i in trustedElementsArray) {
-        if (trustedElementsArray[i] == str) {
-            return true;
-            break;
+    return new Promise(function(resolve, reject){
+        var str;
+        if(url) {
+            str = url;
+        } else {
+            reject("Bad URL");
+            return;
         }
-    }
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        var localTrustedCache = items.global.trustedURLs;
-        lfu.import(localTrustedCache);
-        if(getLFUCache(str)) {
-            return true;
+        for (var i in trustedElementsArray) {
+            if (trustedElementsArray[i] == str) {
+                resolve(true);
+                return;
+            }
         }
-        if(items.global.trustedURLObj[md5(str)]) {
-            return true;
-        }
-        return false;
+        chrome.storage.local.get(['settings', 'global'], function(items) {
+            var localTrustedCache = items.global.trustedURLs;
+            lfu.import(localTrustedCache);
+            if(getLFUCache(str)) {
+                resolve(true);
+                return;
+            }
+            if(items.global.trustedURLObj[md5(str)]) {
+                resolve(true);
+                return;
+            }
+            resolve(false);
+            return;
+        });
     });
 }
 

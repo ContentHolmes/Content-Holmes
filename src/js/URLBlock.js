@@ -18,20 +18,20 @@ var email, pass, name;
 var isInfoAvailable = false;
 var urlString;
 
-
-function checkURL() {
-    urlString = document.location.href;
-    const regex = /\/\/w{0,3}\.?(.*)\.\w{1,4}\/.*/gi;
-    urlString = urlString + "/";
-    var name = regex.exec(urlString);
-    try {
-        urlString = name[1];
-    } catch (err) {
-        //console.log("regex error" + err);
-    }
-    if(banned.checkPresenceInBanned(urlString)) {
-        blockURL();
-    }
+function checkURL(url) {
+    banned.checkPresenceInBanned(url).then(val => {
+        console.log('resolved');
+        if(val == true){
+            console.log("yes");
+            blockURL(url);
+        }
+    }, err => {
+        if(err){
+            console.log('error');
+            console.log(err);
+            return;
+        }
+    });
     chrome.storage.local.get(['settings', 'global'], function(items) {
         var tempBannedURLs = items.global.tempBlockedURLs;
         // //console.log(tempBannedURLs.length);
@@ -58,7 +58,7 @@ function checkURL() {
                         chrome.storage.local.set({
                             global: items.global
                         });
-                    } else if (tempURL == urlString) {
+                    } else if (tempURL == url) {
                         redirectURL();
                     }
                 }
@@ -73,12 +73,12 @@ function checkURL() {
     });
 }
 
-function blockURL() {
+function blockURL(url) {
     // //console.log('blocked');
     //console.log('info is ' + isInfoAvailable);
     chrome.runtime.sendMessage({
         type: "sendReport",
-        url: urlString
+        url: url
     });
     redirectURL();
 }
@@ -89,5 +89,15 @@ function redirectURL() {
         redirect: chrome.extension.getURL("/html/safetypage.html")
     });
 }
+
+urlString = document.location.href;
+const regex = /\/\/w{0,3}\.?(.*)\.\w{1,4}\/.*/gi;
+urlString = urlString + "/";
+var name = regex.exec(urlString);
+try {
+    urlString = name[1];
+    checkURL(urlString);
+} catch (err) {
+    //console.log("regex error" + err);
+}
 // //console.log('url block');
-checkURL();

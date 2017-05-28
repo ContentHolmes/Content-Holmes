@@ -56,15 +56,16 @@ function BlockURL() {
     var urlString = getName(document.location.href);
     //console.log('url string' + urlString);
 
-    blockedit = trusted.checkPresenceInTrusted(urlString);
-    if (blockedit) {
-        //console.log('trust');
-        document.getElementsByTagName('body')[0].style.visibility = 'visible';
-        return;
-    } else {
-        //console.log('nudecheck');
-        checkNudeImages();
-    }
+    trusted.checkPresenceInTrusted(urlString).then(val => {
+        if(val == true){
+            document.getElementsByTagName('body')[0].style.visibility = 'visible';
+            return;
+        }else{
+            checkNudeImages();
+        }
+    }, err => {
+        console.log(err);
+    });
 }
 
 function getName(str) {
@@ -98,30 +99,56 @@ function checkNudeImages() {
     checkCount = 0;
     // Send only the first 10 images (that qualify the other checks like size)to the server for checking adult content
     // For every image source get the name using getName and checkpresence in banned and trusted
-    for (var k in imagesArray) {
-        try {
-            var url = getImageName(imagesArray[k].src);
-        } catch (err) {
-            //console.log("error in images");
-        }
-        //console.log("URL image is:" + url);
-        if (banned.checkPresenceInBanned(url)) {
-            imagesArray[k].style.visibility = "hidden";
-            // //console.log("Hid the image: " + imagesArray[k].src);
-        } else if (!trusted.checkPresenceInTrusted(url)) {
-            ////console.log("not trusted");
-            if ((imagesArray[k].clientWidth > 300 || imagesArray[k].clientHeight > 300) && checkCount <= 10) {
-                ////console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
-                // send the images to check for adult content to caption-bot api
-                NudeCheck(imagesArray[k]);
-                checkCount++;
+    var checkImg = new Promise(function(resolve, reject){
+        console.log('starting image check');
+        console.log('images array is ');
+        for (var k = 0; k < imagesArray.length; k++){
+            try {
+                var url = getImageName(imagesArray[k].src);
+                console.log(url);
+                checkImagePresence(imagesArray[k], url);
+            } catch (err) {
+                console.log("error in images");
             }
+            console.log(imagesArray[k].src);
         }
-    }
-    if (checkCount == 0) {
-        document.getElementsByTagName('body')[0].style.visibility = 'visible';
-    }
+        resolve('done');
+    });
+    checkImg.then(() => {
+        console.log('done image check');
+        if(checkCount == 0){
+            document.getElementsByTagName('body')[0].style.visibility = 'visible';
+        }
+    });
     // //console.log('check count2' + checkCount);
+}
+
+function checkImagePresence(image, url){
+    banned.checkPresenceInBanned(url).then(val => {
+        if(val == true){
+            console.log('in banned');
+            globalBadCount++;
+            image.style.visibility = "hidden";
+        }else{
+            console.log('not in banned');
+            trusted.checkPresenceInTrusted(url).then(val => {
+                if(val == false){
+                    console.log('not in trusted');
+                    if ((image.clientWidth > 300 || image.clientHeight > 300) && checkCount <= 10) {
+                        //send image for adult content to be checked
+                        console.log('sending image' + url);
+                        NudeCheck(image);
+                        checkCount++;
+                    }
+                }
+            }, err => {
+                console.log(err);
+            });
+        }
+    }, err => {
+        console.log('bad image check url' + url);
+        console.log(err);
+    });
 }
 
 function NudeCheck(image) {
