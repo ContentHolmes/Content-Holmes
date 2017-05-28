@@ -101,13 +101,16 @@ function checkNudeImages() {
     // For every image source get the name using getName and checkpresence in banned and trusted
     var checkImg = new Promise(function(resolve, reject){
         console.log('starting image check');
-        for (var k in imagesArray) {
+        console.log('images array is ');
+        for (var k = 0; k < imagesArray.length; k++){
             try {
                 var url = getImageName(imagesArray[k].src);
+                console.log(url);
                 checkImagePresence(imagesArray[k], url);
             } catch (err) {
                 console.log("error in images");
             }
+            console.log(imagesArray[k].src);
         }
         resolve('done');
     });
@@ -124,6 +127,7 @@ function checkImagePresence(image, url){
     banned.checkPresenceInBanned(url).then(val => {
         if(val == true){
             console.log('in banned');
+            globalBadCount++;
             image.style.visibility = "hidden";
         }else{
             console.log('not in banned');
