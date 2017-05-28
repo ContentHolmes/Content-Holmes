@@ -55,9 +55,12 @@ function paramscheck(params) {
         }
     }
     for (var i = 0; i < count; i++) {
-        if (banned.checkPresenceInBanned(params[i])) {
-            bad++;
-        }
+        banned.checkPresenceInBanned(params[i]).then(val => {
+            if(val == true)
+                bad++;
+        }, err => {
+            console.log(err);
+        });
     }
     return bad / count;
 }
