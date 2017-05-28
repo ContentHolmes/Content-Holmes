@@ -25,8 +25,10 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.initalInterval = global.initalInterval || 0;
     global.updatedTime = global.updatedTime || new Date();
     global.historyOfBlockedURLS = global.historyOfBlockedURLS || [];
-    global.bannedURLs = global.bannedURLs || [];
-    global.trustedURLs = global.trustedURLs || [];
+    global.bannedURLs = global.bannedURLs || "{}";
+    global.bannedURLObj = global.bannedURLObj || {};
+    global.trustedURLs = global.trustedURLs || "{}";
+    global.trustedURLObj = global.trustedURLObj || {};
     global.email = global.email || "";
     global.password = global.password || "";
     global.interestBuffer = global.interestBuffer || {};

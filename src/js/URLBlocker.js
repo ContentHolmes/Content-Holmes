@@ -1,15 +1,13 @@
-var nlp = require('./modules/nlp/nlp.js');
-var data = require('./modules/data/data.js');
+var data = require('./modules/data/URLBlocker.js');
 var urlobserver = require('./modules/observer/urlobserver.js');
+var search = require('./modules/urlblock/searchanalyzer.js');
+var banned = require('./modules/urlblock/bannedmanager.js');
+var trusted = require('./modules/urlblock/trustedmanager.js');
+var typecheck = require('./modules/urlblock/typechecker.js');
 
 var no_of_checks = 0;
-var bannedElementsArray = data.bannedElementsArray;
 
-var trustedElementsArray = data.trustedElementsArray;
 
-var words = data.query;
-
-var categories = data.categories;
 // Three different arrays :
 // bannedElementsArray : contains every site that we have banned from visiting
 // trustedElementsArray : contains every site that we trust
@@ -42,7 +40,7 @@ var blockedit = false;
 function BlockURL() {
     /*
           WORKING OF THIS FUNCTION:
-          1. Get the settings and global elements from chrome local storage
+          1. Get the settings and global elements from	 chrome local storage
                 for all the elements in bannedElementsArray, check if any of the string matches the "urlString".
                   If "yes":
                     set blocked it to true ,
@@ -58,15 +56,16 @@ function BlockURL() {
     var urlString = getName(document.location.href);
     //console.log('url string' + urlString);
 
-    blockedit = checkPresenceInTrusted(urlString);
-    if (blockedit) {
-        //console.log('trust');
-        document.getElementsByTagName('body')[0].style.visibility = 'visible';
-        return;
-    } else {
-        //console.log('nudecheck');
-        checkNudeImages();
-    }
+    trusted.checkPresenceInTrusted(urlString).then(val => {
+        if(val == true){
+            document.getElementsByTagName('body')[0].style.visibility = 'visible';
+            return;
+        }else{
+            checkNudeImages();
+        }
+    }, err => {
+        console.log(err);
+    });
 }
 
 function getName(str) {
@@ -100,30 +99,56 @@ function checkNudeImages() {
     checkCount = 0;
     // Send only the first 10 images (that qualify the other checks like size)to the server for checking adult content
     // For every image source get the name using getName and checkpresence in banned and trusted
-    for (var k in imagesArray) {
-        try {
-            var url = getImageName(imagesArray[k].src);
-        } catch (err) {
-            //console.log("error in images");
-        }
-        //console.log("URL image is:" + url);
-        if (checkPresenceInBanned(url)) {
-            imagesArray[k].style.visibility = "hidden";
-            // //console.log("Hid the image: " + imagesArray[k].src);
-        } else if (!checkPresenceInTrusted(url)) {
-            ////console.log("not trusted");
-            if ((imagesArray[k].clientWidth > 300 || imagesArray[k].clientHeight > 300) && checkCount <= 10) {
-                ////console.log("IMAGE MUST BE CHECKED:\n" + imagesArray[k].src);
-                // send the images to check for adult content to caption-bot api
-                NudeCheck(imagesArray[k]);
-                checkCount++;
+    var checkImg = new Promise(function(resolve, reject){
+        console.log('starting image check');
+        console.log('images array is ');
+        for (var k = 0; k < imagesArray.length; k++){
+            try {
+                var url = getImageName(imagesArray[k].src);
+                console.log(url);
+                checkImagePresence(imagesArray[k], url);
+            } catch (err) {
+                console.log("error in images");
             }
+            console.log(imagesArray[k].src);
         }
-    }
-    if (checkCount == 0) {
-        document.getElementsByTagName('body')[0].style.visibility = 'visible';
-    }
+        resolve('done');
+    });
+    checkImg.then(() => {
+        console.log('done image check');
+        if(checkCount == 0){
+            document.getElementsByTagName('body')[0].style.visibility = 'visible';
+        }
+    });
     // //console.log('check count2' + checkCount);
+}
+
+function checkImagePresence(image, url){
+    banned.checkPresenceInBanned(url).then(val => {
+        if(val == true){
+            console.log('in banned');
+            globalBadCount++;
+            image.style.visibility = "hidden";
+        }else{
+            console.log('not in banned');
+            trusted.checkPresenceInTrusted(url).then(val => {
+                if(val == false){
+                    console.log('not in trusted');
+                    if ((image.clientWidth > 300 || image.clientHeight > 300) && checkCount <= 10) {
+                        //send image for adult content to be checked
+                        console.log('sending image' + url);
+                        NudeCheck(image);
+                        checkCount++;
+                    }
+                }
+            }, err => {
+                console.log(err);
+            });
+        }
+    }, err => {
+        console.log('bad image check url' + url);
+        console.log(err);
+    });
 }
 
 function NudeCheck(image) {
@@ -208,28 +233,14 @@ function validateNudeResults(data, image) {
         //         });
         // }
 
-        chrome.storage.local.get(['settings', 'global'], function(items) {
-            items.global.bannedURLs.push(getImageName(image.src));
-            chrome.storage.local.set({
-                global: items.global
-            });
-            //console.log("added a new URL to blocked sites: " + image.src);
-            ////console.log(JSON.stringify(items.global.bannedURLs));
-        });
+        banned.add(getImageName(image.src));
         // //console.log('going to safetypage');
         chrome.runtime.sendMessage({
             type: "redirect",
             redirect: chrome.extension.getURL("/html/safetypage.html")
         });
     } else if (globalGoodCount == 10) {
-        chrome.storage.local.get(['settings', 'global'], function(items) {
-            items.global.trustedURLs.push(getImageName(image.src));
-            chrome.storage.local.set({
-                global: items.global
-            });
-            //console.log("added a new URL in the trusted sites list: " + images.src);
-            //console.log(JSON.stringify(items.global.trustedURLs));
-        });
+        trusted.add(getImageName(image.src));
     }
     no_of_checks++;
     // //console.log('check count' + checkCount);
@@ -239,259 +250,8 @@ function validateNudeResults(data, image) {
     }
 }
 
-function checkPresenceInBanned(url) {
-    // checks the presence of the URL in the
-    // 1. bannedElementsArray
-    // 2. bannedURLs (from chrome local storage)
-    var str = url;
-    var bad = false;
-    for (var i in bannedElementsArray) {
-        if (bannedElementsArray[i] == str) {
-            bad = true;
-            return bad;
-            break;
-        }
-    }
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        var localBannedArray = items.global.bannedURLs;
-        for (var j in localBannedArray) {
-            // //console.log("inside step 1");
-            // //console.log(localBannedArray[j]);
-            if (str == localBannedArray[j]) {
-                bad = true;
-                ////console.log("inside step 2");
-                return bad;
-                break;
-            }
-        }
-        return bad;
-    });
-    // //console.log("present in bad: " + bad);
-    // return bad;
-}
-
-function checkPresenceInTrusted(url) {
-    // checks the presence of url in
-    // 1. trustedElementsArray
-    // 2. trustedURLs (from chrome local storage)
-    var str = url;
-    var good = false;
-    for (var i in trustedElementsArray) {
-        if (trustedElementsArray[i] == str) {
-            good = true;
-            return good;
-            break;
-        }
-    }
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        var localTrustedArray = items.global.trustedURLs;
-        for (var i in localTrustedArray) {
-            if (localTrustedArray[i] == str) {
-                good = true;
-                return good;
-                break;
-            }
-        }
-        return good;
-    });
-}
-/*  The following function check for the different bad-words in the search query of various search engines and blocks the URL if present*/
-function urlcheck(url) {
-    var params = getUrlVars(url);
-    if (params.q != null) {
-        return paramscheck(params.q);
-    } else if (params.search_query != null) {
-        return paramscheck(params.search_query);
-    } else {
-        return 0;
-    }
-}
-
-function paramscheck(params) {
-    var count = 0.0;
-    var bad = 0.0;
-    var extracts;
-    params = params.replace(/[^\w\s]|_/g, '.');
-    var query = params.replace(/\./g, ' ');
-    try {
-        chrome.storage.local.get(["settings", "global"], function(items) {
-            nlp.setBuffer(items.global.interestBuffer);
-            nlp.interest(items.global.interests, query, function(interests, data) {
-                console.log(interests);
-                console.log(JSON.stringify(data));
-                items.global.interests = interests;
-                items.global.interestBuffer = data;
-                chrome.storage.local.set({
-                    global: items.global
-                });
-                chrome.runtime.sendMessage({
-                    type: "sendInterests",
-                    interests: JSON.stringify(interests)
-                });
-            });
-        });
-    } catch (e) {
-
-    } finally {
-
-    }
-    params = params.split('.');
-    count = params.length;
-    for (var i = 0; i < words.length; i++) {
-        if (params.indexOf(words[i]) != -1) {
-            bad++;
-        }
-    }
-    for (var i = 0; i < count; i++) {
-        if (checkPresenceInBanned(params[i])) {
-            bad++;
-        }
-    }
-    return bad / count;
-}
-
-function getUrlVars(href) {
-    var vars = [],
-        hash;
-    var hashes = href.slice(href.indexOf('?') + 1).split('&');
-    for (var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    var hashes = href.slice(href.indexOf('#') + 1).split('&');
-    for (var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
-
-function checkInterest() {
-    var metaTags = document.getElementsByTagName("meta");
-    var scores = {
-        "Entertainment": 0,
-        "Music": 0,
-        "Art": 0,
-        "Vehicles": 0,
-        "Beauty": 0,
-        "Sports": 0,
-        "Science & Education": 0,
-        "Pets & Animals": 0,
-        "Social": 0,
-        "News": 0,
-        "Games": 0,
-        "Technology": 0,
-        "Books": 0
-    };
-    var bannedSet = {};
-    chrome.storage.local.get(['settings', 'global'], function(items) {
-        var u;
-        var tempBannedURLs = items.global.tempBlockedURLs;
-        for (u = 0; u < tempBannedURLs.length; u++) {
-            // console.log(u);
-            var parsed = JSON.parse(JSON.stringify(tempBannedURLs[u]));
-            var tempURL2 = parsed.url;
-            console.log(tempURL2);
-            if (tempURL2) {
-                if (tempURL2.split(" ").length > 1) {
-                    var tempURL = tempURL2.split(" ")[0];
-                    console.log('temp url is' + tempURL);
-                    var time1 = new Date(parsed.time.toString());
-                    var time2 = new Date();
-                    var time = new Date(time1.getTime() + time1.getTimezoneOffset() * 60000);
-                    var curr_time = new Date(time2.getTime() + time2.getTimezoneOffset() * 60000);
-                    // //console.log(curr_time + time + "time123123");
-                    if (time.getTime() < curr_time.getTime()) {
-                        items.global.tempBlockedURLs.splice(u, 1);
-                        u--;
-                        chrome.storage.local.set({
-                            global: items.global
-                        });
-                    } else {
-                        var tempURL3 = tempURL.toLowerCase();
-                        bannedSet[tempURL3] = 1;
-                    }
-                }
-            } else {
-                items.global.tempBlockedURLs.splice(u, 1);
-                u--;
-                chrome.storage.local.set({
-                    global: items.global
-                });
-            }
-        }
-        console.log(JSON.stringify(bannedSet));
-        for (var i = 0; i < metaTags.length; i++) {
-            if (metaTags[i].getAttribute("name")) {
-                if (metaTags[i].getAttribute("name").toLowerCase() == "keywords" || metaTags[i].getAttribute("name").toLowerCase() == "description") {
-                    //console.log(metaTags[i].getAttribute("content"));
-                    var vals = metaTags[i].getAttribute("content").toString().replace(",", " ").replace(".", " ").replace("-", " ");
-                    // console.log(vals);
-                    if (vals) {
-                        for (var cat in categories) {
-                            var name = cat;
-                            var subs = categories[cat];
-                            var sub_strong = subs["Strong"];
-                            var sub_weak = subs["Weak"];
-                            var strong = false;
-                            var disabled = false;
-                            for (var j in sub_strong) {
-                                var subcat = sub_strong[j].toLowerCase();
-                                if (bannedSet.hasOwnProperty(subcat)) {
-                                    // console.log('banned bro' + name + "   " + subcat);
-                                    disabled = true;
-                                }
-                                // console.log(subcat);
-                                var reg = new RegExp(".*" + "\\b" + subcat + "\\b" + ".*", "gi");
-                                // console.log(reg);
-                                // console.log(vals.match(reg));
-                                if (vals.match(reg)) {
-                                    // console.log('Strong Match');
-                                    // console.log("Cat is " + cat + ", Subcat is " + subcat);
-                                    scores[name] += 2;
-                                    strong = true;
-                                } else {
-                                    // console.log("not " + subcat);
-                                }
-                            }
-                            if (strong) {
-                                if (disabled) {
-                                    console.log("banned 123 " + name);
-                                    chrome.runtime.sendMessage({
-                                        type: "redirect",
-                                        redirect: chrome.extension.getURL("/html/safetypage.html")
-                                    });
-                                    return;
-                                }
-                                for (var j in sub_weak) {
-                                    // //console.log(subs[j] + " is " + vals.indexOf(subs[j]));
-                                    var subcat = sub_weak[j].toLowerCase();
-                                    // console.log(subcat);
-                                    var reg = new RegExp(".*" + "\\b" + subcat + "\\b" + ".*", "gi");
-                                    // console.log(reg);
-                                    // console.log(vals.match(reg));
-                                    if (vals.match(reg)) {
-                                        scores[name] += 1;
-                                        // console.log('Weak Match');
-                                        // console.log("Cat is " + cat + ", Subcat is " + subcat);
-                                    } else {
-                                        // console.log("not " + subcat);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //console.log("Final interest is : " + JSON.stringify(items.global.interests));
-                }
-            }
-        }
-        console.log(JSON.stringify(scores));
-    });
-}
-if (urlcheck(document.location.href) <= 0.1) {
-    checkInterest();
+if (search.urlcheck(document.location.href) <= 0.1) {
+    typecheck.checkType();
     try {
         BlockURL();
     } catch (err) {
@@ -505,7 +265,7 @@ if (urlcheck(document.location.href) <= 0.1) {
 
 urlobserver();
 urlobserver.addCallback(function(prevURL) {
-    if (urlcheck(prevURL) > 0.1) {
+    if (search.urlcheck(prevURL) > 0.1) {
         chrome.runtime.sendMessage({
             type: "redirect",
             redirect: chrome.extension.getURL("/html/safetypage.html")
@@ -513,5 +273,5 @@ urlobserver.addCallback(function(prevURL) {
     }
 });
 urlobserver.addCallback(function(prevURL) {
-    checkInterest();
+    typecheck.checkType();
 });
