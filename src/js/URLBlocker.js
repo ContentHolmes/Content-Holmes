@@ -54,8 +54,11 @@ function BlockURL() {
     */
 
     var urlString = getName(document.location.href);
-    //console.log('url string' + urlString);
-
+    // console.log('url string' + urlString);
+    if(!urlString) {
+    	document.getElementsByTagName('body')[0].style.visibility = 'visible';
+    	return;
+    }
     trusted.checkPresenceInTrusted(urlString).then(val => {
         if(val == true){
             document.getElementsByTagName('body')[0].style.visibility = 'visible';
@@ -76,7 +79,9 @@ function getName(str) {
     ////console.log(name[1]);
     try {
         return name[1];
-    } catch (err) {}
+    } catch (err) {
+    	return null;
+    }
 }
 
 function getImageName(str) {

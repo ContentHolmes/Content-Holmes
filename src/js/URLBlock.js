@@ -94,10 +94,8 @@ urlString = document.location.href;
 const regex = /\/\/w{0,3}\.?(.*)\.\w{1,4}\/.*/gi;
 urlString = urlString + "/";
 var name = regex.exec(urlString);
-try {
+if(name) {
     urlString = name[1];
     checkURL(urlString);
-} catch (err) {
-    //console.log("regex error" + err);
 }
 // //console.log('url block');
