@@ -257,9 +257,9 @@ function calculateSum(wordsArray) {
             found = true;
         }
         if(!found) {	//Learning codes here. Can be tagged by postagger and put it in appropriate arrays!
-        	// dictionary(newWord, function(data) {
-        	// 	console.log(JSON.stringify(data));
-        	// });
+        	dictionary(newWord, function(data) {
+        	 	console.log("New data " + JSON.stringify(data));
+        	});
         }
     }
     if (negation == true) {
