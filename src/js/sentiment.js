@@ -270,7 +270,7 @@ function calculateSum(wordsArray) {
         	// dictionary(newWord, function(data) {
         	//  	console.log("New data " + JSON.stringify(data));
         	// });
-
+          console.log("new word to be learnt:" + newWord);
           var sendObj={
             word:newWord,
           };
@@ -290,10 +290,12 @@ function calculateSum(wordsArray) {
               });
           wordsLearnCalls++;
           globalWordsLearnCalls++;
+          learntWords[newWord]=0;
           console.log("Global calls to oxford="+globalWordsLearnCalls);
           chrome.storage.local.get(['global'], function(items) {
             var globalThingy=items.global;
             globalThingy.learningWordsCalls=globalWordsLearnCalls;
+            globalThingy.learntWords=learntWords;
             chrome.storage.local.set({
               global:globalThingy
             });

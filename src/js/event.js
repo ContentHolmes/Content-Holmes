@@ -37,7 +37,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.learningURLCalls=0;
     global.learningWordsCalls=0;
     global.maxLearningWordsCalls=25;
-    global.learntWords={};
+    global.learntWords={"yo":0};
     chrome.storage.local.set({
         global: global
     });
