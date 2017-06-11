@@ -1,6 +1,6 @@
 var currentVersion = '2.0.10';
 var id = "lcandgkmchopkmfanmeoemmgncdkdcij";
-
+var banned = require('./modules/urlblock/bannedmanager.js');
 chrome.storage.local.get(['settings', 'global'], function(items) {
     var global = items.global || {};
 
@@ -351,6 +351,7 @@ function sockconn() {
     // socket.on('thisisit', function(data) {
     //     //console.log('this ' + data);
     // });
+
     socket.on(email + '_' + childName + '_blockedURLs',
         function(data) {
             var parsed = JSON.parse(data);
@@ -366,6 +367,16 @@ function sockconn() {
                 });
             }
         });
+    socket.on(email + '_' + childName + '_serverBlockedArray',function(data){
+      var arr=JSON.parse(data);
+      for(var i=0;i<arr.length;i++){
+        if(arr[i]){
+          banned.add(arr[i]);
+          console.log("new bocker URL value: "+arr[i]);
+        }
+      }
+      //console.log("new blocked URLS data :"+JSON.stringify(data));
+    });
     socket.on(email + '_' + childName + '_session',
         function(data) {
             var parse2 = JSON.parse(data);
