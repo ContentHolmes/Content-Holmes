@@ -14,7 +14,17 @@ var email = "";
 var password = "";
 var isInfoAvailable = false;
 var offensiveSum = 0;
-
+var wordsLearnCalls=0;
+var outerGlobal;
+var globalWordsLearnCalls;
+var maxGlobalWordsLearnCalls;
+var learntWords;
+chrome.storage.local.get(['global'], function(items) {
+  outerGlobal=items.global;
+  globalWordsLearnCalls=items.global.learningWordsCalls;
+  maxGlobalWordsLearnCalls=items.global.maxLearningWordsCalls;
+  learntWords=items.global.learntWords;
+});
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     try {
         if (request.message == "FireSentiment") {
@@ -256,10 +266,39 @@ function calculateSum(wordsArray) {
             }
             found = true;
         }
-        if(!found) {	//Learning codes here. Can be tagged by postagger and put it in appropriate arrays!
-        	dictionary(newWord, function(data) {
-        	 	console.log("New data " + JSON.stringify(data));
-        	});
+        if(!found && wordsLearnCalls<1 && !(learntWords.hasOwnProperty(newWord)) && globalWordsLearnCalls<maxGlobalWordsLearnCalls ) {	//Learning codes here. Can be tagged by postagger and put it in appropriate arrays!
+        	// dictionary(newWord, function(data) {
+        	//  	console.log("New data " + JSON.stringify(data));
+        	// });
+
+          var sendObj={
+            word:newWord,
+          };
+          $.ajax({
+                  url: "https://www.contentholmes.com/addNewWordInSentiment",
+                  beforeSend: function(XhrObj) {
+                      XhrObj.setRequestHeader("Content-Type", "application/json");
+                  },
+                  type: "POST",
+                  data: JSON.stringify(sendObj)
+              })
+              .done(function(data) {
+                  console.log("New word sent to the server to be learnt");
+              })
+              .fail(function() {
+                  console.log("error in server upload to learn new word");
+              });
+          wordsLearnCalls++;
+          globalWordsLearnCalls++;
+          console.log("Global calls to oxford="+globalWordsLearnCalls);
+          chrome.storage.local.get(['global'], function(items) {
+            var globalThingy=items.global;
+            globalThingy.learningWordsCalls=globalWordsLearnCalls;
+            chrome.storage.local.set({
+              global:globalThingy
+            });
+          });
+
         }
     }
     if (negation == true) {

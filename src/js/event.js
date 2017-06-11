@@ -34,6 +34,10 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.interestBuffer = global.interestBuffer || {};
     global.interests = global.interests || [];
     global.sentimentThings = global.sentimentThings || [];
+    global.learningURLCalls=0;
+    global.learningWordsCalls=0;
+    global.maxLearningWordsCalls=25;
+    global.learntWords={};
     chrome.storage.local.set({
         global: global
     });
