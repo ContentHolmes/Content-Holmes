@@ -57,9 +57,9 @@ function add(url) {
         chrome.storage.local.set({
             global: items.global
         });
-        console.log("added a new URL to blocked sites: " + url);
     });
     //Server call goes here
+    // Server call already exists in the form of sendReport in events
 }
 
 function setLFUCache(url) {
