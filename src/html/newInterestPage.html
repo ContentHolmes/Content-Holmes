@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Content Holmes | Access Blocked</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/logo_xs.png" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+    <script src="./../js/bootstrap.min.js"></script>
+    <link href="./../css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Raleway:400|Oxygen:400" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:300|Josefin+Sans:700,400|Nunito:800" rel="stylesheet">
+    <link rel="stylesheet" href="./../css/local.css">
+    <link rel="stylesheet" href="./../css/animate.css">
+    <!-- <script src="./../js/main.js"></script> -->
+    <!-- <script src="./../js/wow.min.js"></script> -->
+    <!-- <script src="./../js/scrolleffect.js"></script> -->
+</head>
+
+<body>
+    <script>
+        function intRemove(cross) {
+            console.log(cross);
+            var id = cross.id.split("_")[1];
+            document.getElementById("card_" + id).style.display = "none";
+        }
+    </script>
+    <div class="container-fluid box2 shadow">
+        <div class="empty-top text-center" style="background-color: white;">
+            <div class="push-top4"></div>
+            <p class="title" style="font-family: 'Nunito',sans-serif; font-size: 4em;">Content Holmes</p>
+            <div class="bar"></div>
+            <p class="inherit" style="font-size: 1.5em; font-family: 'Josefin', sans-serif;">The access to the page you requested is not allowed. Instead let's talk about something that you like more :)</p>
+        </div>
+        <div>
+            <div class="row">
+                <div class="col-sm-8 col-xs-12">
+                    <div class="box-1">
+                        <br>
+                        <p class="title" style="font-family: 'Josefin',sans-serif; font-size: 2em;">Web search</p>
+                        <hr>
+                        <div class="row special" id="webSearchRow">
+
+                        </div>
+                        <br><br>
+                        <p class="title" style="font-family: 'Josefin',sans-serif; font-size: 2em;">Images</p>
+                        <hr>
+                        <div class="row special" id="imagesRow">
+
+                        </div>
+                        <br><br>
+                        <p class="title" style="font-family: 'Josefin',sans-serif; font-size: 2em;">More Web Results</p>
+                        <hr>
+                        <div class="row special" id="webSearchRow1">
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="box-3">
+                        <br>
+                        <p class="title" style="font-family: 'Josefin',sans-serif; font-size: 2em;">Videos</p>
+                        <br>
+                        <div class="row special" id="videosRow">
+
+                        </div>
+                        <br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/js/interestpage.js"></script>
+    <!-- <script type="text/javascript" src="./../options.js"></script> -->
+    <!--
+    <script type="text/javascript">
+        $(function() {
+            var params = {
+                // Request parameters
+                "q":"<%= q1%>",
+                "count": "2",
+                "offset": "0",
+                "mkt": "en-us",
+                "safesearch": "Strict"
+            };
+
+            $.ajax({
+                url: "https://api.cognitive.microsoft.com/bing/v5.0/search?" + $.param(params),
+                beforeSend: function(xhrObj){
+                    // Request headers
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","f4b31d43688c44d8a13fc369ff774cd7");
+                },
+                type: "GET"
+                // Request body
+                //data: "{body}",
+            })
+            .done(function(data) {
+                //console.log(JSON.stringify(data));
+                if (data.webPages) {
+                    console.log("webpages true");
+
+                    var max = data.webPages.value.length > 2 ? 2 : data.webPages.value.length;
+                    for (var i = 0; i < max; i++) {
+
+                        var newData ='<div class="card animated fadeInDown"><a href="'+data.webPages.value[i].contentUrl+'" target="_blank" class="color_inherit"><div class="card-text"><p class="color_inherit">'+data.webPages.value[i].name+'</p></div></a><div class="card-description"><p>'+data.webPages.value[i].snippet+'</p></div></div><br>';
+                        if(i%2==0){
+                            document.getElementById("webSearchRow").innerHTML += newData;
+                        }
+                        else{
+                            document.getElementById("webSearchRow1").innerHTML += newData;
+                        }
+                    }
+
+
+                } else {
+                    //no webpages at all
+                    console.log("webpages false");
+                }
+                if (data.images) {
+                    console.log("images true");
+                    var max = data.images.value.length > 2 ? 2 : data.images.value.length;
+                    for (var i = 0; i < max; i++) {
+
+                        var newData =
+                            '<div class="col-sm-4"><div class="card animated fadeInUp"id="card_1"><div class="cross" id="cross_1" onClick="intRemove(this)"><div class="cross-text"><p class="inline">Not Interested</p></div><div class="icon"><p class="inline">X</p> </div></div><div class="card-media"><div style="background-image: url(' +
+                            data.images.value[i].thumbnailUrl + ');" class="image-card" id="img_1"></div></div><a href="' + data.images.value[i].contentUrl +
+                            '" target="_blank" class="color_inherit" id="title_1"><div class="card-text"><p class="color_inherit">' + data.images.value[i].name + '</p></div></a></div><br></div>';
+
+                        document.getElementById("imagesRow").innerHTML += newData;
+
+                    }
+                } else {
+                    // no images at all
+                    console.log("images false");
+                }
+                if (data.videos) {
+                    console.log("videos true");
+                    var max = data.images.value.length > 1 ? 1 : data.images.value.length;
+                    for (var i = 0; i < max; i++) {
+                        if(data.videos.value[i].publisher[0].name=="YouTube"){
+
+
+                        var url=data.videos.value[i].contentUrl;
+                        url=url.split("watch?v=")[1];
+                        url="http://www.youtube.com/embed/"+url+"?autoplay=0";
+                        console.log("url="+url);
+                        var newData ='<div class="card animated fadeInRight"><div class="card-media" style="height: auto;"><iframe width="100%" height="270px" src="'+url+'" frameborder="0"></iframe></div><a href="'+data.videos.value[i].contentUrl+'" target="_blank" class="color_inherit"><div class="card-text"><p class="color_inherit">'+data.videos.value[i].name+'</p></div></a><div class="push-top4"></div></div><br>';
+
+                        document.getElementById("videosRow").innerHTML += newData;
+                        }
+                        else{
+                            i--;
+                        }
+                    }
+
+                } else {
+                    console.log("videos false");
+                }
+               // alert("success");
+
+
+            })
+            .fail(function() {
+                alert("error");
+            });
+        });
+
+
+
+    </script>
+  -->
+  <!--
+  <script type="text/javascript">
+        function hndlr1(response) {
+           // console.log(JSON.stringify(response));
+
+
+             var max=response.items.length > 2 ? 2:response.items.length;
+             for(var i=0;i<max;i++){
+               var newData ='<div class="card animated fadeInDown"><a href="'+response.items[i].link+'" target="_blank" class="color_inherit"><div class="card-text"><p class="color_inherit">'+response.items[i].htmlTitle+'</p></div></a><div class="card-description"><p>'+response.items[i].htmlSnippet+'</p></div></div><br>';
+               if(i%2==0){
+                   document.getElementById("webSearchRow").innerHTML += newData;
+               }
+               else{
+                   document.getElementById("webSearchRow1").innerHTML += newData;
+               }
+            }
+        }
+  </script>
+  <script src="https://www.googleapis.com/customsearch/v1?key=AIzaSyAXg1C1H6YdNZdLEtXPVu9vGdLQF_OVfnM&amp;cx=010749975335767737752:vcb5so4woo4&amp;q=<%= q2 %>&amp;callback=hndlr1"></script>
+-->
+</body>
+
+</html>

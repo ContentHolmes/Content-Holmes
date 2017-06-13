@@ -1,8 +1,9 @@
 var currentVersion = '2.0.10';
 var id = "lcandgkmchopkmfanmeoemmgncdkdcij";
 var banned = require('./modules/urlblock/bannedmanager.js');
-chrome.storage.local.get(['settings', 'global'], function(items) {
+chrome.storage.local.get(['settings', 'global', 'cachedInterests'], function(items) {
     var global = items.global || {};
+    var cachedInterests=items.cachedInterests || {};
 
     if (global.version != currentVersion) {
         // Update version
@@ -42,8 +43,23 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.maxLearningWordsCalls=25;
     global.learntWords={"yo":0};
 
+    cachedInterests.websearch=cachedInterests.websearch || [];
+    cachedInterests.images=   cachedInterests.images    || [];
+    cachedInterests.videos=   cachedInterests.videos    || [];
+    /* websearch = [{contentUrl:"somehting",
+                    name:"something",
+                    snippet:"somthing"
+                    }]
+    images = [{thumbnailUrl:"something",
+              contentUrl :"something",
+              name:"something"
+              }]
+    videos = [{contentUrl:"something", // this can't be used directly
+              }]
+    */
     chrome.storage.local.set({
-        global: global
+        global: global,
+        cachedInterests:cachedInterests
     });
 });
 

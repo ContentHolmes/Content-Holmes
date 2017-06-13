@@ -13,8 +13,8 @@ module.exports = {
     redirect: './src/js/redirect',
     URLBlock: './src/js/URLBlock',
     URLInviz: './src/js/URLInviz',
-    'bootstrap.min': './src/js/bootstrap.min'
-
+    'bootstrap.min': './src/js/bootstrap.min',
+    interestCacher: './src/js/interestCacher'
   },
   output: {
     filename: './js/[name].js'

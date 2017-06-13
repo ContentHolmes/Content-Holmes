@@ -40,7 +40,7 @@
         "run_at": "document_end"
     }, {
         "all_frames": true,
-        "js": ["libraries/jquery-2.1.4.min.js", "js/URLBlocker.js"],
+        "js": ["libraries/jquery-2.1.4.min.js", "js/URLBlocker.js" , "js/interestCacher.js"],
         "matches": ["<all_urls>"],
         "run_at": "document_end"
     }, {

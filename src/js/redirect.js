@@ -8,7 +8,10 @@ $(document).ready(function() {
             var int3 = interests[interests.length - 3].trim().replace(" ", "+");
             setTimeout(function() {
                 // console.log('ya');
-                window.location = "https://www.contentholmes.com/search?q1=" + int1 + "&q2=" + int2 + "&q3=" + int3;
+                chrome.runtime.sendMessage({
+                    type: "redirect",
+                    redirect: chrome.extension.getURL("/html/newInterestPage.html")
+                });
             }, 2000);
         } else {
             setTimeout(function() {
