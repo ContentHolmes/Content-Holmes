@@ -8,7 +8,16 @@ var offensivewords = [
     "sex",
     "dick",
     "blowjob",
-    "tits"
+    "tits",
+    "erotic",
+    "suck dick",
+    "dildo",
+    "threesome",
+    "anal",
+    "bdsm",
+    "cumshot",
+    "deepthroat",
+    "spanking"
 ];
 
 var words = {
