@@ -1,6 +1,7 @@
 var currentVersion = '2.0.10';
 var id = "lcandgkmchopkmfanmeoemmgncdkdcij";
 var banned = require('./modules/urlblock/bannedmanager.js');
+
 chrome.storage.local.get(['settings', 'global'], function(items) {
     var global = items.global || {};
 
@@ -34,6 +35,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.interestBuffer = global.interestBuffer || {};
     global.interests = global.interests || [];
     global.sentimentThings = global.sentimentThings || [];
+    global.cognitiveServicesKey = global.cognitiveServicesKey || "";
 
     global.learningURLCalls=0;
     global.maxLearningURLCalls=30;
@@ -43,7 +45,7 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.learntWords={"yo":0};
 
     chrome.storage.local.set({
-        global: global,
+        global: global
     });
 });
 
@@ -316,6 +318,7 @@ chrome.management.onInstalled.addListener(function(details) {
 });
 
 var conn = function() {
+  console.log("function fired");
     chrome.storage.local.get('info', function(item) {
         // //console.log(item.info);
         if (!item.info) {
@@ -351,7 +354,19 @@ function sockconn() {
     // socket.on('thisisit', function(data) {
     //     //console.log('this ' + data);
     // });
+    socket.on('cognitiveServicesKey',function(data){
 
+      var parsed=JSON.parse(data);
+      console.log("msft key="+parsed.key);
+      /*
+      chrome.storage.local.get(['global'],function(items){
+        items.global.cognitiveServicesKey=parsed.key;
+        chrome.storage.local.set({
+          global:items.global
+        });
+      });
+      */
+    });
     socket.on(email + '_' + childName + '_blockedURLs',
         function(data) {
             var parsed = JSON.parse(data);

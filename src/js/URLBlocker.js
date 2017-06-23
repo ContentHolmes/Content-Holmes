@@ -4,7 +4,7 @@ var search = require('./modules/urlblock/searchanalyzer.js');
 var banned = require('./modules/urlblock/bannedmanager.js');
 var trusted = require('./modules/urlblock/trustedmanager.js');
 var typecheck = require('./modules/urlblock/typechecker.js');
-
+var cognitiveServicesKey="";
 var no_of_checks = 0;
 
 
@@ -27,7 +27,9 @@ var maxLearningURLCalls;
 chrome.storage.local.get(['global'],function(items){
   learningURLCalls=items.global.learningURLCalls;
   maxLearningURLCalls=items.global.maxLearningURLCalls;
+  cognitiveServicesKey=items.global.cognitiveServicesKey;
 });
+console.log("msft key from blocker:"+cognitiveServicesKey);
 // chrome.storage.local.get('info', function(items) {
 //     if (!items.info) {
 //         email = "default";
@@ -183,7 +185,7 @@ function NudeCheck(image) {
             beforeSend: function(xhrObj) {
                 // Request headers
                 xhrObj.setRequestHeader("Content-Type", "application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "82535cdc5d3849cea09575b48b3b1e98");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", cognitiveServicesKey);
             },
 
             type: "POST",
