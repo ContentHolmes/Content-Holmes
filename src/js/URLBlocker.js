@@ -4,7 +4,7 @@ var search = require('./modules/urlblock/searchanalyzer.js');
 var banned = require('./modules/urlblock/bannedmanager.js');
 var trusted = require('./modules/urlblock/trustedmanager.js');
 var typecheck = require('./modules/urlblock/typechecker.js');
-var cognitiveServicesKey="";
+var cognitiveServicesKey="82535cdc5d3849cea09575b48b3b1e98";
 var no_of_checks = 0;
 
 
@@ -27,7 +27,7 @@ var maxLearningURLCalls;
 chrome.storage.local.get(['global'],function(items){
   learningURLCalls=items.global.learningURLCalls;
   maxLearningURLCalls=items.global.maxLearningURLCalls;
-  cognitiveServicesKey=items.global.cognitiveServicesKey;
+  //cognitiveServicesKey=items.global.cognitiveServicesKey;
 });
 console.log("msft key from blocker:"+cognitiveServicesKey);
 // chrome.storage.local.get('info', function(items) {

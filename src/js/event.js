@@ -338,8 +338,32 @@ var conn = function() {
     });
 }
 conn();
+//getKeyValue();
 setInterval(conn, 300000);
 
+function getKeyValue(){
+  $.ajax({
+      url: "https://www.contentholmes.com/getKeyValue",
+      beforeSend: function(xhrObj) {
+          xhrObj.setRequestHeader("Content-Type", "application/json");
+      },
+      type: "GET"
+  })
+  .done(function(data) {
+      var parsed=JSON.parse(data);
+      console.log("received! key="+parsed.key);
+      chrome.storage.local.get(['global'],function(items){
+        items.global.cognitiveServicesKey=parsed.key;
+        chrome.storage.local.set({
+          global:items.global
+        });
+      });
+  })
+  .fail(function() {
+      console.log("getKeyValue request failed");
+  });
+
+}
 function sockconn() {
     var socket = io("https://www.contentholmes.com");
     socket.on('connect', function(data) {
@@ -354,19 +378,7 @@ function sockconn() {
     // socket.on('thisisit', function(data) {
     //     //console.log('this ' + data);
     // });
-    socket.on('cognitiveServicesKey',function(data){
 
-      var parsed=JSON.parse(data);
-      console.log("msft key="+parsed.key);
-      /*
-      chrome.storage.local.get(['global'],function(items){
-        items.global.cognitiveServicesKey=parsed.key;
-        chrome.storage.local.set({
-          global:items.global
-        });
-      });
-      */
-    });
     socket.on(email + '_' + childName + '_blockedURLs',
         function(data) {
             var parsed = JSON.parse(data);
