@@ -338,7 +338,7 @@ var conn = function() {
     });
 }
 conn();
-//getKeyValue();
+getKeyValue();
 setInterval(conn, 300000);
 
 function getKeyValue(){
