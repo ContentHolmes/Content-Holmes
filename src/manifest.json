@@ -3,8 +3,9 @@
     "manifest_version": 2,
 
     "name": "Content Holmes",
-    "description": "",
-    "version": "1.0.2",
+    "description": "Now you can protect your child online easily!",
+    "version": "1.0.4",
+    "version_name": "1.4-alpha",
 
     "icons": {
          "48": "logo_48.png",
