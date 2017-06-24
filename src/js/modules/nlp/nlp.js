@@ -29,6 +29,7 @@ function interest(interests, query, callback) {
 		buffer_categories[query]++;
 		if(buffer_categories[query]>=3&&globals.interests.indexOf(query)==-1) {
 			globals.interests.push(query);
+			fireChangeEventListener();
 		}
 		// console.log(interests);
 		// console.log(JSON.stringify(buffer_categories));
@@ -90,6 +91,7 @@ function wordtagger(sentence) {
 		interest_determined+=buffer_nouns[i]+" ";
 	}
 	if(interest_determined!=""&&globals.interests.indexOf(interest_determined)==-1) {
+		fireChangeEventListener();
 		globals.interests.push(interest_determined);
 	}
 }
@@ -125,6 +127,16 @@ function setBuffer(buffer) {
 
 function getBuffer() {
 	return buffer_categories;
+}
+
+function addChangeEventListener(fn) {
+	globals["changeEventListener"] = fn;
+}
+
+function fireChangeEventListener() {
+	if(globals["changeEventListener"]) {
+		globals["changeEventListener"](globals["interests"])
+	}
 }
 
 function wordextract(sentence) {

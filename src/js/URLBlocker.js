@@ -4,7 +4,7 @@ var search = require('./modules/urlblock/searchanalyzer.js');
 var banned = require('./modules/urlblock/bannedmanager.js');
 var trusted = require('./modules/urlblock/trustedmanager.js');
 var typecheck = require('./modules/urlblock/typechecker.js');
-
+var cognitiveServicesKey="";
 var no_of_checks = 0;
 
 
@@ -22,6 +22,13 @@ var qualifiedImagesArray = [];
 // var email, pass, name;
 var blockedit = false;
 // var isInfoAvailable = false;
+var learningURLCalls;
+var maxLearningURLCalls;
+chrome.storage.local.get(['global'],function(items){
+  learningURLCalls=items.global.learningURLCalls;
+  maxLearningURLCalls=items.global.maxLearningURLCalls;
+  cognitiveServicesKey=items.global.cognitiveServicesKey;
+});
 
 // chrome.storage.local.get('info', function(items) {
 //     if (!items.info) {
@@ -54,8 +61,11 @@ function BlockURL() {
     */
 
     var urlString = getName(document.location.href);
-    //console.log('url string' + urlString);
-
+    // console.log('url string' + urlString);
+    if(!urlString) {
+    	document.getElementsByTagName('body')[0].style.visibility = 'visible';
+    	return;
+    }
     trusted.checkPresenceInTrusted(urlString).then(val => {
         if(val == true){
             document.getElementsByTagName('body')[0].style.visibility = 'visible';
@@ -76,7 +86,9 @@ function getName(str) {
     ////console.log(name[1]);
     try {
         return name[1];
-    } catch (err) {}
+    } catch (err) {
+    	return null;
+    }
 }
 
 function getImageName(str) {
@@ -134,11 +146,20 @@ function checkImagePresence(image, url){
             trusted.checkPresenceInTrusted(url).then(val => {
                 if(val == false){
                     console.log('not in trusted');
-                    if ((image.clientWidth > 300 || image.clientHeight > 300) && checkCount <= 10) {
+                    if ((image.clientWidth > 300 || image.clientHeight > 300) && checkCount < 10 && learningURLCalls <= maxLearningURLCalls) {
                         //send image for adult content to be checked
                         console.log('sending image' + url);
                         NudeCheck(image);
                         checkCount++;
+                        learningURLCalls++;
+                        console.log("Learning URL calls="+learningURLCalls);
+                        chrome.storage.local.get(['global'],function(items){
+                          var globalThingy=items.global;
+                          globalThingy.learningURLCalls=learningURLCalls;
+                          chrome.storage.local.set({
+                            global:globalThingy
+                          });
+                        });
                     }
                 }
             }, err => {
@@ -152,6 +173,7 @@ function checkImagePresence(image, url){
 }
 
 function NudeCheck(image) {
+  console.log("msft key from blocker:"+cognitiveServicesKey);
     var params = {
         "visualFeatures": "Adult",
         "language": "en",
@@ -164,7 +186,7 @@ function NudeCheck(image) {
             beforeSend: function(xhrObj) {
                 // Request headers
                 xhrObj.setRequestHeader("Content-Type", "application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "82535cdc5d3849cea09575b48b3b1e98");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", cognitiveServicesKey);
             },
 
             type: "POST",
@@ -173,6 +195,7 @@ function NudeCheck(image) {
         })
         .done(function(data) {
             validateNudeResults(data, image);
+
         })
         .fail(function() {
             failreturn();
@@ -207,6 +230,10 @@ function validateNudeResults(data, image) {
             type: "sendReport",
             url: getName(document.location.href)
         });
+        chrome.runtime.sendMessage({
+            type: "addBlockedURLToServer",
+            url: getName(document.location.href)
+        });
         // if (isInfoAvailable) {
         //     var sendobj = {
         //         type: "URL",
@@ -234,6 +261,7 @@ function validateNudeResults(data, image) {
         // }
 
         banned.add(getImageName(image.src));
+
         // //console.log('going to safetypage');
         chrome.runtime.sendMessage({
             type: "redirect",

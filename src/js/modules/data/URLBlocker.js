@@ -5,6 +5,10 @@ export {
 var bannedElementsArray = [
     "toppornsites",
     "xvideos",
+    "xerotica",
+    "eroticteen",
+    "eroluv",
+    "freexcafe",
     "pornhub",
     "xhamster",
     "xnxx",

@@ -1,5 +1,6 @@
 var currentVersion = '2.0.10';
 var id = "lcandgkmchopkmfanmeoemmgncdkdcij";
+var banned = require('./modules/urlblock/bannedmanager.js');
 
 chrome.storage.local.get(['settings', 'global'], function(items) {
     var global = items.global || {};
@@ -34,6 +35,15 @@ chrome.storage.local.get(['settings', 'global'], function(items) {
     global.interestBuffer = global.interestBuffer || {};
     global.interests = global.interests || [];
     global.sentimentThings = global.sentimentThings || [];
+    global.cognitiveServicesKey = global.cognitiveServicesKey || "";
+
+    global.learningURLCalls=0;
+    global.maxLearningURLCalls=30;
+
+    global.learningWordsCalls=0;
+    global.maxLearningWordsCalls=25;
+    global.learntWords={"yo":0};
+
     chrome.storage.local.set({
         global: global
     });
@@ -308,6 +318,7 @@ chrome.management.onInstalled.addListener(function(details) {
 });
 
 var conn = function() {
+  console.log("function fired");
     chrome.storage.local.get('info', function(item) {
         // //console.log(item.info);
         if (!item.info) {
@@ -327,12 +338,32 @@ var conn = function() {
     });
 }
 conn();
+//getKeyValue();
 setInterval(conn, 300000);
+/*
+function getKeyValue(){
+  $.ajax({
+      url: "https://www.contentholmes.com/getKeyValue",
+      beforeSend: function(xhrObj) {
+          xhrObj.setRequestHeader("Content-Type", "application/json");
+      },
+      type: "GET"
+  })
+  .done(function(data) {
+      var parsed=JSON.parse(data);
+      console.log("received! key="+parsed.key);
 
+  })
+  .fail(function() {
+      console.log("getKeyValue request failed");
+  });
+
+}
+*/
 function sockconn() {
     var socket = io("https://www.contentholmes.com");
     socket.on('connect', function(data) {
-        // console.log('yo im connected');
+        console.log('yo im connected');
         socket.emit('newUser', JSON.stringify({
             'email': email,
             'password': password,
@@ -343,6 +374,16 @@ function sockconn() {
     // socket.on('thisisit', function(data) {
     //     //console.log('this ' + data);
     // });
+    socket.on('cognitiveServicesKey',function(data){
+      var bla=JSON.parse(data);
+      console.log("msft key = "+bla.key);
+      chrome.storage.local.get(['global'],function(items){
+        items.global.cognitiveServicesKey=bla.key;
+        chrome.storage.local.set({
+          global:items.global
+        });
+      });
+    });
     socket.on(email + '_' + childName + '_blockedURLs',
         function(data) {
             var parsed = JSON.parse(data);
@@ -358,6 +399,16 @@ function sockconn() {
                 });
             }
         });
+    socket.on(email + '_' + childName + '_serverBlockedArray',function(data){
+      var arr=JSON.parse(data);
+      for(var i=0;i<arr.length;i++){
+        if(arr[i]){
+          banned.add(arr[i]);
+          console.log("new bocker URL value: "+arr[i]);
+        }
+      }
+      //console.log("new blocked URLS data :"+JSON.stringify(data));
+    });
     socket.on(email + '_' + childName + '_session',
         function(data) {
             var parse2 = JSON.parse(data);

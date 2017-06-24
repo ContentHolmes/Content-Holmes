@@ -14,7 +14,6 @@ module.exports = {
     URLBlock: './src/js/URLBlock',
     URLInviz: './src/js/URLInviz',
     'bootstrap.min': './src/js/bootstrap.min'
-
   },
   output: {
     filename: './js/[name].js'
