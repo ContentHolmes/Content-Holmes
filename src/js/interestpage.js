@@ -707,9 +707,9 @@ $(window).on("load", function() {
     for (i = 1; i < 4; i++) {
         var obj = JSON.parse(JSON.stringify(temptest[i-1]));
         $("#title_" + i).text(obj.htmlTitle);
-        console.log(obj.htmlTitle);
+        //console.log(obj.htmlTitle);
         $("#title_" + i).attr("href", obj.link);
-        console.log(obj.pagemap.cse_thumbnail[0].src);
+        //console.log(obj.pagemap.cse_thumbnail[0].src);
         $("#img_" + i).attr("src", obj.pagemap.cse_thumbnail[0].src);
         $("#description_" + i).text(obj.htmlSnippet);
         $("#link_" + i).text(obj.displayLink);

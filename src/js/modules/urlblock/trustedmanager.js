@@ -50,7 +50,7 @@ function add(url) {
         chrome.storage.local.set({
             global: items.global
         });
-        console.log("added a new URL to trusted sites: " + url);
+        //console.log("added a new URL to trusted sites: " + url);
     });
     //Server call goes here
 }
@@ -69,6 +69,6 @@ lfu.on('eviction', function(key, object) {
         chrome.storage.local.set({
             global: items.global
         });
-        console.log("added a new URL to trusted sites: " + url);
+        //console.log("added a new URL to trusted sites: " + url);
     });
 });

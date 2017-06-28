@@ -29,8 +29,8 @@ function paramscheck(params) {
         chrome.storage.local.get(['settings', 'global'], function(items) {
             nlp.setBuffer(items.global.interestBuffer);
             nlp.interest(items.global.interests, query, function(interests, data) {
-                console.log(interests);
-                console.log(JSON.stringify(data));
+                //console.log(interests);
+                //console.log(JSON.stringify(data));
                 items.global.interests = interests;
                 items.global.interestBuffer = data;
                 chrome.storage.local.set({
@@ -59,7 +59,7 @@ function paramscheck(params) {
             if(val == true)
                 bad++;
         }, err => {
-            console.log(err);
+            //console.log(err);
         });
     }
     return bad / count;
