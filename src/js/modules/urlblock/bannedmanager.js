@@ -16,12 +16,12 @@ function checkPresenceInBanned(url) {
       var str;
       if(url) {
           str = url;
-          console.log('good');
+          //console.log('good');
       } else {
           reject("bad url");
           return;
       }
-      console.log('str is ' + str);
+      //console.log('str is ' + str);
       for (var i in bannedElementsArray) {
           if (bannedElementsArray[i] == str) {
               resolve(true);
@@ -31,18 +31,18 @@ function checkPresenceInBanned(url) {
       chrome.storage.local.get(['settings', 'global'], function(items) {
           var localBannedCache = items.global.bannedURLs;
           lfu.import(localBannedCache);
-          console.log('imported lfu');
+          //console.log('imported lfu');
           if(getLFUCache(str)) {
-              console.log('resolving true');
+              //console.log('resolving true');
               resolve(true);
               return;
           }
           if(items.global.bannedURLObj[md5(str)]) {
-              console.log('resolving true');
+              //console.log('resolving true');
               resolve(true);
               return;
           }
-          console.log('resolving false');
+          //console.log('resolving false');
           resolve(false);
           return;
       });
@@ -76,6 +76,6 @@ lfu.on('eviction', function(key, object) {
         chrome.storage.local.set({
             global: items.global
         });
-        console.log("added a new URL to blocked sites: " + url);
+        //console.log("added a new URL to blocked sites: " + url);
     });
 });
