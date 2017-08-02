@@ -84,7 +84,7 @@ function checkPresenceInBanned(url) {
 }
 
 /**
- * Adds a URL to the <tt>bannedmanager<\tt> asynchronously.
+ * Adds a URL to the <tt>bannedmanager</tt> asynchronously.
  * @param {String} URL that needs to be added
  * @example
  * banned.add("http://www.google.com");

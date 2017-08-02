@@ -77,7 +77,7 @@ function checkPresenceInTrusted(url) {
 }
 
 /**
- * Adds a URL to the <tt>trustedmanager<\tt> asynchronously.
+ * Adds a URL to the <tt>trustedmanager</tt> asynchronously.
  * @param {String} URL that needs to be added
  * @example
  * trusted.add("http://www.google.com");
