@@ -1,5 +1,5 @@
 /**
- * <tt>bannedmanager</tt> manages banned content providers. It uses a combination of local and online processing to reduce the time taken to find banned sites in constant time complexity <b>O(k)</b><br>
+ * <tt>bannedmanager</tt> manages banned content providers. It uses a combination of local and online processing to reduce the time taken to find banned sites in constant time complexity <b>O(k)</b>.<br>
  * Although the exposed functions for the module are only <tt>add</tt> and <tt>checkPresenceInBanned</tt>, their implementation uses a variety of data-structures. Some of them being:
  * <ol>
  *  <li> <b>Array:</b> for base data of most visited sites.
@@ -31,6 +31,14 @@ var bannedElementsArray = data.bannedElementsArray;
  * Checks for the presence of a provided URL in <tt>bannedmanager</tt>.
  * @param {String} URL to check in <tt>bannedmanager</tt>
  * @returns {Promise} A promise that returns a boolean true or false occording to whether the URL is present. It returns an error if rejected.
+ * @example
+ * banned.checkPresenceInBanned("https://www.google.com").then(result => {
+ *	if(result) {
+ *		console.log("Good");
+ *  } else {
+ *		console.log("Bad");	
+ * 	}
+ * });
  */
 
 function checkPresenceInBanned(url) {
@@ -76,8 +84,10 @@ function checkPresenceInBanned(url) {
 }
 
 /**
- * Adds a URL to the <tt>bannedmanager<\tt>.
+ * Adds a URL to the <tt>bannedmanager<\tt> asynchronously.
  * @param {String} URL that needs to be added
+ * @example
+ * banned.add("http://www.google.com");
  */
 
 function add(url) {
