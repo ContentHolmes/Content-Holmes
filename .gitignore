@@ -2,7 +2,7 @@
 mykey.pem
 
 node_modules/*
-!node_modules/lfu-cache
+package-lock.json
 
 npm-debug.log
 
@@ -10,6 +10,8 @@ build/*.crx
 build/dev
 build/prod
 build/updates.xml
+
+docs
 
 .tmp
 *.swp
