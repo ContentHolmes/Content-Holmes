@@ -1,3 +1,30 @@
+/**
+ * <tt>typechecker</tt> checks the type of the website the user is currently on and categorizes it into one of these categories:
+ * <ul>
+ *  <li> Entertainment
+ *  <li> Music
+ *  <li> Art
+ *  <li> Vehicles
+ *  <li> Sports
+ *  <li> Science & Education
+ *  <li> Pets & Animals
+ *  <li> Social
+ *  <li> News
+ *  <li> Games
+ *  <li> Technology
+ *  <li> Books
+ * </ul>
+ * @example
+ * <caption>Just require the modules and call checktype. Rest of the processing is automated.</caption>
+ * var typechecker = require('typechecker.js');
+ * typechecker.checktype();
+ * @module urlblock/typechecker
+ */
+
+ /**
+  * Imports data for <tt>typechecker</tt>. See {@link module:data/typechecker}
+  */
+
 var data = require('../data/typechecker.js');
 
 export {
@@ -5,6 +32,10 @@ export {
 };
 
 var categories = data.categories;
+
+/**
+ * Checks the type of the website the user is currently on. It blocks the website if it was requested by the parent.
+ */
 
 function checkType() {
     var metaTags = document.getElementsByTagName("meta");

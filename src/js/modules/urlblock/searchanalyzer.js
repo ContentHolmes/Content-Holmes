@@ -1,5 +1,23 @@
+/**
+ * <tt>searchanalyzer</tt> analyzes search queries entered by the user in <b>any</b> search engine. It works with the URL that the search engines generate when serving search queries.
+ * @example
+ * <caption><tt>searchanalyzer</tt>'s use only requires a call to <tt>urlcheck</tt> with the URL of the search query.</caption>
+ * var searchanalyzer = require('searchanalyzer.js');
+ * searchanalyzer.urlcheck('https://www.youtube.com/results?search_query=content+holmes');
+ * @module urlblock/searchanalyzer
+ */
+
+/**
+ * Loads the NLP module. See {@link module:nlp/nlp}
+ */
 var nlp = require('../nlp/nlp.js');
+/**
+ * Loads searchanalyzer base data. See {@link module:data/searchanalyzer}
+ */
 var data = require('../data/searchanalyzer.js');
+/**
+ * Loads the bannedmanager. See {@link module:urlblock/bannedmanager}
+ */
 var banned = require('../urlblock/bannedmanager.js');
 
 export {
@@ -7,6 +25,12 @@ export {
 };
 
 var words = data.words;
+
+/**
+ * Checks the URL to process it for information regarding search related data.
+ * @param {String} url This is the full URL of the search engine after search has been performed.
+ * @returns {Number} Ratio of profane words to the total number of words in the search query.
+ */
 
 function urlcheck(url) {
     var params = getUrlVars(url);
@@ -18,6 +42,12 @@ function urlcheck(url) {
         return 0;
     }
 }
+
+/**
+ * Checks the search parameters for profane content.
+ * @param {String} params The extracted search query from [getUrlVars]{@linkcode module:urlblock/searchanalyzer~getUrlVars}.
+ * @returns {Number} Ration of profane words to the total number of words in the search query.
+ */
 
 function paramscheck(params) {
     var count = 0.0;
@@ -64,6 +94,12 @@ function paramscheck(params) {
     }
     return bad / count;
 }
+
+/**
+ * Takes the URL and extracts all the parameters in the get request.
+ * @param url The URL whose parameters need to be extracted.
+ * @returns {Dictionary} All parameters in the URL.
+ */
 
 function getUrlVars(href) {
     var vars = [],

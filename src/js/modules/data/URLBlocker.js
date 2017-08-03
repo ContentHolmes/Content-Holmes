@@ -1,6 +1,15 @@
+/**
+ * Exports base data needed for [trustedmanager]{@link module:urlblock/trusedmanager} and [bannedmanager]{@link module:urlblock/bannedmanager}.
+ * @module data/URLBlocker
+ */
+
 export {
     bannedElementsArray, trustedElementsArray
 };
+
+/**
+ * Top pornographic websites across the internet. Used as base data for fastest blocking.
+ */
 
 var bannedElementsArray = [
     "toppornsites",
@@ -2391,6 +2400,10 @@ var bannedElementsArray = [
     "free‐celebrity‐tube",
     "public‐sluts"
 ];
+
+/**
+ * Top websites across the internet. Used as base data for fastest processing and approval.
+ */
 
 var trustedElementsArray = [
     "google",

@@ -1,3 +1,8 @@
+/**
+ * Exports base data needed for sentiment analysis.
+ * @module data/data
+ */
+
 export {
     offensivewords, words, negs, boosters
 };
