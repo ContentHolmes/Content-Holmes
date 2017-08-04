@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { devtools } from './chrome.devtools.mock';
+import { devtools } from '../../src/js/modules/chrome.devtools.mock';
 
 describe('chrome.devtools.mock module', () => {
   it('should export static data structure', () => {
