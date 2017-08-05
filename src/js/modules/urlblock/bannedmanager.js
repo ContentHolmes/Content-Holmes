@@ -107,6 +107,5 @@ lfu.on('eviction', function(key, object) {
         chrome.storage.local.set({
             global: items.global
         });
-        //console.log("added a new URL to blocked sites: " + url);
     });
 });

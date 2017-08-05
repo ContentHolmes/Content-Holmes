@@ -38,13 +38,15 @@ function urlcheck(url) {
         return paramscheck(params.q);
     } else if (params.search_query != null) {
         return paramscheck(params.search_query);
+    } else if (params["field-keywords"] != null) {
+        return paramscheck(params["field-keywords"]);
     } else {
         return 0;
     }
 }
 
 /**
- * Checks the search parameters for profane content.
+ * Checks the search parameters for profane content. Also triggers interest determination!
  * @param {String} params The extracted search query from [getUrlVars]{@linkcode module:urlblock/searchanalyzer~getUrlVars}.
  * @returns {Number} Ration of profane words to the total number of words in the search query.
  */
@@ -54,6 +56,7 @@ function paramscheck(params) {
     var bad = 0.0;
     var extracts;
     params = params.replace(/[^\w\s]|_/g, '.');
+    params = params.toLowerCase();
     var query = params.replace(/\./g, ' ');
     try {
         chrome.storage.local.get(['settings', 'global'], function(items) {
