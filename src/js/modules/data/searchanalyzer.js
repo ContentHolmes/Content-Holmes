@@ -1,6 +1,16 @@
+/**
+ * Exports base data needed for [searchanalyzer]{@link module:urlblock/searchanalyzer}.
+ * @module data/searchanalyzer
+ */
+
+
 export {
     words
 };
+
+/**
+ * List of profane words the <tt>searchanalyzer</tt> checks through.
+ */
 
 var words = [
     "arse",
