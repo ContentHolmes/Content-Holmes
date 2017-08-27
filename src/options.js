@@ -14,11 +14,12 @@ $("#forms").submit(function(e) {
     var sendobj = {
         email: email,
         password: password,
-        childName: childName
+        childName: childName,
+        token: randomString(30)
     }
     $('.loading').addClass('front');
     $.ajax({
-            url: "https://contentholmes.com/user/new",
+            url: "http://localhost:3000/user/new",
             beforeSend: function(XhrObj) {
                 XhrObj.setRequestHeader("Content-Type", "application/json");
             },
@@ -28,10 +29,22 @@ $("#forms").submit(function(e) {
         })
         .done(function(data) {
             var parse = JSON.parse(data);
+
+
+
+/*
+  You have to store this token and all furhter commmunication will hapeen with this token only
+*/
+
+
+
+
+
             //content.log('request data ' + data);
             //content.log('request sent ' + parse.success);
             if (parse.success) {
                 //content.log('successful');
+                console.log(parse.token);
                 chrome.storage.local.set({
                     "info": {
                         "email": email,
@@ -71,3 +84,11 @@ $("#forms").submit(function(e) {
         });
     e.preventDefault();
 });
+var randomString = function(length) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for(var i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+}

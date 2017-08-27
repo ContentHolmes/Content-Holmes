@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
         }
     } catch (err) {
-        ////console.log(err);
+        //////console.log(err);
     }
 });
 
@@ -50,7 +50,7 @@ function startSentiment() {
             depressionmin = depressionCalc;
         }
     }
-    // console.log("From minimum depression: " + depressionmin);
+    // //console.log("From minimum depression: " + depressionmin);
     try{
         lessThanPrevious(depressionmin);
     }catch(e){
@@ -93,25 +93,25 @@ function lessThanPrevious(score) {
     chrome.storage.local.get(['settings', 'global'], function(items) {
         arr = items.global.sentimentThings;
         globaling = items.global;
-        ////console.log("Logging sentiment things : " + JSON.stringify(arr[arr.length - 1]));
+        //////console.log("Logging sentiment things : " + JSON.stringify(arr[arr.length - 1]));
         var newObj = {
             "Date": (new Date()).toString(),
             "value": score
         };
-        // ////console.log("newObj is " + JSON.stringify(newObj));
+        // //////console.log("newObj is " + JSON.stringify(newObj));
         if (!arr) {
             arr = [];
             arr.push(newObj);
-            // ////console.log('no arr' + JSON.stringify(arr[0]));
+            // //////console.log('no arr' + JSON.stringify(arr[0]));
             newThing = true;
         } else if (arr.length == 0) {
             arr.push(newObj);
-            // ////console.log('length = 0' + JSON.stringify(arr[0]));
+            // //////console.log('length = 0' + JSON.stringify(arr[0]));
             newThing = true;
         } else {
             var d = new Date();
             var dateval = new Date(arr[arr.length - 1].Date);
-            // ////console.log(dateval + "  date   " + d);
+            // //////console.log(dateval + "  date   " + d);
             if ((d.getDay() != dateval.getDay())) {
                 if (arr.length == 7) {
                     arr.shift();
@@ -122,7 +122,7 @@ function lessThanPrevious(score) {
                 newThing = true;
             } else {
                 if (arr[arr.length - 1].value > score) {
-                    // console.log("scroe is " + score);
+                    // //console.log("scroe is " + score);
                     arr[arr.length - 1] = newObj;
                     newThing = true;
                 }
@@ -134,14 +134,14 @@ function lessThanPrevious(score) {
             chrome.storage.local.set({
                 global: items.global
             });
-            // ////console.log("Final global array : " + JSON.stringify(arr));
+            // //////console.log("Final global array : " + JSON.stringify(arr));
             sendData(score);
         }
     });
 }
 
 function sendData(depressionmin) {
-    ////console.log("I am inside hrer bros");
+    //////console.log("I am inside hrer bros");
     chrome.runtime.sendMessage({
         type: "depressionReport",
         score: depressionmin
@@ -181,10 +181,10 @@ function sendData(depressionmin) {
     //                 // Request body
     //             })
     //             .done(function(data) {
-    //                 ////console.log("succcesssful req: " + data);
+    //                 //////console.log("succcesssful req: " + data);
     //             })
     //             .fail(function() {
-    //                 ////console.log("error");
+    //                 //////console.log("error");
     //             });
     //     }
     // });
@@ -199,7 +199,7 @@ function parseParagraphs(node) {
     if (node.parentElement.tagName in ignoreThese) {
         return 0;
     }
-    //////console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
+    ////////console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
     var str = node.nodeValue.toString();
     //var str="I am not happy";
     var sentenceArray = getSentences(str);
@@ -210,15 +210,15 @@ function parseParagraphs(node) {
         var newSentence = nlp.wordextract(sentenceArray[i].toString());
         formatWordsInArray(newSentence);
         totalWords = totalWords + newSentence.length;
-        // console.log(newSentence);
+        // //console.log(newSentence);
         var newSum = calculateSum(newSentence);
-        //////console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
+        ////////console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
         sum = sum + newSum /**newSentence.length*/ ;
 
     }
     var depressionCalc = sum /*/totalWords*/ ;
     if (depressionCalc || depressionCalc == 0) {
-        //////console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);
+        ////////console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);
     }
     return depressionCalc;
 }
@@ -234,7 +234,7 @@ function calculateSum(wordsArray) {
     var negation = false;
     for (var i in wordsArray) {
         if (offensiveSum >= 10) {
-            // console.log("offensive words");
+            // //console.log("offensive words");
             chrome.runtime.sendMessage({
                 type: "redirect",
                 redirect: chrome.extension.getURL("/html/safetypage.html")
@@ -244,7 +244,7 @@ function calculateSum(wordsArray) {
         var found = false;
         if (offensivewords.indexOf(newWord) != -1) {
             offensiveSum += 1;
-            // console.log("word is  " + newWord);
+            // //console.log("word is  " + newWord);
         }
 
         if (words.hasOwnProperty(newWord)) {
@@ -255,7 +255,7 @@ function calculateSum(wordsArray) {
         if (boosters.hasOwnProperty(newWord)) {
             sum += boosters[newWord];
             found = true;
-            //////console.log("new Words : "+newWord);
+            ////////console.log("new Words : "+newWord);
         }
         // there is a limitation to it. Two false won't make a true
         if (negs.hasOwnProperty(newWord)) {
@@ -268,9 +268,9 @@ function calculateSum(wordsArray) {
         }
         if(!found && wordsLearnCalls<1 && !(learntWords.hasOwnProperty(newWord)) && globalWordsLearnCalls<maxGlobalWordsLearnCalls ) {	//Learning codes here. Can be tagged by postagger and put it in appropriate arrays!
         	// dictionary(newWord, function(data) {
-        	//  	console.log("New data " + JSON.stringify(data));
+        	//  	//console.log("New data " + JSON.stringify(data));
         	// });
-          console.log("new word to be learnt:" + newWord);
+          //console.log("new word to be learnt:" + newWord);
           var sendObj={
             word:newWord,
           };
@@ -283,15 +283,15 @@ function calculateSum(wordsArray) {
                   data: JSON.stringify(sendObj)
               })
               .done(function(data) {
-                  console.log("New word sent to the server to be learnt");
+                  //console.log("New word sent to the server to be learnt");
               })
               .fail(function() {
-                  console.log("error in server upload to learn new word");
+                  //console.log("error in server upload to learn new word");
               });
           wordsLearnCalls++;
           globalWordsLearnCalls++;
           learntWords[newWord]=0;
-          console.log("Global calls to oxford="+globalWordsLearnCalls);
+          //console.log("Global calls to oxford="+globalWordsLearnCalls);
           chrome.storage.local.get(['global'], function(items) {
             var globalThingy=items.global;
             globalThingy.learningWordsCalls=globalWordsLearnCalls;
@@ -331,5 +331,5 @@ try {
     });
 } catch (e) {
 
-    ////console.log("Some error in MutationObserver");
+    //////console.log("Some error in MutationObserver");
 }

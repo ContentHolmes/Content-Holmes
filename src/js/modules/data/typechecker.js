@@ -1,6 +1,16 @@
+/**
+ * Exports base data needed for [typechecker]{@link module:urlblock/typechecker}.
+ * @module data/typechecker
+ */
+
+
 export {
     categories
 }
+
+/**
+ * Categorical data that is used to check against tags and categorize websites.
+ */
 
 var categories = {
     "Entertainment": {

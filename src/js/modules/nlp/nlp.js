@@ -1,7 +1,21 @@
-/* Usage:
- *	1. Set a buffer object type. Initialize it by {}.
- *	2. Use interest(old_interests, query) to get new interests
- *	3. Save the buffer. Initialize the buffer next time by this value
+/**
+ * <tt>nlp</tt> is the language processing module in the package. It serves various requirements of Content Holmes like interest determination and POS tagging. <br>
+ * @example
+ * <caption>Using the interest module requires a tedious amount of work. It is not tough though.<br>
+ * You usually fallow these steps in order:
+ * <ol>
+ *  <li> Set a buffer object type. Initialize it by {}.
+ *  <li> Use interest(old_interests, query) to get new interests.
+ *  <li> Save the buffer. Initialize the buffer next time by this value.
+ * </ol></caption>
+ * var nlp = require('nlp.js');
+ * nlp.setBuffer(buffer);
+ * nlp.interest(interests, "Justice League", function(interests, new_buffer) {
+ *		console.log("New interests are "+ interests);
+ * 		console.log("New Buffer are " + new_buffer);
+ * });
+ *
+ * @module nlp/nlp
  */
 
 var pos = require('pos');
@@ -13,11 +27,32 @@ export {
 	getBuffer, setBuffer, wordextract, interest
 };
 
+/**
+ * Parts of speech picked up by the interest analyzer
+ */
+
 var pickup_categories = ['JJ', 'FW', 'NN', 'NNP', 'NNPS', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBZ'];
+
+/**
+ * Parts of speech picked up by the sentiment analyzer
+ */
+
 var sentiment_categories = ['JJ', 'FW', 'NN', 'NNS', 'VB', 'VBD', 'VBG', 'VBN', 'VBZ'];
 var buffer_categories = {};
+
+/**
+ * Maximum number of interests in the interests array.
+ */
+
 var MAX_LENGTH = 10;
 var globals = {};
+
+/**
+ * Calculates new interests given the search query and old interests.
+ * @param {String[]} interests Old interests by the user that need to be updated.
+ * @param {String} query The search query that the user has put in the search engine
+ * @param {function(new_interests, new_buffer)} callback The callback that will be executed once interests are calculated with the new interests and an interest buffer that needs to be provided later.
+ */
 
 function interest(interests, query, callback) {
 	//console.log(JSON.stringify(buffer_categories));
@@ -64,6 +99,11 @@ function interest(interests, query, callback) {
 	});
 }
 
+/**
+ * Tags and extracts [pickup_categories]{@linkcode module:nlp/nlp~pickup_categories} from a given sentence.
+ * @param {String} sentence The sentence on which POS tagging needs to be done.
+ */
+
 function wordtagger(sentence) {
 	var interest_determined = "";
 	var buffer_nouns = [];
@@ -96,6 +136,10 @@ function wordtagger(sentence) {
 	}
 }
 
+/**
+ * Maintains the global interests array and the buffer object.
+ */
+
 function maintainance() {
 	if(globals.interests.length<=MAX_LENGTH) {
 		return;
@@ -121,9 +165,19 @@ function maintainance() {
 	}
 }
 
+/**
+ * Sets the global buffer for the interest datastructure.
+ * @params {Dictionary} buffer The interest buffer, initially should be set to {}.
+ */
+
 function setBuffer(buffer) {
 	buffer_categories = buffer;
 }
+
+/**
+ * Gets the global buffer for the interest datastructure.
+ * @returns {Dictionary} buffer The interest buffer that should be set before running the interest determination.
+ */
 
 function getBuffer() {
 	return buffer_categories;
@@ -135,9 +189,15 @@ function addChangeEventListener(fn) {
 
 function fireChangeEventListener() {
 	if(globals["changeEventListener"]) {
-		globals["changeEventListener"](globals["interests"])
+		globals["changeEventListener"](globals["interests"]);
 	}
 }
+
+/**
+ * Tags and extracts [sentiment_categories]{@linkcode module:nlp/nlp~sentiment_categories} from a given sentence.
+ * @param {String} sentence The sentence on which POS tagging needs to be done.
+ * @returns {String[]} The array of selected and filtered word after POSTagging.
+ */
 
 function wordextract(sentence) {
 	var values = [];
