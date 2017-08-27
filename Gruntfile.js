@@ -10,6 +10,7 @@ module.exports = function(grunt) {
                 destination: 'docs',
                 configure: 'jsdoc.json',
                 template: './node_modules/ink-docstrap/template',
+                tutorials: './src/js/',
                 recurse: true
             }
         }
