@@ -7,8 +7,8 @@
     "npm": "3.10.10"
   },
   "scripts": {
-    "build": "webpack --config ./webpack/webpack.config.prod.js",
-    "start": "webpack --config ./webpack/webpack.config.dev.js",
+    "build": "node setup.js & webpack --config ./webpack/webpack.config.prod.js",
+    "start": "node setup.js & webpack --config ./webpack/webpack.config.dev.js",
     "docs": "grunt jsdoc",
     "lint": "eslint src/js/",
     "test": "mocha-webpack --watch --webpack-config ./webpack/webpack.config.test.js \"test/**/*.spec.js\"",
