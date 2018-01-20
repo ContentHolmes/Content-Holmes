@@ -1,4 +1,5 @@
 [![GitHub license](https://img.shields.io/badge/license-AGPLv3-blue.svg)](https://raw.githubusercontent.com/ContentHolmes/Content-Holmes/master/LICENSE)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nimelepbpejjlbmoobocpfnjhihnpked.svg)](https://chrome.google.com/webstore/detail/content-holmes/mgeiegppbijplpchicnhficpineemdel)
 
 # Content-Holmes-Web
 
@@ -30,7 +31,25 @@ To initiate a continuous build process, use
 
 This builds the extension as soon as any change is made to to its source. Ideally, you should run this command before you begin changing the source files.
 
+## Testing
+
+To initiate a contunious test process, use
+
+	$ npm run test
+
+This starts running the tests as soon as any change is made to the extension source.
+
+## Documentation Generation
+
+To generate documentation for the extension, use
+
+	$ npm run docs
+
+The documentation will be places in ./docs folder. Once you open **index.html**, it is easy to navigate and find tutorials and function specifications.
+
 ## Features
+
+Currently, **Source** links are directly accessible from github, However, the **Docs** link only works in the gernerated documentation (See [Documentation Generation](#documentation-generation) for how to generate docs).
 
  - **URL Blocker:** [Source](./src/js/modules/urlblock), [Docs](./tutorial-urlblock.html)
 

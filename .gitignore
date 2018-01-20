@@ -10,7 +10,8 @@ build/dev
 build/prod
 build/updates.xml
 
-docs
+docs/*
+!docs/images
 
 .tmp
 *.swp
