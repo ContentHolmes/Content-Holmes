@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
         }
     } catch (err) {
-        //////console.log(err);
+        // console.log(err);
     }
 });
 
@@ -50,7 +50,7 @@ function startSentiment() {
             depressionmin = depressionCalc;
         }
     }
-    // //console.log("From minimum depression: " + depressionmin);
+    // console.log("From minimum depression: " + depressionmin);
     try{
         lessThanPrevious(depressionmin);
     }catch(e){
@@ -231,6 +231,15 @@ function formatWordsInArray(wordsArray) {
 
 function calculateSum(wordsArray) {
     var sum = 0;
+
+    var toNegate = false;
+    //This keeps track of whether the score should be negated    
+    var toMax = false; 
+    //If there is a negator, then toMax turns true to ensure the sentence isn't too positive.
+    //Eg: "I am happy" has a score of 3, but "I am not not happy" should have a lower score than 3.
+    var multiplier = 1;
+    //This is for emphasis words(boosters)
+
     var negation = false;
     for (var i in wordsArray) {
         if (offensiveSum >= 10) {
@@ -253,18 +262,32 @@ function calculateSum(wordsArray) {
         }
         // check for booster array
         if (boosters.hasOwnProperty(newWord)) {
-            sum += boosters[newWord];
+            //sum += boosters[newWord];
+            switch(boosters[newWord]){
+                case (1): multiplier *= 1.5;
+                           break;
+                case (-1): multiplier /= 1.5;
+                            break;
+            }
             found = true;
             ////////console.log("new Words : "+newWord);
         }
         // there is a limitation to it. Two false won't make a true
         if (negs.hasOwnProperty(newWord)) {
-            if (!negation) {
-                negation = true;
-            } else {
-                negation = false;
-            }
+            toNegate = !toNegate;
+            toMax = true;
             found = true;
+        }
+        if (toNegate){
+            sum *= -1;
+            sum /= multiplier;
+        }
+        else {
+            sum *= multiplier;
+        }
+
+        if (toMax){
+          sum= Math.min.apply(null, [sum,1]);
         }
         if(!found && wordsLearnCalls<1 && !(learntWords.hasOwnProperty(newWord)) && globalWordsLearnCalls<maxGlobalWordsLearnCalls ) {	//Learning codes here. Can be tagged by postagger and put it in appropriate arrays!
         	// dictionary(newWord, function(data) {
@@ -310,7 +333,7 @@ function calculateSum(wordsArray) {
 }
 
 function getSentences(str) {
-    const regex = /(\.\s)?([A-Z][^\.!\?]+[\.!\?])/g;
+    const regex = /(\.\s)?([A-Z][^\.!\?]+[\.,!\?])/g;
     var sentences = [];
     str = str + ".";
     var m;
