@@ -6,25 +6,27 @@ var offensivewords = data.offensivewords;
 
 var words = data.words;
 
-var negs = data.negs;
+var negs = data.negs; 
 
 var boosters = data.boosters;
 
 var email = "";
 var password = "";
 var isInfoAvailable = false;
-var offensiveSum = 0;
-var wordsLearnCalls=0;
-var outerGlobal;
+var offensiveSum = 0; // This variable keeps track of the number of offensive words on the web page being viewwed.
+var wordsLearnCalls=0; // This variable is to limit the number of calls to the oxford api for leaning new words.
+
 var globalWordsLearnCalls;
 var maxGlobalWordsLearnCalls;
 var learntWords;
+
 chrome.storage.local.get(['global'], function(items) {
-  outerGlobal=items.global;
-  globalWordsLearnCalls=items.global.learningWordsCalls;
-  maxGlobalWordsLearnCalls=items.global.maxLearningWordsCalls;
-  learntWords=items.global.learntWords;
+
+    globalWordsLearnCalls=items.global.learningWordsCalls;
+    maxGlobalWordsLearnCalls=items.global.maxLearningWordsCalls;
+    learntWords=items.global.learntWords;
 });
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     try {
         if (request.message == "FireSentiment") {
@@ -39,10 +41,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function startSentiment() {
-    // Gets all the text nodes and checks the text to calculate the sentiment score.
+    // Gets all the text nodes from the DOM and checks the text to calculate the sentiment score.
     var iterator = document.createNodeIterator(document.body, NodeFilter.SHOW_TEXT);
-    var depressionmin = 0;
-    offensiveSum = 0;
+    var depressionmin = 0; // this variable stores the minimum sentiment scores of all the text nodes.
+    offensiveSum = 0; 
     var depressionCalc, node;
     while ((node = iterator.nextNode())) {
         depressionCalc = parseParagraphs(node);
@@ -50,7 +52,7 @@ function startSentiment() {
             depressionmin = depressionCalc;
         }
     }
-    // console.log("From minimum depression: " + depressionmin);
+    // console.log("Minimum depression score: " + depressionmin);
     try{
         lessThanPrevious(depressionmin);
     }catch(e){
@@ -60,26 +62,9 @@ function startSentiment() {
 }
 
 function lessThanPrevious(score) {
-    /*
-      new=false ;
-      get The sentiments array from global chrome storage.
-      If empty:
-        simply insert
-        new = true;
-      else :
-        if newDate than previous stored thing, then
-          if length in array==7
-            sentiments.shift()
-            insert a new Element();
-          else
-            insert a newElement();
-        new=true;
-        else{
-            if array.lastElement().value > score:
-              array.lastElemet()=new Element;
-              new=true;
-        }
-    */
+    /* Determines if the newly calculated sentiment score for the day is less than the score stored already.
+       If yes, this score is stored as the day's minimum.
+     */
     /*
       object type to store in sentiments array:
       {
@@ -93,25 +78,20 @@ function lessThanPrevious(score) {
     chrome.storage.local.get(['settings', 'global'], function(items) {
         arr = items.global.sentimentThings;
         globaling = items.global;
-        //////console.log("Logging sentiment things : " + JSON.stringify(arr[arr.length - 1]));
         var newObj = {
             "Date": (new Date()).toString(),
             "value": score
         };
-        // //////console.log("newObj is " + JSON.stringify(newObj));
         if (!arr) {
             arr = [];
             arr.push(newObj);
-            // //////console.log('no arr' + JSON.stringify(arr[0]));
             newThing = true;
         } else if (arr.length == 0) {
             arr.push(newObj);
-            // //////console.log('length = 0' + JSON.stringify(arr[0]));
             newThing = true;
         } else {
             var d = new Date();
             var dateval = new Date(arr[arr.length - 1].Date);
-            // //////console.log(dateval + "  date   " + d);
             if ((d.getDay() != dateval.getDay())) {
                 if (arr.length == 7) {
                     arr.shift();
@@ -122,7 +102,6 @@ function lessThanPrevious(score) {
                 newThing = true;
             } else {
                 if (arr[arr.length - 1].value > score) {
-                    // //console.log("scroe is " + score);
                     arr[arr.length - 1] = newObj;
                     newThing = true;
                 }
@@ -134,63 +113,20 @@ function lessThanPrevious(score) {
             chrome.storage.local.set({
                 global: items.global
             });
-            // //////console.log("Final global array : " + JSON.stringify(arr));
             sendData(score);
         }
     });
 }
 
 function sendData(depressionmin) {
-    //////console.log("I am inside hrer bros");
+    // sends the data to background script (event.js)
     chrome.runtime.sendMessage({
         type: "depressionReport",
         score: depressionmin
     });
-    // chrome.storage.local.get('info', function(things) {
-    //     var newObj;
-    //     if (!things.info) {
-    //         newObj = {
-    //             "type": "depressionScores",
-    //             "email": "default",
-    //             "password": "default",
-    //             "childName": "default",
-    //             "time": new Date(),
-    //             "value": depressionmin
-    //         };
-    //     } else {
-    //         isInfoAvailable = true;
-    //         newObj = {
-    //             "type": "depressionScores",
-    //             "email": things.info.email,
-    //             "password": things.info.password,
-    //             "childName": things.info.childName,
-    //             "time": new Date(),
-    //             "value": depressionmin
-    //         };
-    //     }
-    //     if (isInfoAvailable) {
-    //         $.ajax({
-    //                 url: "https://www.contentholmes.com/childReport",
-    //                 beforeSend: function(xhrObj) {
-    //                     // Request headers
-    //                     xhrObj.setRequestHeader("Content-Type", "application/json");
-    //                 },
-    //
-    //                 type: "POST",
-    //                 data: JSON.stringify(newObj),
-    //                 // Request body
-    //             })
-    //             .done(function(data) {
-    //                 //////console.log("succcesssful req: " + data);
-    //             })
-    //             .fail(function() {
-    //                 //////console.log("error");
-    //             });
-    //     }
-    // });
 }
-
 function parseParagraphs(node) {
+    // Takes a text node and converts all the text into an array of words and calculates the sentiment score of the array.
     var ignoreThese = {
         "STYLE": 0,
         "NOSCRIPT": 0,
@@ -199,7 +135,6 @@ function parseParagraphs(node) {
     if (node.parentElement.tagName in ignoreThese) {
         return 0;
     }
-    ////////console.log("STARTING WITH A NEW TEXT NODE:\n"+node.nodeValue.toString());
     var str = node.nodeValue.toString();
     //var str="I am not happy";
     var sentenceArray = getSentences(str);
@@ -210,20 +145,15 @@ function parseParagraphs(node) {
         var newSentence = nlp.wordextract(sentenceArray[i].toString());
         formatWordsInArray(newSentence);
         totalWords = totalWords + newSentence.length;
-        // //console.log(newSentence);
         var newSum = calculateSum(newSentence);
-        ////////console.log("THE SUM FOR THE SENTENCE:\n"+sentenceArray[i]+"\nis :"+newSum);
         sum = sum + newSum /**newSentence.length*/ ;
-
     }
     var depressionCalc = sum /*/totalWords*/ ;
-    if (depressionCalc || depressionCalc == 0) {
-        ////////console.log("THE SUM/TOTALLENGTH BECOMES:"+depressionCalc);
-    }
     return depressionCalc;
 }
 
 function formatWordsInArray(wordsArray) {
+    // used to convert all the words to lowecase.
     for (var i in wordsArray) {
         wordsArray[i] = wordsArray[i].toString().toLowerCase().replace(/[^a-z]/gi, '');
     }
@@ -243,7 +173,7 @@ function calculateSum(wordsArray) {
     var negation = false;
     for (var i in wordsArray) {
         if (offensiveSum >= 10) {
-            // //console.log("offensive words");
+            // Redirect to a safe page if more than 10 offensive words are found.
             chrome.runtime.sendMessage({
                 type: "redirect",
                 redirect: chrome.extension.getURL("/html/safetypage.html")
@@ -253,7 +183,6 @@ function calculateSum(wordsArray) {
         var found = false;
         if (offensivewords.indexOf(newWord) != -1) {
             offensiveSum += 1;
-            // //console.log("word is  " + newWord);
         }
 
         if (words.hasOwnProperty(newWord)) {
@@ -270,7 +199,6 @@ function calculateSum(wordsArray) {
                             break;
             }
             found = true;
-            ////////console.log("new Words : "+newWord);
         }
         // there is a limitation to it. Two false won't make a true
         if (negs.hasOwnProperty(newWord)) {
@@ -294,6 +222,7 @@ function calculateSum(wordsArray) {
         	//  	//console.log("New data " + JSON.stringify(data));
         	// });
           //console.log("new word to be learnt:" + newWord);
+          // send the new word to be learnt to the server.
           var sendObj={
             word:newWord,
           };
@@ -333,6 +262,7 @@ function calculateSum(wordsArray) {
 }
 
 function getSentences(str) {
+    // returns an array of sentences in the string str.
     const regex = /(\.\s)?([A-Z][^\.!\?]+[\.,!\?])/g;
     var sentences = [];
     str = str + ".";
@@ -354,5 +284,5 @@ try {
     });
 } catch (e) {
 
-    //////console.log("Some error in MutationObserver");
+    // console.log("Some error in MutationObserver");
 }
